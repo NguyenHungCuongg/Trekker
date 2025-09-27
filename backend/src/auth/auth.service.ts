@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { UserService } from "src/user/user.service";
 
-type inputUser = {
+type requestUser = {
   username: string;
   password: string;
 };
@@ -21,12 +21,10 @@ type authResult = {
 export class AuthService {
   constructor(private userService: UserService) {}
 
-  async authenticate(user: inputUser): Promise<authResult | null> {
-    console.log("Đang xác thực người dùng:", user);
-
+  async authenticate(user: requestUser): Promise<authResult | null> {
     const validatedUser = await this.validateUser(user);
     if (!validatedUser) {
-      return null;
+      throw new UnauthorizedException("Thông tin đăng nhập không hợp lệ");
     }
 
     return {
@@ -36,13 +34,13 @@ export class AuthService {
     };
   }
 
-  async validateUser(user: inputUser): Promise<responseUser | null> {
+  async validateUser(user: requestUser): Promise<responseUser | null> {
     const validatedUser = await this.userService.findUserByUsername(
       user.username,
     );
 
     if (validatedUser?.password !== user.password) {
-      return null;
+      throw new UnauthorizedException("Thông tin đăng nhập không hợp lệ");
     }
     return {
       userId: validatedUser.userId,

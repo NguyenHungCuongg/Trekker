@@ -1,5 +1,5 @@
 import { UserService } from "src/user/user.service";
-type inputUser = {
+type requestUser = {
     username: string;
     password: string;
 };
@@ -15,7 +15,7 @@ type authResult = {
 export declare class AuthService {
     private userService;
     constructor(userService: UserService);
-    authenticate(user: inputUser): Promise<authResult | null>;
-    validateUser(user: inputUser): Promise<responseUser | null>;
+    authenticate(user: requestUser): Promise<authResult | null>;
+    validateUser(user: requestUser): Promise<responseUser | null>;
 }
 export {};

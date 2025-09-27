@@ -21,7 +21,7 @@ let AuthService = class AuthService {
         console.log("Đang xác thực người dùng:", user);
         const validatedUser = await this.validateUser(user);
         if (!validatedUser) {
-            return null;
+            throw new common_1.UnauthorizedException("Thông tin đăng nhập không hợp lệ");
         }
         return {
             accessToken: "test-jwt-token",
@@ -32,7 +32,7 @@ let AuthService = class AuthService {
     async validateUser(user) {
         const validatedUser = await this.userService.findUserByUsername(user.username);
         if (validatedUser?.password !== user.password) {
-            return null;
+            throw new common_1.UnauthorizedException("Thông tin đăng nhập không hợp lệ");
         }
         return {
             userId: validatedUser.userId,
