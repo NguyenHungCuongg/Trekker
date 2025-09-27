@@ -49,9 +49,9 @@ CREATE TABLE accommodations (
 );
 
 -- roomTypes table
-CREATE TABLE roomTypes (
+CREATE TABLE room_types (
     room_type_id SERIAL PRIMARY KEY,
-    accommodations_id INT REFERENCES accommodations(accommodations_id) ON DELETE CASCADE,
+    accommodation_id INT REFERENCES accommodations(accommodation_id) ON DELETE CASCADE,
     name VARCHAR(100) NOT NULL,
     capacity INT,
     price DOUBLE PRECISION,
@@ -78,7 +78,11 @@ CREATE TABLE bookings (
 );
 
 -- payments table
-CREATE TYPE payment_method AS ENUM ('credit_card', 'paypal', 'bank_transfer', 'cash') CREATE TYPE payment_status AS ENUM ('pending', 'paid', 'failed') CREATE TABLE payments (
+CREATE TYPE payment_method AS ENUM ('credit_card', 'paypal', 'bank_transfer', 'cash');
+
+CREATE TYPE payment_status AS ENUM ('pending', 'paid', 'failed');
+
+CREATE TABLE payments (
     payment_id SERIAL PRIMARY KEY,
     booking_id INT REFERENCES bookings(booking_id) ON DELETE CASCADE,
     amount DOUBLE PRECISION NOT NULL,
