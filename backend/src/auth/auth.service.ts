@@ -1,4 +1,5 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt/dist/jwt.service";
 import { UserService } from "src/user/user.service";
 
 type requestUser = {
@@ -19,7 +20,10 @@ type authResult = {
 
 @Injectable()
 export class AuthService {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private jwtService: JwtService,
+  ) {}
 
   async authenticate(user: requestUser): Promise<authResult | null> {
     const validatedUser = await this.validateUser(user);
@@ -27,11 +31,7 @@ export class AuthService {
       throw new UnauthorizedException("Thông tin đăng nhập không hợp lệ");
     }
 
-    return {
-      accessToken: "test-jwt-token",
-      userId: validatedUser.userId,
-      username: validatedUser.username,
-    };
+    return this.signIn(validatedUser);
   }
 
   async validateUser(user: requestUser): Promise<responseUser | null> {
@@ -46,5 +46,11 @@ export class AuthService {
       userId: validatedUser.userId,
       username: validatedUser.username,
     }; //Ta không thể return validatedUser vì nó có password
+  }
+
+  async signIn(user: responseUser): Promise<authResult> {
+    const payload = { sub: user.userId, username: user.username };
+    const accessToken = await this.jwtService.signAsync(payload);
+    return { accessToken, userId: user.userId, username: user.username };
   }
 }

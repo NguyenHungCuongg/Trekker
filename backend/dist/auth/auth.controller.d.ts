@@ -10,4 +10,5 @@ export declare class AuthController {
         userId: number;
         username: string;
     } | null>;
+    getUser(request: any): any;
 }
