@@ -21,10 +21,16 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("../user/user.entity");
 const typeorm_2 = require("typeorm");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const user_service_1 = require("../user/user.service");
+const jwt_service_1 = require("@nestjs/jwt/dist/jwt.service");
 let AuthService = class AuthService {
     userRepository;
-    constructor(userRepository) {
+    userService;
+    jwtService;
+    constructor(userRepository, userService, jwtService) {
         this.userRepository = userRepository;
+        this.userService = userService;
+        this.jwtService = jwtService;
     }
     async signup(userDTO) {
         const salt = await bcryptjs_1.default.genSalt();
@@ -32,11 +38,26 @@ let AuthService = class AuthService {
         const user = await this.userRepository.save(userDTO);
         return user;
     }
+    async login(loginDTO) {
+        const user = await this.userService.findOne(loginDTO);
+        const isMatch = await bcryptjs_1.default.compare(loginDTO.password, user.password);
+        if (isMatch) {
+            const payload = { username: user.username, sub: user.id };
+            return {
+                access_token: this.jwtService.sign(payload),
+            };
+        }
+        else {
+            throw new common_1.UnauthorizedException('Invalid credentials');
+        }
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        user_service_1.UserService,
+        jwt_service_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

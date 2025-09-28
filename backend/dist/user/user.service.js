@@ -11,25 +11,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const user_entity_1 = require("./user.entity");
-const bcryptjs_1 = __importDefault(require("../../node_modules/bcryptjs/umd/index.js"));
 let UserService = class UserService {
     userRepository;
     constructor(userRepository) {
         this.userRepository = userRepository;
     }
-    async create(userDTO) {
-        const salt = await bcryptjs_1.default.genSalt();
-        userDTO.password = await bcryptjs_1.default.hash(userDTO.password, salt);
-        const user = await this.userRepository.save(userDTO);
+    async findOne(data) {
+        const user = await this.userRepository.findOneBy({
+            username: data.username,
+        });
+        if (!user) {
+            throw new common_1.UnauthorizedException('User not found');
+        }
         return user;
     }
 };
