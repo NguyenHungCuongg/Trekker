@@ -7,7 +7,7 @@ import {
   Request,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { AuthGuard } from "./guards/auth.guard";
+import { AuthGuard } from "./guard/auth.guard";
 
 @Controller("auth")
 export class AuthController {

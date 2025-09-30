@@ -12,13 +12,17 @@ const auth_service_1 = require("./auth.service");
 const auth_controller_1 = require("./auth.controller");
 const user_module_1 = require("../user/user.module");
 const jwt_1 = require("@nestjs/jwt");
+const passport_1 = require("@nestjs/passport");
+const local_strategy_1 = require("./strategy/local.strategy");
+const passport_auth_controller_1 = require("./passport-auth.controller");
+const jwt_strategy_1 = require("./strategy/jwt.strategy");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
-        providers: [auth_service_1.AuthService],
-        controllers: [auth_controller_1.AuthController],
+        providers: [auth_service_1.AuthService, local_strategy_1.LocalStrategy, jwt_strategy_1.JwtStrategy],
+        controllers: [auth_controller_1.AuthController, passport_auth_controller_1.PassportAuthController],
         imports: [
             user_module_1.UserModule,
             jwt_1.JwtModule.register({
@@ -26,6 +30,7 @@ exports.AuthModule = AuthModule = __decorate([
                 secret: "test-jwt-secret",
                 signOptions: { expiresIn: "1d" },
             }),
+            passport_1.PassportModule,
         ],
     })
 ], AuthModule);

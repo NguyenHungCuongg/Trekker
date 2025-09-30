@@ -3,10 +3,14 @@ import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { UserModule } from "src/user/user.module";
 import { JwtModule } from "@nestjs/jwt";
+import { PassportModule } from "@nestjs/passport";
+import { LocalStrategy } from "./strategy/local.strategy";
+import { PassportAuthController } from "./passport-auth.controller";
+import { JwtStrategy } from "./strategy/jwt.strategy";
 
 @Module({
-  providers: [AuthService],
-  controllers: [AuthController],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
+  controllers: [AuthController, PassportAuthController],
   imports: [
     UserModule,
     JwtModule.register({
@@ -14,6 +18,7 @@ import { JwtModule } from "@nestjs/jwt";
       secret: "test-jwt-secret",
       signOptions: { expiresIn: "1d" }, //Token có thời hạn 1 ngày
     }),
+    PassportModule,
   ],
 })
 export class AuthModule {}
