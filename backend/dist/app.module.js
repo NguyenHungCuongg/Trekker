@@ -13,7 +13,6 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./user/user.entity");
 const auth_module_1 = require("./auth/auth.module");
 const accommodation_module_1 = require("./accommodation/accommodation.module");
-const app_controller_1 = require("./app/app.controller");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -22,19 +21,19 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             user_module_1.UserModule,
             typeorm_1.TypeOrmModule.forRoot({
-                type: 'postgres',
-                host: 'localhost',
+                type: "postgres",
+                host: "localhost",
                 port: 5432,
-                username: 'postgres',
-                password: '123',
-                database: 'Trekker',
+                username: "postgres",
+                password: "123",
+                database: "Trekker",
                 entities: [user_entity_1.User],
                 synchronize: true,
             }),
             auth_module_1.AuthModule,
             accommodation_module_1.AccommodationModule,
         ],
-        controllers: [app_controller_1.AppController],
+        controllers: [],
         providers: [],
     })
 ], AppModule);
