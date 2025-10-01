@@ -25,7 +25,7 @@ exports.AuthModule = AuthModule = __decorate([
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
             jwt_1.JwtModule.register({
                 secret: auth_constants_1.authConstants.secret,
-                signOptions: { expiresIn: '1d' },
+                signOptions: { expiresIn: "1d" },
             }),
         ],
         controllers: [auth_controller_1.AuthController],

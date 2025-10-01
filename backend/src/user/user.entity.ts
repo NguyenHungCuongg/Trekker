@@ -1,9 +1,9 @@
-import { Exclude } from 'class-transformer';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude } from "class-transformer";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity('users')
+@Entity("users")
 export class User {
-  @PrimaryGeneratedColumn({ name: 'user_id' })
+  @PrimaryGeneratedColumn({ name: "user_id" })
   id: number;
 
   @Column({ unique: true })
@@ -13,12 +13,12 @@ export class User {
   @Exclude()
   password: string;
 
-  @Column({ name: 'full_name' })
+  @Column({ name: "full_name" })
   fullName: string;
 
   @Column({ unique: true })
   phone: string;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;
 }

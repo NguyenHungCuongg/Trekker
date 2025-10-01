@@ -48,7 +48,7 @@ let AuthService = class AuthService {
             };
         }
         else {
-            throw new common_1.UnauthorizedException('Invalid credentials');
+            throw new common_1.UnauthorizedException("Invalid credentials");
         }
     }
 };
