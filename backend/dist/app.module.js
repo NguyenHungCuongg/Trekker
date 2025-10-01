@@ -12,24 +12,35 @@ const user_module_1 = require("./user/user.module");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./user/user.entity");
 const auth_module_1 = require("./auth/auth.module");
+const accommodation_module_1 = require("./accommodation/accommodation.module");
+const config_1 = require("@nestjs/config");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            user_module_1.UserModule,
-            typeorm_1.TypeOrmModule.forRoot({
-                type: "postgres",
-                host: "localhost",
-                port: 5432,
-                username: "postgres",
-                password: "123456",
-                database: "Trekker",
-                entities: [user_entity_1.User],
-                synchronize: true,
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+                envFilePath: ".env",
             }),
+            typeorm_1.TypeOrmModule.forRootAsync({
+                imports: [config_1.ConfigModule],
+                useFactory: (configService) => ({
+                    type: "postgres",
+                    host: configService.get("DB_HOST") || "localhost",
+                    port: parseInt(configService.get("DB_PORT") || "5432"),
+                    username: configService.get("DB_USERNAME") || "postgres",
+                    password: configService.get("DB_PASSWORD") || "",
+                    database: configService.get("DB_DATABASE") || "Trekker",
+                    entities: [user_entity_1.User],
+                    synchronize: configService.get("NODE_ENV") === "development",
+                }),
+                inject: [config_1.ConfigService],
+            }),
+            user_module_1.UserModule,
             auth_module_1.AuthModule,
+            accommodation_module_1.AccommodationModule,
         ],
         controllers: [],
         providers: [],

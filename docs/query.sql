@@ -16,6 +16,12 @@ CREATE TABLE locations (
     description TEXT
 );
 
+CREATE TABLE destinations (
+    destination_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    location_id INT REFERENCES locations(location_id) ON DELETE CASCADE
+);
+
 -- tours table
 CREATE TABLE tours (
     tour_id SERIAL PRIMARY KEY,
@@ -32,6 +38,12 @@ CREATE TABLE tours (
     end_date DATE,
     max_guests INT
 );
+
+CREATE TABLE tour_destination (
+    tour_id INT REFERENCES tours(tour_id) ON DELETE CASCADE,
+    destination_id INT REFERENCES destinations(destination_id) ON DELETE CASCADE,
+    constraint pk_ord_des PRIMARY KEY (tour_id, destination_id)
+)
 
 -- accommodations table
 CREATE TABLE accommodations (

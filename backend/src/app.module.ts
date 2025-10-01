@@ -2,23 +2,33 @@ import { Module } from "@nestjs/common";
 import { UserModule } from "./user/user.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "./user/user.entity";
-//import { LoggerModule } from './common/middleware/logger/logger.module';
 import { AuthModule } from "./auth/auth.module";
+import { AccommodationModule } from "./accommodation/accommodation.module";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 
 @Module({
   imports: [
-    UserModule,
-    TypeOrmModule.forRoot({
-      type: "postgres",
-      host: "localhost",
-      port: 5432,
-      username: "postgres",
-      password: "123456",
-      database: "Trekker",
-      entities: [User],
-      synchronize: true,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ".env",
     }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: "postgres",
+        host: configService.get("DB_HOST") || "localhost",
+        port: parseInt(configService.get("DB_PORT") || "5432"),
+        username: configService.get("DB_USERNAME") || "postgres",
+        password: configService.get("DB_PASSWORD") || "",
+        database: configService.get("DB_DATABASE") || "Trekker",
+        entities: [User],
+        synchronize: configService.get("NODE_ENV") === "development",
+      }),
+      inject: [ConfigService],
+    }),
+    UserModule,
     AuthModule,
+    AccommodationModule,
   ],
   controllers: [],
   providers: [],
