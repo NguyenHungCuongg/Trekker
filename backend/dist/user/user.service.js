@@ -27,7 +27,7 @@ let UserService = class UserService {
             username: data.username,
         });
         if (!user) {
-            throw new common_1.UnauthorizedException('User not found');
+            throw new common_1.UnauthorizedException("User not found");
         }
         return user;
     }

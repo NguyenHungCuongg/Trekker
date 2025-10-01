@@ -22,7 +22,7 @@ let User = class User {
 };
 exports.User = User;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)({ name: 'user_id' }),
+    (0, typeorm_1.PrimaryGeneratedColumn)({ name: "user_id" }),
     __metadata("design:type", Number)
 ], User.prototype, "id", void 0);
 __decorate([
@@ -35,7 +35,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'full_name' }),
+    (0, typeorm_1.Column)({ name: "full_name" }),
     __metadata("design:type", String)
 ], User.prototype, "fullName", void 0);
 __decorate([
@@ -43,10 +43,10 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "phone", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }),
+    (0, typeorm_1.Column)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }),
     __metadata("design:type", Date)
 ], User.prototype, "createdAt", void 0);
 exports.User = User = __decorate([
-    (0, typeorm_1.Entity)('users')
+    (0, typeorm_1.Entity)("users")
 ], User);
 //# sourceMappingURL=user.entity.js.map

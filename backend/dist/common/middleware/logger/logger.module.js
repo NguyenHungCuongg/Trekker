@@ -10,7 +10,7 @@ exports.LoggerMiddleware = void 0;
 const common_1 = require("@nestjs/common");
 let LoggerMiddleware = class LoggerMiddleware {
     use(req, res, next) {
-        console.log('Request ....', new Date().toDateString());
+        console.log("Request ....", new Date().toDateString());
         next();
     }
 };
