@@ -5,6 +5,14 @@ import { User } from "./user/user.entity";
 import { AuthModule } from "./auth/auth.module";
 import { AccommodationModule } from "./accommodation/accommodation.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { LocationModule } from "./location/location.module";
+import { DestinationModule } from "./destination/destination.module";
+import { TourModule } from "./tour/tour.module";
+import { RoomTypeModule } from "./room-type/room-type.module";
+import { BookingModule } from "./booking/booking.module";
+import { PaymentModule } from "./payment/payment.module";
+import { InvoiceModule } from "./invoice/invoice.module";
+import { ReviewModule } from "./review/review.module";
 
 @Module({
   imports: [
@@ -29,6 +37,14 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
     UserModule,
     AuthModule,
     AccommodationModule,
+    LocationModule,
+    DestinationModule,
+    TourModule,
+    RoomTypeModule,
+    BookingModule,
+    PaymentModule,
+    InvoiceModule,
+    ReviewModule,
   ],
   controllers: [],
   providers: [],
