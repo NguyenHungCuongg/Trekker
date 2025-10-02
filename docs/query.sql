@@ -60,6 +60,14 @@ CREATE TABLE accommodations (
     address TEXT
 );
 
+-- accommodationImages table
+CREATE TABLE accommodation_images (
+    image_id SERIAL PRIMARY KEY,
+    accommodation_id INT REFERENCES accommodations(accommodation_id) ON DELETE CASCADE,
+    image_url TEXT NOT NULL,
+    uploaded_at TIMESTAMP DEFAULT NOW()
+);
+
 -- roomTypes table
 CREATE TABLE room_types (
     room_type_id SERIAL PRIMARY KEY,
