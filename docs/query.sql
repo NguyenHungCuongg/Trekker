@@ -74,6 +74,7 @@ CREATE TABLE room_types (
     accommodation_id INT REFERENCES accommodations(accommodation_id) ON DELETE CASCADE,
     name VARCHAR(100) NOT NULL,
     capacity INT,
+    quantity INT,
     price DOUBLE PRECISION,
     amenities TEXT,
     description TEXT
