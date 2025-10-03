@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common";
 import { UserModule } from "./user/user.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { User } from "./user/user.entity";
 import { AuthModule } from "./auth/auth.module";
 import { AccommodationModule } from "./accommodation/accommodation.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
@@ -13,6 +12,16 @@ import { BookingModule } from "./booking/booking.module";
 import { PaymentModule } from "./payment/payment.module";
 import { InvoiceModule } from "./invoice/invoice.module";
 import { ReviewModule } from "./review/review.module";
+import { User } from "./user/user.entity";
+import { Location } from "./location/location.entity";
+import { Destination } from "./destination/destination.entity";
+import { Tour } from "./tour/tour.entity";
+import { Accommodation } from "./accommodation/accommodation.entity";
+import { RoomType } from "./room-type/room-type.entity";
+import { Booking } from "./booking/booking.entity";
+import { Payment } from "./payment/payment.entity";
+import { Invoice } from "./invoice/invoice.entity";
+import { Review } from "./review/review.entity";
 
 @Module({
   imports: [
@@ -29,7 +38,18 @@ import { ReviewModule } from "./review/review.module";
         username: configService.get("DB_USERNAME") || "postgres",
         password: configService.get("DB_PASSWORD") || "",
         database: configService.get("DB_DATABASE") || "Trekker",
-        entities: [User],
+        entities: [
+          User,
+          Location,
+          Destination,
+          Tour,
+          Accommodation,
+          RoomType,
+          Booking,
+          Payment,
+          Invoice,
+          Review,
+        ],
         synchronize: configService.get("NODE_ENV") === "development",
       }),
       inject: [ConfigService],
