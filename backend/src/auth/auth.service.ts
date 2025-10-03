@@ -25,7 +25,7 @@ export class AuthService {
   }
 
   async login(loginDTO: LoginDto): Promise<{ access_token: string }> {
-    const user = await this.userService.findOne(loginDTO);
+    const user = await this.userService.findUserByLoginDTO(loginDTO);
     const isMatch = await bcrypt.compare(loginDTO.password, user.password);
     if (isMatch) {
       const payload = { username: user.username, sub: user.id };

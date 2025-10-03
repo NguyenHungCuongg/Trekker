@@ -8,6 +8,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TourModule = void 0;
 const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
+const tour_entity_1 = require("./tour.entity");
 const tour_controller_1 = require("./tour.controller");
 const tour_service_1 = require("./tour.service");
 let TourModule = class TourModule {
@@ -15,8 +17,10 @@ let TourModule = class TourModule {
 exports.TourModule = TourModule;
 exports.TourModule = TourModule = __decorate([
     (0, common_1.Module)({
+        imports: [typeorm_1.TypeOrmModule.forFeature([tour_entity_1.Tour])],
         controllers: [tour_controller_1.TourController],
         providers: [tour_service_1.TourService],
+        exports: [tour_service_1.TourService],
     })
 ], TourModule);
 //# sourceMappingURL=tour.module.js.map

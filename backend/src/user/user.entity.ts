@@ -15,7 +15,7 @@ export class User {
   @Exclude()
   password: string;
 
-  @Column({ name: "fullname", nullable: true }) // Sửa từ full_name thành fullname
+  @Column({ nullable: true })
   fullName: string;
 
   @Column({ unique: true, nullable: true })

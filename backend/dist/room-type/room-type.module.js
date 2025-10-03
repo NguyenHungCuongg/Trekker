@@ -8,6 +8,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RoomTypeModule = void 0;
 const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
+const room_type_entity_1 = require("./room-type.entity");
 const room_type_service_1 = require("./room-type.service");
 const room_type_controller_1 = require("./room-type.controller");
 let RoomTypeModule = class RoomTypeModule {
@@ -15,8 +17,10 @@ let RoomTypeModule = class RoomTypeModule {
 exports.RoomTypeModule = RoomTypeModule;
 exports.RoomTypeModule = RoomTypeModule = __decorate([
     (0, common_1.Module)({
+        imports: [typeorm_1.TypeOrmModule.forFeature([room_type_entity_1.RoomType])],
         providers: [room_type_service_1.RoomTypeService],
         controllers: [room_type_controller_1.RoomTypeController],
+        exports: [room_type_service_1.RoomTypeService],
     })
 ], RoomTypeModule);
 //# sourceMappingURL=room-type.module.js.map

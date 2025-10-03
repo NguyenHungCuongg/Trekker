@@ -14,7 +14,7 @@ CREATE TABLE locations (
     location_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT
-);
+);   
 
 CREATE TABLE destinations (
     destination_id SERIAL PRIMARY KEY,
