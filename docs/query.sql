@@ -81,7 +81,7 @@ CREATE TABLE room_types (
 );
 
 -- bookings table
-CREATE TYPE booking_status AS ENUM ('pending', 'confirmed', 'cancelled');
+CREATE TYPE booking_status AS ENUM ('confirmed', 'cancelled');
 
 CREATE TYPE service_type AS ENUM ('tour', 'accommodation');
 
@@ -99,7 +99,7 @@ CREATE TABLE bookings (
 );
 
 -- payments table
-CREATE TYPE payment_method AS ENUM ('credit_card', 'paypal', 'bank_transfer', 'cash');
+CREATE TYPE payment_method AS ENUM ('momo', 'vnpay');
 
 CREATE TYPE payment_status AS ENUM ('pending', 'paid', 'failed');
 
