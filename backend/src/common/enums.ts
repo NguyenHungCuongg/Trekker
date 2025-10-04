@@ -1,5 +1,4 @@
 export enum BookingStatus {
-  PENDING = "pending",
   CONFIRMED = "confirmed",
   CANCELLED = "cancelled",
 }
@@ -10,10 +9,8 @@ export enum ServiceType {
 }
 
 export enum PaymentMethod {
-  CREDIT_CARD = "credit_card",
-  PAYPAL = "paypal",
-  BANK_TRANSFER = "bank_transfer",
-  CASH = "cash",
+  VNPAY = "vnpay",
+  MOMO = "momo",
 }
 
 export enum PaymentStatus {
