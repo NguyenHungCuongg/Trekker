@@ -39,7 +39,7 @@ let AuthService = class AuthService {
         return user;
     }
     async login(loginDTO) {
-        const user = await this.userService.findOne(loginDTO);
+        const user = await this.userService.findUserByLoginDTO(loginDTO);
         const isMatch = await bcryptjs_1.default.compare(loginDTO.password, user.password);
         if (isMatch) {
             const payload = { username: user.username, sub: user.id };
