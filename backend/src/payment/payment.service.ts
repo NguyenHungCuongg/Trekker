@@ -18,16 +18,17 @@ export class PaymentService {
       .leftJoinAndSelect("payment.booking", "booking")
       .leftJoinAndSelect("booking.user", "user");
     if (userId) {
-      query.where("booking.userId = :userid", { userId });
+      query.where("booking.userId = :userId", { userId });
     }
-    return query.orderBy("payment.createdAt", "DESC").getMany();
+    return query.orderBy("payment.paidAt", "DESC").getMany();
   }
 
   async findOne(id: number, userId?: number): Promise<Payment> {
     const query = this.paymentRepository
       .createQueryBuilder("payment")
       .leftJoinAndSelect("payment.booking", "booking")
-      .leftJoinAndSelect("booking.user", "user");
+      .leftJoinAndSelect("booking.user", "user")
+      .where("payment.id = :id", { id });
     if (userId) {
       query.andWhere("booking.userId = :userId", { userId });
     }
@@ -53,7 +54,7 @@ export class PaymentService {
     return this.paymentRepository.save(payment);
   }
 
-  async maskAsFailed(id: number): Promise<Payment> {
+  async markAsFailed(id: number): Promise<Payment> {
     const payment = await this.findOne(id);
     payment.status = PaymentStatus.FAILED;
     return this.paymentRepository.save(payment);
@@ -61,7 +62,7 @@ export class PaymentService {
 
   async findByBookingId(bookingId: number): Promise<Payment[]> {
     return this.paymentRepository.find({
-      where: { booking: { id: bookingId } },
+      where: { bookingId },
       relations: ["booking"],
       order: { paidAt: "DESC" },
     });

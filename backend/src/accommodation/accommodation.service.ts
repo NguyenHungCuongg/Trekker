@@ -39,7 +39,7 @@ export class AccommodationService {
       });
     }
     if (searchDto.minRating) {
-      query.andWhere("accomodation.rating >= :minRating", {
+      query.andWhere("accommodation.rating >= :minRating", {
         minRating: searchDto.minRating,
       });
     }

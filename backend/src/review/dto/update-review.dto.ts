@@ -1,32 +1,11 @@
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Max,
-  Min,
-} from "class-validator";
-import { ServiceType } from "src/common/enums";
+import { IsOptional, IsNumber, IsString, Min, Max } from "class-validator";
 
 export class UpdateReviewDto {
-  @IsNumber()
-  @IsNotEmpty()
-  userId: number;
-
-  @IsEnum(ServiceType)
-  @IsNotEmpty()
-  serviceType: ServiceType;
-
-  @IsNumber()
-  @IsNotEmpty()
-  serviceId: number;
-
+  @IsOptional()
   @IsNumber()
   @Min(0)
   @Max(5)
-  @IsNotEmpty()
-  rating: number;
+  rating?: number;
 
   @IsOptional()
   @IsString()

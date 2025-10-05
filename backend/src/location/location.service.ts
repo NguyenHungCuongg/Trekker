@@ -7,17 +7,17 @@ import { Location } from "./location.entity";
 export class LocationService {
   constructor(
     @InjectRepository(Location)
-    private LocationRepository: Repository<Location>,
+    private locationRepository: Repository<Location>,
   ) {}
 
   async findAll(): Promise<Location[]> {
-    return this.LocationRepository.find({
+    return this.locationRepository.find({
       relations: ["tours", "accommodations"],
     });
   }
 
   async findOne(id: number): Promise<Location> {
-    const location = await this.LocationRepository.findOne({
+    const location = await this.locationRepository.findOne({
       where: { id },
       relations: ["tours", "accommodations", "destinations"],
     });
@@ -29,6 +29,6 @@ export class LocationService {
   }
 
   async count(): Promise<number> {
-    return this.LocationRepository.count();
+    return this.locationRepository.count();
   }
 }

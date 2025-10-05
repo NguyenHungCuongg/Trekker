@@ -12,14 +12,14 @@ export class DestinationService {
 
   async findAll(): Promise<Destination[]> {
     return this.destinationRepository.find({
-      relations: ["locations", "tours"],
+      relations: ["location", "tours"],
     });
   }
 
   async findOne(id: number): Promise<Destination> {
     const destination = await this.destinationRepository.findOne({
       where: { id },
-      relations: ["locations", "tours"],
+      relations: ["location", "tours"],
     });
 
     if (!destination) {
@@ -32,7 +32,7 @@ export class DestinationService {
   async findByLocationId(locationId: number): Promise<Destination[]> {
     return this.destinationRepository.find({
       where: { locationId },
-      relations: ["locations"],
+      relations: ["location"],
     });
   }
 
