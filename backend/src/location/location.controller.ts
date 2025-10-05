@@ -1,4 +1,18 @@
-import { Controller } from "@nestjs/common";
+import { Controller, Get, ParseIntPipe, Param } from "@nestjs/common";
+import { LocationService } from "./location.service";
+import { Location } from "./location.entity";
 
-@Controller("location")
-export class LocationController {}
+@Controller("locations")
+export class LocationController {
+  constructor(private locationService: LocationService) {}
+
+  @Get()
+  async findAll(): Promise<Location[]> {
+    return this.locationService.findAll();
+  }
+
+  @Get(":id")
+  async findOne(@Param("id", ParseIntPipe) id: number): Promise<Location> {
+    return this.locationService.findOne(id);
+  }
+}

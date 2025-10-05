@@ -48,6 +48,11 @@ export class BookingService {
     return this.bookingRepository.save(booking);
   }
 
+  async remove(id: number, userId?: number): Promise<void> {
+    const booking = await this.findOne(id, userId);
+    await this.bookingRepository.remove(booking);
+  }
+
   async cancel(id: number, userId?: number): Promise<Booking> {
     const booking = await this.findOne(id, userId);
     if (booking.status === BookingStatus.CANCELLED) {
