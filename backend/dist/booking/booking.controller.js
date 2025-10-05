@@ -82,7 +82,7 @@ __decorate([
 ], BookingController.prototype, "remove", null);
 exports.BookingController = BookingController = __decorate([
     (0, common_1.UseGuards)(jwt_authguard_1.JwtAuthGuard),
-    (0, common_1.Controller)("booking"),
+    (0, common_1.Controller)("bookings"),
     __metadata("design:paramtypes", [booking_service_1.BookingService])
 ], BookingController);
 //# sourceMappingURL=booking.controller.js.map

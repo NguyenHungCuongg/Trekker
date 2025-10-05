@@ -15,7 +15,7 @@ import { Booking } from "./booking.entity";
 import { CreateBookingDto } from "./dto/create-booking.dto";
 import { JwtAuthGuard } from "../auth/jwt.authguard";
 @UseGuards(JwtAuthGuard)
-@Controller("booking")
+@Controller("bookings")
 export class BookingController {
   constructor(private bookingService: BookingService) {}
 

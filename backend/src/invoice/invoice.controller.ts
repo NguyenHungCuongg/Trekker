@@ -9,7 +9,7 @@ import {
 import { InvoiceService } from "./invoice.service";
 import { Invoice } from "./invoice.entity";
 import { JwtAuthGuard } from "../auth/jwt.authguard";
-@Controller("invoice")
+@Controller("invoices")
 @UseGuards(JwtAuthGuard)
 export class InvoiceController {
   constructor(private invoiceService: InvoiceService) {}

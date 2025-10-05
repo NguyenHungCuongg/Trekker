@@ -56,7 +56,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], InvoiceController.prototype, "findByBookingId", null);
 exports.InvoiceController = InvoiceController = __decorate([
-    (0, common_1.Controller)("invoice"),
+    (0, common_1.Controller)("invoices"),
     (0, common_1.UseGuards)(jwt_authguard_1.JwtAuthGuard),
     __metadata("design:paramtypes", [invoice_service_1.InvoiceService])
 ], InvoiceController);

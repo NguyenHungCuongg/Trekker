@@ -2,7 +2,7 @@ import { Controller, Get, Param, ParseIntPipe, Query } from "@nestjs/common";
 import { RoomTypeService } from "./room-type.service";
 import { RoomType } from "./room-type.entity";
 
-@Controller("room-type")
+@Controller("room-types")
 export class RoomTypeController {
   constructor(private roomTypeService: RoomTypeService) {}
 

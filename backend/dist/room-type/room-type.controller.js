@@ -46,7 +46,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], RoomTypeController.prototype, "findOne", null);
 exports.RoomTypeController = RoomTypeController = __decorate([
-    (0, common_1.Controller)("room-type"),
+    (0, common_1.Controller)("room-types"),
     __metadata("design:paramtypes", [room_type_service_1.RoomTypeService])
 ], RoomTypeController);
 //# sourceMappingURL=room-type.controller.js.map

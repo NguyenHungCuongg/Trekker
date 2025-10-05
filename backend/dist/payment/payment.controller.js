@@ -86,7 +86,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PaymentController.prototype, "findByBookingId", null);
 exports.PaymentController = PaymentController = __decorate([
-    (0, common_1.Controller)("payment"),
+    (0, common_1.Controller)("payments"),
     (0, common_1.UseGuards)(jwt_authguard_1.JwtAuthGuard),
     __metadata("design:paramtypes", [payment_service_1.PaymentService])
 ], PaymentController);
