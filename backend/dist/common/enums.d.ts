@@ -1,5 +1,4 @@
 export declare enum BookingStatus {
-    PENDING = "pending",
     CONFIRMED = "confirmed",
     CANCELLED = "cancelled"
 }
@@ -8,10 +7,8 @@ export declare enum ServiceType {
     ACCOMMODATION = "accommodation"
 }
 export declare enum PaymentMethod {
-    CREDIT_CARD = "credit_card",
-    PAYPAL = "paypal",
-    BANK_TRANSFER = "bank_transfer",
-    CASH = "cash"
+    VNPAY = "vnpay",
+    MOMO = "momo"
 }
 export declare enum PaymentStatus {
     PENDING = "pending",

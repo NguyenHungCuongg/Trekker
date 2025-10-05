@@ -18,17 +18,17 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const location_entity_1 = require("./location.entity");
 let LocationService = class LocationService {
-    LocationRepository;
-    constructor(LocationRepository) {
-        this.LocationRepository = LocationRepository;
+    locationRepository;
+    constructor(locationRepository) {
+        this.locationRepository = locationRepository;
     }
     async findAll() {
-        return this.LocationRepository.find({
+        return this.locationRepository.find({
             relations: ["tours", "accommodations"],
         });
     }
     async findOne(id) {
-        const location = await this.LocationRepository.findOne({
+        const location = await this.locationRepository.findOne({
             where: { id },
             relations: ["tours", "accommodations", "destinations"],
         });
@@ -38,7 +38,7 @@ let LocationService = class LocationService {
         return location;
     }
     async count() {
-        return this.LocationRepository.count();
+        return this.locationRepository.count();
     }
 };
 exports.LocationService = LocationService;

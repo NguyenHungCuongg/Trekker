@@ -37,6 +37,28 @@ let AccommodationService = class AccommodationService {
         }
         return accommodation;
     }
+    async search(searchDto) {
+        const query = this.accommodationRepository
+            .createQueryBuilder("accommodation")
+            .leftJoinAndSelect("accommodation.location", "location")
+            .leftJoinAndSelect("accommodation.roomTypes", "roomTypes");
+        if (searchDto.locationId) {
+            query.andWhere("accommodation.locationId = :locationId", {
+                locationId: searchDto.locationId,
+            });
+        }
+        if (searchDto.minRating) {
+            query.andWhere("accommodation.rating >= :minRating", {
+                minRating: searchDto.minRating,
+            });
+        }
+        if (searchDto.name) {
+            query.andWhere("accommodation.name ILIKE :name", {
+                name: `%${searchDto.name}%`,
+            });
+        }
+        return query.getMany();
+    }
     async findByLocationId(locationId) {
         return this.accommodationRepository.find({
             where: { locationId },

@@ -71,7 +71,7 @@ __decorate([
     (0, typeorm_1.Column)({
         type: "enum",
         enum: enums_1.BookingStatus,
-        default: enums_1.BookingStatus.PENDING,
+        default: enums_1.BookingStatus.CONFIRMED,
     }),
     __metadata("design:type", String)
 ], Booking.prototype, "status", void 0);

@@ -2,6 +2,7 @@ import { Controller, Get, Param, ParseIntPipe, Query } from "@nestjs/common";
 import { AccommodationService } from "./accommodation.service";
 import { Accommodation } from "./accommodation.entity";
 import { SearchAccommodationDto } from "./dto/search-accommodation.dto";
+
 @Controller("accommodations")
 export class AccommodationController {
   constructor(private accommodationService: AccommodationService) {}

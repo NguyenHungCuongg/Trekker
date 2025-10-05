@@ -24,13 +24,13 @@ let DestinationService = class DestinationService {
     }
     async findAll() {
         return this.destinationRepository.find({
-            relations: ["locations", "tours"],
+            relations: ["location", "tours"],
         });
     }
     async findOne(id) {
         const destination = await this.destinationRepository.findOne({
             where: { id },
-            relations: ["locations", "tours"],
+            relations: ["location", "tours"],
         });
         if (!destination) {
             throw new common_1.NotFoundException(`Không tìm thấy destination với id ${id}`);
@@ -40,7 +40,7 @@ let DestinationService = class DestinationService {
     async findByLocationId(locationId) {
         return this.destinationRepository.find({
             where: { locationId },
-            relations: ["locations"],
+            relations: ["location"],
         });
     }
     async count() {

@@ -37,6 +37,48 @@ let TourService = class TourService {
         }
         return tour;
     }
+    async search(searchDto) {
+        const query = this.tourRepository
+            .createQueryBuilder("tour")
+            .leftJoinAndSelect("tour.location", "location")
+            .leftJoinAndSelect("tour.destinations", "destinations");
+        if (searchDto.locationId) {
+            query.andWhere("tour.locationId = :locationId", {
+                locationId: searchDto.locationId,
+            });
+        }
+        if (searchDto.minPrice) {
+            query.andWhere("tour.price >= :minPrice", {
+                minPrice: searchDto.minPrice,
+            });
+        }
+        if (searchDto.maxPrice) {
+            query.andWhere("tour.price <= :maxPrice", {
+                maxPrice: searchDto.maxPrice,
+            });
+        }
+        if (searchDto.startDate) {
+            query.andWhere("tour.startDate >= :startDate", {
+                startDate: searchDto.startDate,
+            });
+        }
+        if (searchDto.endDate) {
+            query.andWhere("tour.endDate <= :endDate", {
+                endDate: searchDto.endDate,
+            });
+        }
+        if (searchDto.minRating) {
+            query.andWhere("tour.rating >= :minRating", {
+                minRating: searchDto.minRating,
+            });
+        }
+        if (searchDto.maxGuests) {
+            query.andWhere("tour.maxGuests <= :maxGuests", {
+                maxGuests: searchDto.maxGuests,
+            });
+        }
+        return query.getMany();
+    }
     async findByLocationId(locationId) {
         return this.tourRepository.find({
             where: { locationId },
