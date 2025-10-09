@@ -1,15 +1,14 @@
-import React from "react";
 import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const StartScreen = () => {
+function Login() {
   return (
     <SafeAreaView>
       <View>
-        <Text>Start Screen</Text>
+        <Text>Login Screen</Text>
       </View>
     </SafeAreaView>
   );
-};
+}
 
-export default StartScreen;
+export default Login;
