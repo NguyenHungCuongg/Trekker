@@ -14,6 +14,12 @@ CREATE TABLE locations (
     location_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT
+);   
+
+CREATE TABLE destinations (
+    destination_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    location_id INT REFERENCES locations(location_id) ON DELETE CASCADE
 );
 
 -- tours table
@@ -33,6 +39,12 @@ CREATE TABLE tours (
     max_guests INT
 );
 
+CREATE TABLE tour_destination (
+    tour_id INT REFERENCES tours(tour_id) ON DELETE CASCADE,
+    destination_id INT REFERENCES destinations(destination_id) ON DELETE CASCADE,
+    constraint pk_ord_des PRIMARY KEY (tour_id, destination_id)
+)
+
 -- accommodations table
 CREATE TABLE accommodations (
     accommodation_id SERIAL PRIMARY KEY,
@@ -48,19 +60,28 @@ CREATE TABLE accommodations (
     address TEXT
 );
 
+-- accommodationImages table
+CREATE TABLE accommodation_images (
+    image_id SERIAL PRIMARY KEY,
+    accommodation_id INT REFERENCES accommodations(accommodation_id) ON DELETE CASCADE,
+    image_url TEXT NOT NULL,
+    uploaded_at TIMESTAMP DEFAULT NOW()
+);
+
 -- roomTypes table
 CREATE TABLE room_types (
     room_type_id SERIAL PRIMARY KEY,
     accommodation_id INT REFERENCES accommodations(accommodation_id) ON DELETE CASCADE,
     name VARCHAR(100) NOT NULL,
     capacity INT,
+    quantity INT,
     price DOUBLE PRECISION,
     amenities TEXT,
     description TEXT
 );
 
 -- bookings table
-CREATE TYPE booking_status AS ENUM ('pending', 'confirmed', 'cancelled');
+CREATE TYPE booking_status AS ENUM ('confirmed', 'cancelled');
 
 CREATE TYPE service_type AS ENUM ('tour', 'accommodation');
 
@@ -78,7 +99,7 @@ CREATE TABLE bookings (
 );
 
 -- payments table
-CREATE TYPE payment_method AS ENUM ('credit_card', 'paypal', 'bank_transfer', 'cash');
+CREATE TYPE payment_method AS ENUM ('momo', 'vnpay');
 
 CREATE TYPE payment_status AS ENUM ('pending', 'paid', 'failed');
 

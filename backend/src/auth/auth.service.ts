@@ -1,6 +1,10 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+<<<<<<< HEAD
 import { CreateUserDto } from "src/auth/dto/create-user.dto";
+=======
+import { CreateUserDto } from "src/auth/dto/register.dto";
+>>>>>>> d58e6d4de69cfe6589b99aadce3d7e75da663c0a
 import { User } from "src/user/user.entity";
 import { Repository } from "typeorm";
 import bcrypt from "bcryptjs";
@@ -25,7 +29,7 @@ export class AuthService {
   }
 
   async login(loginDTO: LoginDto): Promise<{ access_token: string }> {
-    const user = await this.userService.findOne(loginDTO);
+    const user = await this.userService.findUserByLoginDTO(loginDTO);
     const isMatch = await bcrypt.compare(loginDTO.password, user.password);
     if (isMatch) {
       const payload = { username: user.username, sub: user.id };
