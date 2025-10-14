@@ -1,12 +1,12 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto } from 'src/auth/dto/create-user.dto';
-import { User } from 'src/user/user.entity';
-import { Repository } from 'typeorm';
-import bcrypt from 'bcryptjs';
-import { LoginDto } from './dto/login.dto';
-import { UserService } from 'src/user/user.service';
-import { JwtService } from '@nestjs/jwt/dist/jwt.service';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { CreateUserDto } from "src/auth/dto/create-user.dto";
+import { User } from "src/user/user.entity";
+import { Repository } from "typeorm";
+import bcrypt from "bcryptjs";
+import { LoginDto } from "./dto/login.dto";
+import { UserService } from "src/user/user.service";
+import { JwtService } from "@nestjs/jwt/dist/jwt.service";
 
 @Injectable()
 export class AuthService {
@@ -33,7 +33,7 @@ export class AuthService {
         access_token: this.jwtService.sign(payload),
       };
     } else {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException("Invalid credentials");
     }
   }
 }
