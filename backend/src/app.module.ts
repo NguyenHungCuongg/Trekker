@@ -22,12 +22,15 @@ import { Booking } from "./booking/booking.entity";
 import { Payment } from "./payment/payment.entity";
 import { Invoice } from "./invoice/invoice.entity";
 import { Review } from "./review/review.entity";
+import config from "config/configuration";
+import configuration from "config/configuration";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ".env",
+      load: [configuration],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
