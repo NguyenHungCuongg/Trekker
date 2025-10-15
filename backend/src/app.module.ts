@@ -22,38 +22,17 @@ import { Booking } from "./booking/booking.entity";
 import { Payment } from "./payment/payment.entity";
 import { Invoice } from "./invoice/invoice.entity";
 import { Review } from "./review/review.entity";
+import configuration from "./config/configuration";
+import { typeOrmAsyncConfig } from "./config/db.config";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ".env",
+      load: [configuration],
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: "postgres",
-        host: configService.get("DB_HOST") || "localhost",
-        port: parseInt(configService.get("DB_PORT") || "5432"),
-        username: configService.get("DB_USERNAME") || "postgres",
-        password: configService.get("DB_PASSWORD") || "",
-        database: configService.get("DB_DATABASE") || "Trekker",
-        entities: [
-          User,
-          Location,
-          Destination,
-          Tour,
-          Accommodation,
-          RoomType,
-          Booking,
-          Payment,
-          Invoice,
-          Review,
-        ],
-        synchronize: configService.get("NODE_ENV") === "development",
-      }),
-      inject: [ConfigService],
-    }),
+    TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     UserModule,
     AuthModule,
     AccommodationModule,
