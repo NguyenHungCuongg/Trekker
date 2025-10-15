@@ -1,16 +1,13 @@
+// ...existing code...
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-<<<<<<< HEAD
-import { CreateUserDto } from "src/auth/dto/create-user.dto";
-=======
 import { CreateUserDto } from "src/auth/dto/register.dto";
->>>>>>> d58e6d4de69cfe6589b99aadce3d7e75da663c0a
 import { User } from "src/user/user.entity";
 import { Repository } from "typeorm";
 import bcrypt from "bcryptjs";
 import { LoginDto } from "./dto/login.dto";
 import { UserService } from "src/user/user.service";
-import { JwtService } from "@nestjs/jwt/dist/jwt.service";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
@@ -24,7 +21,7 @@ export class AuthService {
     const salt = await bcrypt.genSalt();
     userDTO.password = await bcrypt.hash(userDTO.password, salt);
     const user = await this.userRepository.save(userDTO);
-    //delete user.password;
+    // delete user.password;
     return user;
   }
 
@@ -41,3 +38,4 @@ export class AuthService {
     }
   }
 }
+// ...existing code...
