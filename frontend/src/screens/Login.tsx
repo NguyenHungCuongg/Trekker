@@ -1,4 +1,8 @@
 import React, { useState, ReactNode } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
 import {
   View,
   Text,
@@ -9,16 +13,30 @@ import {
 } from "react-native";
 import Svg, { Path, Circle } from "react-native-svg";
 
-const BackButton = () => (
-  <TouchableOpacity style={styles.backButton}>
-    <Svg width={24} height={24} viewBox="0 0 24 24">
-      <Path
-        d="M14.469 6.414C14.792 6.673 14.844 7.145 14.586 7.468L10.96 12L14.586 16.531C14.844 16.855 14.792 17.327 14.469 17.586C14.145 17.844 13.673 17.792 13.414 17.469L9.414 12.469C9.195 12.195 9.195 11.805 9.414 11.531L13.414 6.531C13.673 6.208 14.145 6.156 14.469 6.414Z"
-        fill="#1b1e28"
-      />
-    </Svg>
-  </TouchableOpacity>
-);
+// Định nghĩa type cho navigation stack (tùy bạn có màn hình nào)
+type RootStackParamList = {
+  Start: undefined;
+  Login: undefined;
+  Register: undefined;
+};
+
+const BackButton = () => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  return (
+    <TouchableOpacity
+      style={styles.backButton}
+      onPress={() => navigation.navigate("Start")}
+    >
+      <Svg width={24} height={24} viewBox="0 0 24 24">
+        <Path
+          d="M14.469 6.414C14.792 6.673 14.844 7.145 14.586 7.468L10.96 12L14.586 16.531C14.844 16.855 14.792 17.327 14.469 17.586C14.145 17.844 13.673 17.792 13.414 17.469L9.414 12.469C9.195 12.195 9.195 11.805 9.414 11.531L13.414 6.531C13.673 6.208 14.145 6.156 14.469 6.414Z"
+          fill="#1b1e28"
+        />
+      </Svg>
+    </TouchableOpacity>
+  );
+};
 
 const AuthField = ({
   label,
@@ -37,28 +55,22 @@ const PasswordField = () => {
   const [secure, setSecure] = useState(true);
   return (
     <AuthField label="Mật khẩu">
-      <View style={styles.authControl}>
-        <TextInput
-          style={styles.authInput}
-          placeholder="••••••••"
-          secureTextEntry={secure}
-          placeholderTextColor="#7d848d"
+      <TextInput
+        style={styles.authInput}
+        placeholder="••••••••"
+        secureTextEntry={secure}
+        placeholderTextColor="#7d848d"
+      />
+      <TouchableOpacity
+        onPress={() => setSecure(!secure)}
+        style={styles.passwordToggle}
+      >
+        <Ionicons
+          name={secure ? "eye-off-outline" : "eye-outline"}
+          size={22}
+          color="#7d848d"
         />
-        <TouchableOpacity
-          onPress={() => setSecure(!secure)}
-          style={styles.passwordToggle}
-        >
-          <Svg width={24} height={24} viewBox="0 0 24 24">
-            <Path
-              d="M4 4L20 20M14 14.236C13.469 14.711 12.768 15 12 15C10.343 15 9 13.657 9 12..."
-              stroke="#7d848d"
-              strokeWidth={1.5}
-              strokeLinecap="round"
-              fill="none"
-            />
-          </Svg>
-        </TouchableOpacity>
-      </View>
+      </TouchableOpacity>
     </AuthField>
   );
 };
@@ -67,7 +79,10 @@ const SocialButton = ({ icon }: { icon: ReactNode }) => (
   <TouchableOpacity style={styles.socialButton}>{icon}</TouchableOpacity>
 );
 
-export default function LoginScreen() {
+export default function Login() {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   return (
     <ScrollView contentContainerStyle={styles.loginPage}>
       <View style={styles.loginFrame}>
@@ -106,7 +121,7 @@ export default function LoginScreen() {
           <View style={styles.auxiliary}>
             <View style={styles.signupText}>
               <Text style={{ color: "#7d848d" }}>Bạn chưa có tài khoản?</Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate("Register")}>
                 <Text style={styles.link}> Đăng ký</Text>
               </TouchableOpacity>
             </View>
@@ -116,19 +131,17 @@ export default function LoginScreen() {
             <View style={styles.socialRow}>
               <SocialButton
                 icon={
-                  <Svg width={28} height={28} viewBox="0 0 24 24">
-                    <Path
-                      d="M22 12C22 6.477 17.523 2 12 2S2 6.477 2 12..."
-                      fill="#1877F2"
-                    />
-                  </Svg>
+                  <Ionicons name="logo-facebook" size={28} color="#1877F2" />
                 }
               />
               <SocialButton
                 icon={
-                  <Svg width={28} height={28} viewBox="0 0 24 24">
-                    <Path d="M22.002 18.232V25.963H33.938..." fill="#EA4335" />
-                  </Svg>
+                  <Ionicons name="logo-instagram" size={28} color="#EA4335" />
+                }
+              />
+              <SocialButton
+                icon={
+                  <Ionicons name="logo-twitter" size={28} color="#03A9F4" />
                 }
               />
             </View>
