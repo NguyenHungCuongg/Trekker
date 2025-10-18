@@ -108,7 +108,9 @@ export default function Login() {
             <PasswordField />
           </View>
 
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ForgotPassword")}
+          >
             <Text style={styles.forgotLink}>Quên mật khẩu?</Text>
           </TouchableOpacity>
 
