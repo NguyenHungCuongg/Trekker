@@ -72,7 +72,7 @@ export default function Register() {
                 <Text style={styles.signinText}>Bạn đã có tài khoản?</Text>
                 <TouchableOpacity onPress={() => navigation.navigate("Login")}>
                   <Text style={styles.signinLink}> Đăng nhập</Text>
-                </TouchableOpacity>{" "}
+                </TouchableOpacity>
               </View>
 
               <Text style={styles.divider}>Hoặc xác thực bằng</Text>
