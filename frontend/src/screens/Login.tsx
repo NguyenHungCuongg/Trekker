@@ -5,13 +5,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import Svg, { Path, Circle } from "react-native-svg";
-
-// Định nghĩa type cho navigation stack (tùy bạn có màn hình nào)
-type RootStackParamList = {
-  Start: undefined;
-  Login: undefined;
-  Register: undefined;
-};
+import type { RootStackParamList } from "../../App";
 
 const BackButton = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();

@@ -3,8 +3,21 @@ import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, SafeAreaVi
 import DestinationCard from "../../components/Home/DestinationCard";
 import BottomNav from "../../components/Home/BottomNav";
 
+interface Destination {
+  image: string;
+  title: string;
+  rating: string;
+  location: string;
+  userCount: string;
+}
+
+interface SectionProps {
+  title: string;
+  data: Destination[];
+}
+
 export default function Home() {
-  const destinations1 = [
+  const destinations1: Destination[] = [
     {
       image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
       title: "Niladri Reservoir",
@@ -28,7 +41,7 @@ export default function Home() {
     },
   ];
 
-  const destinations2 = [
+  const destinations2: Destination[] = [
     {
       image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
       title: "Niladri Reservoir",
@@ -45,7 +58,7 @@ export default function Home() {
     },
   ];
 
-  const destinations3 = [
+  const destinations3: Destination[] = [
     {
       image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
       title: "Mountain View",
@@ -62,7 +75,7 @@ export default function Home() {
     },
   ];
 
-  const destinations4 = [
+  const destinations4: Destination[] = [
     {
       image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
       title: "Niladri Reservoir",
@@ -79,7 +92,7 @@ export default function Home() {
     },
   ];
 
-  const Section = ({ title, data }) => (
+  const Section: React.FC<SectionProps> = ({ title, data }) => (
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>{title}</Text>

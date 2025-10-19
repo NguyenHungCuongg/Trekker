@@ -3,12 +3,7 @@ import { View, Text, TouchableOpacity, TextInput, StyleSheet } from "react-nativ
 import Svg, { Path } from "react-native-svg";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
-type RootStackParamList = {
-  Start: undefined;
-  Login: undefined;
-  Register: undefined;
-};
+import type { RootStackParamList } from "../../App";
 
 const BackButton = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();

@@ -3,14 +3,7 @@ import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 const RegisterField = ({
@@ -36,15 +29,8 @@ const RegisterField = ({
         keyboardType={type === "tel" ? "phone-pad" : "default"}
       />
       {showPasswordToggle && (
-        <TouchableOpacity
-          onPress={() => setShowPassword(!showPassword)}
-          style={styles.eyeButton}
-        >
-          <Ionicons
-            name={showPassword ? "eye-off-outline" : "eye-outline"}
-            size={22}
-            color="#7d848d"
-          />
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
+          <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={22} color="#7d848d" />
         </TouchableOpacity>
       )}
     </View>
@@ -60,10 +46,7 @@ export default function Register() {
         {/* Nội dung cuộn */}
         <ScrollView contentContainerStyle={styles.body}>
           {/* Nút back */}
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.navigate("Start")}
-          >
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("Start")}>
             <Ionicons name="chevron-back" size={24} color="#1b1e28" />
           </TouchableOpacity>
 

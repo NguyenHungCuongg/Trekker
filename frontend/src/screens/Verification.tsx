@@ -13,11 +13,7 @@ import Svg, { Path, Circle } from "react-native-svg";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-type RootStackParamList = {
-  Start: undefined;
-  Login: undefined;
-  Register: undefined;
-};
+import type { RootStackParamList } from "../../App";
 
 const BackButton = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -36,7 +32,7 @@ const BackButton = () => {
 export default function Verification({ navigation }: any) {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState(86);
-  const inputRefs = useRef<TextInput[]>([]);
+  const inputRefs = useRef<(TextInput | null)[]>([]);
 
   useEffect(() => {
     if (timer > 0) {
@@ -93,7 +89,9 @@ export default function Verification({ navigation }: any) {
                   {otp.map((digit, index) => (
                     <TextInput
                       key={index}
-                      ref={(el) => (inputRefs.current[index] = el!)}
+                      ref={(el) => {
+                        inputRefs.current[index] = el;
+                      }}
                       style={styles.otpInput}
                       keyboardType="number-pad"
                       maxLength={1}
