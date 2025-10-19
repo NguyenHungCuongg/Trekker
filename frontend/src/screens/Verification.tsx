@@ -20,13 +20,9 @@ type RootStackParamList = {
 };
 
 const BackButton = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
-    <TouchableOpacity
-      style={styles.backButton}
-      onPress={() => navigation.navigate("ForgotPassword")}
-    >
+    <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("ForgotPassword")}>
       <Svg width={24} height={24} viewBox="0 0 24 24">
         <Path
           d="M14.469 6.414C14.792 6.673 14.844 7.145 14.586 7.468L10.96 12L14.586 16.531C14.844 16.855 14.792 17.327 14.469 17.586C14.145 17.844 13.673 17.792 13.414 17.469L9.414 12.469C9.195 12.195 9.195 11.805 9.414 11.531L13.414 6.531C13.673 6.208 14.145 6.156 14.469 6.414Z"
@@ -52,9 +48,7 @@ export default function Verification({ navigation }: any) {
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs
-      .toString()
-      .padStart(2, "0")}`;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   const handleChange = (index: number, value: string) => {
@@ -87,18 +81,11 @@ export default function Verification({ navigation }: any) {
   return (
     <View style={styles.container}>
       <View style={styles.frame}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-          style={styles.body}
-        >
-          <ScrollView
-            contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
-          >
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.body}>
+          <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}>
             <View style={styles.content}>
               <Text style={styles.title}>Xác thực OTP</Text>
-              <Text style={styles.subtitle}>
-                Nhập mã xác thực đã được gửi{"\n"}tới email của bạn
-              </Text>
+              <Text style={styles.subtitle}>Nhập mã xác thực đã được gửi{"\n"}tới email của bạn</Text>
 
               <View style={styles.otpSection}>
                 <Text style={styles.otpLabel}>Nhập mã OTP</Text>
@@ -112,28 +99,19 @@ export default function Verification({ navigation }: any) {
                       maxLength={1}
                       value={digit}
                       onChangeText={(val) => handleChange(index, val)}
-                      onKeyPress={({ nativeEvent }) =>
-                        handleKeyPress(index, nativeEvent.key)
-                      }
+                      onKeyPress={({ nativeEvent }) => handleKeyPress(index, nativeEvent.key)}
                     />
                   ))}
                 </View>
               </View>
 
-              <TouchableOpacity
-                style={styles.submitButton}
-                onPress={handleSubmit}
-              >
+              <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
                 <Text style={styles.submitText}>Verify</Text>
               </TouchableOpacity>
 
               <View style={styles.footer}>
                 <TouchableOpacity onPress={handleResend} disabled={timer > 0}>
-                  <Text
-                    style={[styles.resendLink, timer > 0 && { opacity: 0.5 }]}
-                  >
-                    Gửi lại mã
-                  </Text>
+                  <Text style={[styles.resendLink, timer > 0 && { opacity: 0.5 }]}>Gửi lại mã</Text>
                 </TouchableOpacity>
                 <Text style={styles.timer}>{formatTime(timer)}</Text>
               </View>
