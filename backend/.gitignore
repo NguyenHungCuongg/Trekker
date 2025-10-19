@@ -1,3 +1,22 @@
+# Ignore node_modules ở mọi cấp
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Environment
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+
 # Environment files
 .env
 .env.local
