@@ -1,0 +1,21 @@
+# Global ignores
+node_modules/
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Build outputs
+**/dist/
+**/build/
+**/*.tsbuildinfo

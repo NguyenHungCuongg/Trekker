@@ -1,14 +1,219 @@
-import { View, Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useState } from "react";
 
-function Register() {
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+
+const RegisterField = ({
+  label,
+  type = "default",
+  placeholder,
+  showPasswordToggle,
+}: {
+  label: string;
+  type?: string;
+  placeholder?: string;
+  showPasswordToggle?: boolean;
+}) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
-    <SafeAreaView>
-      <View>
-        <Text>Register Screen</Text>
+    <View style={styles.fieldContainer}>
+      <TextInput
+        style={styles.input}
+        placeholder={placeholder || label}
+        placeholderTextColor="#7d848d"
+        secureTextEntry={showPasswordToggle && !showPassword}
+        keyboardType={type === "tel" ? "phone-pad" : "default"}
+      />
+      {showPasswordToggle && (
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
+          <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={22} color="#7d848d" />
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+};
+
+export default function Register() {
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+
+  return (
+    <View style={styles.page}>
+      <View style={styles.frame}>
+        {/* Nội dung cuộn */}
+        <ScrollView contentContainerStyle={styles.body}>
+          {/* Nút back */}
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("Start")}>
+            <Ionicons name="chevron-back" size={24} color="#1b1e28" />
+          </TouchableOpacity>
+
+          <View style={styles.content}>
+            <Text style={styles.title}>Đăng ký</Text>
+            <Text style={styles.subtitle}>Vui lòng điền các thông tin sau</Text>
+
+            <View style={styles.fields}>
+              <RegisterField label="Họ và tên" />
+              <RegisterField label="Tên đăng nhập" />
+              <RegisterField label="Số điện thoại" type="tel" />
+              <RegisterField label="Email" type="email" />
+              <RegisterField label="Mật khẩu" showPasswordToggle />
+              <RegisterField label="Xác nhận mật khẩu" showPasswordToggle />
+            </View>
+
+            <TouchableOpacity style={styles.primaryButton}>
+              <Text style={styles.primaryButtonText}>Đăng ký</Text>
+            </TouchableOpacity>
+
+            <View style={styles.auxiliary}>
+              <View style={styles.signinRow}>
+                <Text style={styles.signinText}>Bạn đã có tài khoản?</Text>
+                <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                  <Text style={styles.signinLink}> Đăng nhập</Text>
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.divider}>Hoặc xác thực bằng</Text>
+
+              <View style={styles.socialRow}>
+                <Ionicons name="logo-facebook" size={40} color="#1877F2" />
+                <Ionicons name="logo-instagram" size={40} color="#C13584" />
+                <Ionicons name="logo-twitter" size={40} color="#03A9F4" />
+              </View>
+            </View>
+          </View>
+        </ScrollView>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
-export default Register;
+const styles = StyleSheet.create({
+  page: {
+    flex: 1,
+    backgroundColor: "#eff4f9",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 16,
+  },
+  frame: {
+    width: 375,
+    backgroundColor: "#fff",
+    borderRadius: 30,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+  },
+  statusBar: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    height: 48,
+    alignItems: "center",
+  },
+  statusText: {
+    fontWeight: "600",
+    fontSize: 15,
+    color: "#1b1e28",
+  },
+  statusIcons: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  body: {
+    padding: 24,
+  },
+  backButton: {
+    backgroundColor: "#f7f7f9",
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+  },
+  content: {
+    marginTop: 24,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "700",
+    color: "#1b1e28",
+    textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#7d848d",
+    textAlign: "center",
+    marginVertical: 8,
+  },
+  fields: {
+    marginTop: 20,
+    gap: 16,
+  },
+  fieldContainer: {
+    backgroundColor: "#f7f7f9",
+    borderRadius: 14,
+    height: 56,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    color: "#1b1e28",
+  },
+  eyeButton: {
+    marginLeft: 10,
+  },
+  primaryButton: {
+    backgroundColor: "#0f93c3",
+    borderRadius: 16,
+    height: 56,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 24,
+  },
+  primaryButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  auxiliary: {
+    alignItems: "center",
+    marginTop: 20,
+  },
+  signinRow: {
+    flexDirection: "row",
+  },
+  signinText: {
+    color: "#707b81",
+  },
+  signinLink: {
+    color: "#0f93c3",
+  },
+  divider: {
+    color: "#707b81",
+    marginVertical: 16,
+  },
+  socialRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 22,
+  },
+  homeIndicator: {
+    alignSelf: "center",
+    width: 134,
+    height: 5,
+    backgroundColor: "#1b1e28",
+    borderRadius: 100,
+    marginVertical: 16,
+  },
+});
