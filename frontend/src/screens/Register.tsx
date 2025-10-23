@@ -2,21 +2,26 @@ import React, { useState } from "react";
 
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
+import { useToast } from "../../components/context/ToastContext";
+import axiosInstance from "../../utils/axiosInstance";
+
 
 const RegisterField = ({
   label,
   type = "default",
   placeholder,
   showPasswordToggle,
+  value,
+  setValue
 }: {
   label: string;
   type?: string;
   placeholder?: string;
   showPasswordToggle?: boolean;
+  value?: string;
+  setValue?: (value: string) => void;
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -28,6 +33,8 @@ const RegisterField = ({
         placeholderTextColor="#7d848d"
         secureTextEntry={showPasswordToggle && !showPassword}
         keyboardType={type === "tel" ? "phone-pad" : "default"}
+        value={value}
+        onChangeText={setValue}
       />
       {showPasswordToggle && (
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
@@ -40,6 +47,40 @@ const RegisterField = ({
 
 export default function Register() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const { showToast } = useToast();
+
+  const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleRegister = async () => {
+    if(password !== confirmPassword) {
+      showToast("error", "Mật khẩu xác nhận không khớp!");
+      return;
+    }
+    if(!fullName || !username || !phone || !email || !password || !confirmPassword) {
+      showToast("error", "Vui lòng điền đầy đủ thông tin đăng ký!");
+      return;
+    }
+    try {
+      const response = await axiosInstance.post("/auth/register", {
+        username,
+        password,
+        fullName,
+        phone,
+        email
+      });
+      if(response.data) {
+        showToast("success", "Đăng ký thành công! Vui lòng đăng nhập.");
+        navigation.navigate("Login");
+      }
+    } catch (error) {
+      showToast("error", "Đăng ký không thành công!");
+    }
+  }
 
   return (
     <View style={styles.page}>
@@ -56,15 +97,15 @@ export default function Register() {
             <Text style={styles.subtitle}>Vui lòng điền các thông tin sau</Text>
 
             <View style={styles.fields}>
-              <RegisterField label="Họ và tên" />
-              <RegisterField label="Tên đăng nhập" />
-              <RegisterField label="Số điện thoại" type="tel" />
-              <RegisterField label="Email" type="email" />
-              <RegisterField label="Mật khẩu" showPasswordToggle />
-              <RegisterField label="Xác nhận mật khẩu" showPasswordToggle />
+              <RegisterField label="Họ và tên" value={fullName} setValue={setFullName} />
+              <RegisterField label="Tên đăng nhập" value={username} setValue={setUsername} />
+              <RegisterField label="Số điện thoại" type="tel" value={phone} setValue={setPhone} />
+              <RegisterField label="Email" type="email" value={email} setValue={setEmail} />
+              <RegisterField label="Mật khẩu" showPasswordToggle value={password} setValue={setPassword} />
+              <RegisterField label="Xác nhận mật khẩu" showPasswordToggle value={confirmPassword} setValue={setConfirmPassword} />
             </View>
 
-            <TouchableOpacity style={styles.primaryButton}>
+            <TouchableOpacity style={styles.primaryButton} onPress={handleRegister}>
               <Text style={styles.primaryButtonText}>Đăng ký</Text>
             </TouchableOpacity>
 

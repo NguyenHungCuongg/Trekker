@@ -4,7 +4,7 @@ import { API_BASE_URL, API_TIMEOUT } from '@env';
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  timeout: API_TIMEOUT,
+  timeout: Number(API_TIMEOUT) || 10000,
   headers: {
     'Content-Type': 'application/json',
   },
