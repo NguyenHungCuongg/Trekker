@@ -69,6 +69,18 @@ export class UserService {
         user.phone = updateUserDto.phone;
       }
     }
+
+    if (updateUserDto.email !== undefined) {
+      if (updateUserDto.email) {
+        const existingUser = await this.userRepository.findOne({
+          where: { email: updateUserDto.email },
+        });
+        if (existingUser && existingUser.id !== id) {
+          throw new BadRequestException("Email đã được sử dụng");
+        }
+        user.email = updateUserDto.email;
+      }
+    }
     return this.userRepository.save(user);
   }
 

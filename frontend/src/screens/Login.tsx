@@ -15,6 +15,7 @@ import Svg, { Path, Circle } from "react-native-svg";
 import type { RootStackParamList } from "../../App";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast, { ToastType } from "../../components/Home/Toast";
+import { useToast } from "../../components/context/ToastContext";
 
 const BackButton = () => {
   const navigation =
@@ -61,7 +62,7 @@ const PasswordField = ({
         style={styles.authInput}
         placeholder="••••••••"
         secureTextEntry={secure}
-        placeholderTextColor="#7d848d"
+        placeholderTextColor="#c1c1c1ff"
         value={password}
         onChangeText={setPassword}
       />
@@ -88,15 +89,8 @@ export default function Login() {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [toast, setToast] = useState({
-    visible: false,
-    type: "success" as ToastType,
-    message: "",
-  });
 
-  const showToast = (type: ToastType, message: string) => {
-    setToast({ visible: true, type, message });
-  };
+  const { showToast } = useToast();
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -110,6 +104,7 @@ export default function Login() {
       });
       if (response.data) {
         await AsyncStorage.setItem("token", response.data.access_token);
+        showToast("success", "Đăng nhập thành công!");
         navigation.navigate("Home");
       } else {
         showToast(
@@ -120,19 +115,15 @@ export default function Login() {
     } catch (error) {
       showToast(
         "error",
-        "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin ẹc ẹc."
+        "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin ẹc ẹc." + error
       );
+      console.log(axiosInstance.defaults)
+      console.error("Login error:", error);
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.loginPage}>
-      <Toast
-        visible={toast.visible}
-        type={toast.type}
-        message={toast.message}
-        onHide={() => setToast({ ...toast, visible: false })}
-      />
       <View style={styles.loginFrame}>
         <BackButton />
 
@@ -149,7 +140,7 @@ export default function Login() {
               <TextInput
                 style={styles.authInput}
                 placeholder="Tên đăng nhập"
-                placeholderTextColor="#7d848d"
+                placeholderTextColor="#c1c1c1ff"
                 value={username}
                 onChangeText={setUsername}
               />

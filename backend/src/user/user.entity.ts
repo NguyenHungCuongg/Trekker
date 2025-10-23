@@ -21,6 +21,9 @@ export class User {
   @Column({ unique: true, nullable: true })
   phone: string;
 
+  @Column({ unique: true, nullable: true })
+  email: string;
+
   @Column({
     name: "created_at",
     type: "timestamp",
