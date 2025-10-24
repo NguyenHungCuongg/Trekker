@@ -1,49 +1,12 @@
 import React, { useState } from "react";
-
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useToast } from "../../components/context/ToastContext";
-import axiosInstance from "../../utils/axiosInstance";
-
-
-const RegisterField = ({
-  label,
-  type = "default",
-  placeholder,
-  showPasswordToggle,
-  value,
-  setValue
-}: {
-  label: string;
-  type?: string;
-  placeholder?: string;
-  showPasswordToggle?: boolean;
-  value?: string;
-  setValue?: (value: string) => void;
-}) => {
-  const [showPassword, setShowPassword] = useState(false);
-
-  return (
-    <View style={styles.fieldContainer}>
-      <TextInput
-        style={styles.input}
-        placeholder={placeholder || label}
-        placeholderTextColor="#7d848d"
-        secureTextEntry={showPasswordToggle && !showPassword}
-        keyboardType={type === "tel" ? "phone-pad" : "default"}
-        value={value}
-        onChangeText={setValue}
-      />
-      {showPasswordToggle && (
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
-          <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={22} color="#7d848d" />
-        </TouchableOpacity>
-      )}
-    </View>
-  );
-};
+import { useToast } from "../components/context/ToastContext";
+import axiosInstance from "../utils/axiosInstance";
+import AuthField from "../components/login&register/AuthField";
+import BackButton from "../components/login&register/BackButton";
 
 export default function Register() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -57,11 +20,11 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleRegister = async () => {
-    if(password !== confirmPassword) {
+    if (password !== confirmPassword) {
       showToast("error", "Mật khẩu xác nhận không khớp!");
       return;
     }
-    if(!fullName || !username || !phone || !email || !password || !confirmPassword) {
+    if (!fullName || !username || !phone || !email || !password || !confirmPassword) {
       showToast("error", "Vui lòng điền đầy đủ thông tin đăng ký!");
       return;
     }
@@ -71,38 +34,64 @@ export default function Register() {
         password,
         fullName,
         phone,
-        email
+        email,
       });
-      if(response.data) {
+      if (response.data) {
         showToast("success", "Đăng ký thành công! Vui lòng đăng nhập.");
         navigation.navigate("Login");
       }
     } catch (error) {
       showToast("error", "Đăng ký không thành công!");
     }
-  }
+  };
 
   return (
     <View style={styles.page}>
       <View style={styles.frame}>
         {/* Nội dung cuộn */}
         <ScrollView contentContainerStyle={styles.body}>
-          {/* Nút back */}
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("Start")}>
-            <Ionicons name="chevron-back" size={24} color="#1b1e28" />
-          </TouchableOpacity>
+          <BackButton navigateTo="Login" />
 
-          <View style={styles.content}>
+          <View style={styles.header}>
             <Text style={styles.title}>Đăng ký</Text>
             <Text style={styles.subtitle}>Vui lòng điền các thông tin sau</Text>
 
             <View style={styles.fields}>
-              <RegisterField label="Họ và tên" value={fullName} setValue={setFullName} />
-              <RegisterField label="Tên đăng nhập" value={username} setValue={setUsername} />
-              <RegisterField label="Số điện thoại" type="tel" value={phone} setValue={setPhone} />
-              <RegisterField label="Email" type="email" value={email} setValue={setEmail} />
-              <RegisterField label="Mật khẩu" showPasswordToggle value={password} setValue={setPassword} />
-              <RegisterField label="Xác nhận mật khẩu" showPasswordToggle value={confirmPassword} setValue={setConfirmPassword} />
+              <AuthField label="Họ và tên" placeholder="Nhập họ và tên" value={fullName} onChangeText={setFullName} />
+              <AuthField
+                label="Tên đăng nhập"
+                placeholder="Nhập tên đăng nhập"
+                value={username}
+                onChangeText={setUsername}
+              />
+              <AuthField
+                label="Số điện thoại"
+                placeholder="Nhập số điện thoại"
+                keyboardType="phone-pad"
+                value={phone}
+                onChangeText={setPhone}
+              />
+              <AuthField
+                label="Email"
+                placeholder="Nhập email"
+                keyboardType="email-address"
+                value={email}
+                onChangeText={setEmail}
+              />
+              <AuthField
+                label="Mật khẩu"
+                placeholder="Nhập mật khẩu"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+              />
+              <AuthField
+                label="Xác nhận mật khẩu"
+                placeholder="Nhập lại mật khẩu"
+                secureTextEntry
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
             </View>
 
             <TouchableOpacity style={styles.primaryButton} onPress={handleRegister}>
@@ -134,94 +123,63 @@ export default function Register() {
 
 const styles = StyleSheet.create({
   page: {
-    flex: 1,
-    backgroundColor: "#eff4f9",
+    minHeight: "100%",
+    flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
-    padding: 16,
+    paddingVertical: 32,
+    paddingHorizontal: 16,
+    backgroundColor: "#eff4f9",
   },
   frame: {
     width: 375,
+    maxWidth: "100%",
     backgroundColor: "#fff",
     borderRadius: 30,
-    overflow: "hidden",
-    shadowColor: "#000",
+    shadowColor: "#152242",
+    shadowOffset: { width: 0, height: 35 },
     shadowOpacity: 0.15,
-    shadowRadius: 20,
-  },
-  statusBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    height: 48,
-    alignItems: "center",
-  },
-  statusText: {
-    fontWeight: "600",
-    fontSize: 15,
-    color: "#1b1e28",
-  },
-  statusIcons: {
-    flexDirection: "row",
-    gap: 10,
+    shadowRadius: 60,
+    elevation: 15,
+    overflow: "hidden",
   },
   body: {
-    padding: 24,
+    paddingTop: 88,
+    paddingHorizontal: 20,
+    paddingBottom: 72,
+    gap: 28,
+    width: "100%",
   },
-  backButton: {
-    backgroundColor: "#f7f7f9",
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+  header: {
     alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-  },
-  content: {
-    marginTop: 24,
+    gap: 12,
+    marginBottom: 12,
+    width: "100%",
   },
   title: {
     fontSize: 26,
     fontWeight: "700",
-    color: "#1b1e28",
+    color: "#000",
     textAlign: "center",
   },
   subtitle: {
     fontSize: 16,
     color: "#7d848d",
     textAlign: "center",
-    marginVertical: 8,
   },
   fields: {
-    marginTop: 20,
-    gap: 16,
-  },
-  fieldContainer: {
-    backgroundColor: "#f7f7f9",
-    borderRadius: 14,
-    height: 56,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    color: "#1b1e28",
-  },
-  eyeButton: {
-    marginLeft: 10,
+    flexDirection: "column",
+    gap: 20,
+    width: "100%",
   },
   primaryButton: {
+    width: "100%",
     backgroundColor: "#0f93c3",
     borderRadius: 16,
     height: 56,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 24,
+    marginTop: 8,
   },
   primaryButtonText: {
     color: "#fff",
@@ -230,32 +188,29 @@ const styles = StyleSheet.create({
   },
   auxiliary: {
     alignItems: "center",
-    marginTop: 20,
+    gap: 24,
+    marginTop: "auto",
+    width: "100%",
   },
   signinRow: {
     flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   signinText: {
-    color: "#707b81",
+    color: "#7d848d",
   },
   signinLink: {
     color: "#0f93c3",
+    textDecorationLine: "none",
   },
   divider: {
     color: "#707b81",
-    marginVertical: 16,
+    fontSize: 14,
   },
   socialRow: {
     flexDirection: "row",
     justifyContent: "center",
-    gap: 22,
-  },
-  homeIndicator: {
-    alignSelf: "center",
-    width: 134,
-    height: 5,
-    backgroundColor: "#1b1e28",
-    borderRadius: 100,
-    marginVertical: 16,
+    gap: 18,
   },
 });

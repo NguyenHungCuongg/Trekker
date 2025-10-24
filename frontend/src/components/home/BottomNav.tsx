@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import Feather from "react-native-vector-icons/Feather";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import Svg, { Path } from "react-native-svg";
 
 export default function BottomNav() {
@@ -11,42 +10,20 @@ export default function BottomNav() {
   return (
     <View style={styles.container}>
       {/* Nền cong */}
-      <Svg
-        width="100%"
-        height="120"
-        viewBox="0 0 375 90"
-        preserveAspectRatio="none"
-        style={styles.svgBackground}
-      >
+      <Svg width="100%" height="120" viewBox="0 0 375 90" preserveAspectRatio="none" style={styles.svgBackground}>
         <Path d="M0,20 C80,0 295,0 375,20 L375,90 L0,90 Z" fill="white" />
       </Svg>
 
       {/* Các nút menu */}
       <View style={styles.navContainer}>
-        <NavItem
-          label="Trang chủ"
-          icon={<Feather name="home" size={24} color={activeColor} />}
-          active
-        />
-        <NavItem
-          label="Tour"
-          icon={<Feather name="map-pin" size={24} color={inactiveColor} />}
-        />
-        <View style={{ width: 70 }} /> {/* Chừa chỗ cho nút giữa */}
+        <NavItem label="Trang chủ" icon={<Feather name="home" size={24} color={activeColor} />} active />
+        <NavItem label="Tour" icon={<Feather name="map-pin" size={24} color={inactiveColor} />} />
+        <View style={{ width: 70 }} />
         <NavItem
           label="Chỗ ở"
-          icon={
-            <MaterialCommunityIcons
-              name="office-building-outline"
-              size={24}
-              color={inactiveColor}
-            />
-          }
+          icon={<MaterialCommunityIcons name="office-building-outline" size={24} color={inactiveColor} />}
         />
-        <NavItem
-          label="Hồ sơ"
-          icon={<Feather name="user" size={24} color={inactiveColor} />}
-        />
+        <NavItem label="Hồ sơ" icon={<Feather name="user" size={24} color={inactiveColor} />} />
       </View>
 
       {/* Nút trung tâm */}
@@ -59,21 +36,11 @@ export default function BottomNav() {
   );
 }
 
-function NavItem({
-  label,
-  icon,
-  active = false,
-}: {
-  label: string;
-  icon: React.ReactNode;
-  active?: boolean;
-}) {
+function NavItem({ label, icon, active = false }: { label: string; icon: React.ReactNode; active?: boolean }) {
   return (
     <TouchableOpacity style={styles.navItem}>
       {icon}
-      <Text style={[styles.label, { color: active ? "#0F93C3" : "#7D848D" }]}>
-        {label}
-      </Text>
+      <Text style={[styles.label, { color: active ? "#0F93C3" : "#7D848D" }]}>{label}</Text>
     </TouchableOpacity>
   );
 }

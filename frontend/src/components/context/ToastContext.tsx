@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import Toast, { ToastType } from "../Home/Toast";
+import Toast, { ToastType } from "../home/Toast";
 
 interface ToastContextType {
   showToast: (type: ToastType, message: string) => void;
@@ -21,9 +21,10 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <Toast visible={toast.visible} 
-      type={toast.type}
-      message={toast.message}
+      <Toast
+        visible={toast.visible}
+        type={toast.type}
+        message={toast.message}
         onHide={() => setToast({ ...toast, visible: false })}
       />
     </ToastContext.Provider>
