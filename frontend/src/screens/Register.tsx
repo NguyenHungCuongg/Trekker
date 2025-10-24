@@ -5,7 +5,7 @@ import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-nati
 import { Ionicons } from "@expo/vector-icons";
 import { useToast } from "../components/context/ToastContext";
 import axiosInstance from "../utils/axiosInstance";
-import RegisterField from "../components/login&register/RegisterField";
+import AuthField from "../components/login&register/AuthField";
 import BackButton from "../components/login&register/BackButton";
 
 export default function Register() {
@@ -57,40 +57,35 @@ export default function Register() {
             <Text style={styles.subtitle}>Vui lòng điền các thông tin sau</Text>
 
             <View style={styles.fields}>
-              <RegisterField
-                label="Họ và tên"
-                placeholder="Nhập họ và tên"
-                value={fullName}
-                onChangeText={setFullName}
-              />
-              <RegisterField
+              <AuthField label="Họ và tên" placeholder="Nhập họ và tên" value={fullName} onChangeText={setFullName} />
+              <AuthField
                 label="Tên đăng nhập"
                 placeholder="Nhập tên đăng nhập"
                 value={username}
                 onChangeText={setUsername}
               />
-              <RegisterField
+              <AuthField
                 label="Số điện thoại"
                 placeholder="Nhập số điện thoại"
                 keyboardType="phone-pad"
                 value={phone}
                 onChangeText={setPhone}
               />
-              <RegisterField
+              <AuthField
                 label="Email"
                 placeholder="Nhập email"
                 keyboardType="email-address"
                 value={email}
                 onChangeText={setEmail}
               />
-              <RegisterField
+              <AuthField
                 label="Mật khẩu"
                 placeholder="Nhập mật khẩu"
                 secureTextEntry
                 value={password}
                 onChangeText={setPassword}
               />
-              <RegisterField
+              <AuthField
                 label="Xác nhận mật khẩu"
                 placeholder="Nhập lại mật khẩu"
                 secureTextEntry

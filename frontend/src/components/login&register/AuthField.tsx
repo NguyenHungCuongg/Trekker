@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     fontSize: 16,
     lineHeight: 24,
-    fontWeight: "500",
+    fontWeight: "400",
     color: "#1b1e28",
   },
 });
