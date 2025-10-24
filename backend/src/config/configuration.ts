@@ -7,4 +7,8 @@ export default () => ({
   dbUsername: process.env.DB_USERNAME,
   dbPassword: process.env.DB_PASSWORD,
   dbName: process.env.DB_NAME,
+  smtp_host: process.env.SMTP_HOST,
+  smtp_port: parseInt(process.env.SMTP_PORT ?? "587"),
+  smtp_user: process.env.SMTP_USER,
+  smtp_pass: process.env.SMTP_PASS,
 });
