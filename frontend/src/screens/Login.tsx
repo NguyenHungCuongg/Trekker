@@ -45,8 +45,6 @@ export default function Login() {
   return (
     <ScrollView contentContainerStyle={styles.loginPage}>
       <View style={styles.loginFrame}>
-        <BackButton />
-
         <View style={styles.loginBody}>
           <View style={styles.loginHeader}>
             <Text style={styles.loginTitle}>Đăng nhập</Text>

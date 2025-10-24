@@ -50,7 +50,7 @@ export default function Register() {
       <View style={styles.frame}>
         {/* Nội dung cuộn */}
         <ScrollView contentContainerStyle={styles.body}>
-          <BackButton />
+          <BackButton navigateTo="Login" />
 
           <View style={styles.header}>
             <Text style={styles.title}>Đăng ký</Text>
