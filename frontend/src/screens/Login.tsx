@@ -2,12 +2,12 @@ import React, { useState, ReactNode } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import axiosInstance from "../../utils/axiosInstance";
+import axiosInstance from "../utils/axiosInstance";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import Svg, { Path, Circle } from "react-native-svg";
 import type { RootStackParamList } from "../../App";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Toast, { ToastType } from "../components/Home/Toast";
+import Toast, { ToastType } from "../components/home/Toast";
 import { useToast } from "../components/context/ToastContext";
 
 const BackButton = () => {

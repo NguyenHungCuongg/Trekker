@@ -5,7 +5,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useToast } from "../components/context/ToastContext";
-import axiosInstance from "../../utils/axiosInstance";
+import axiosInstance from "../utils/axiosInstance";
 
 const RegisterField = ({
   label,
@@ -91,7 +91,7 @@ export default function Register() {
             <Ionicons name="chevron-back" size={24} color="#1b1e28" />
           </TouchableOpacity>
 
-          <View style={styles.content}>
+          <View style={styles.header}>
             <Text style={styles.title}>Đăng ký</Text>
             <Text style={styles.subtitle}>Vui lòng điền các thông tin sau</Text>
 
@@ -138,70 +138,69 @@ export default function Register() {
 
 const styles = StyleSheet.create({
   page: {
-    flex: 1,
-    backgroundColor: "#eff4f9",
+    minHeight: "100%",
+    flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
-    padding: 16,
+    paddingVertical: 32,
+    paddingHorizontal: 16,
+    backgroundColor: "#eff4f9",
   },
   frame: {
     width: 375,
+    maxWidth: "100%",
     backgroundColor: "#fff",
     borderRadius: 30,
-    overflow: "hidden",
-    shadowColor: "#000",
+    shadowColor: "#152242",
+    shadowOffset: { width: 0, height: 35 },
     shadowOpacity: 0.15,
-    shadowRadius: 20,
-  },
-  statusBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    height: 48,
-    alignItems: "center",
-  },
-  statusText: {
-    fontWeight: "600",
-    fontSize: 15,
-    color: "#1b1e28",
-  },
-  statusIcons: {
-    flexDirection: "row",
-    gap: 10,
+    shadowRadius: 60,
+    elevation: 15,
+    overflow: "hidden",
   },
   body: {
-    padding: 24,
+    paddingTop: 88,
+    paddingHorizontal: 20,
+    paddingBottom: 72,
+    gap: 28,
+    width: "100%", // ← THÊM dòng này
   },
   backButton: {
-    backgroundColor: "#f7f7f9",
+    position: "absolute",
+    top: 56,
+    left: 20,
+    backgroundColor: "rgba(247,247,249,0.95)",
     width: 44,
     height: 44,
     borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
+    shadowColor: "#1b1e28",
     shadowOpacity: 0.08,
-    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 15 },
+    shadowRadius: 30,
   },
-  content: {
-    marginTop: 24,
+  header: {
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 12,
+    width: "100%", // ← THÊM dòng này
   },
   title: {
     fontSize: 26,
     fontWeight: "700",
-    color: "#1b1e28",
+    color: "#000",
     textAlign: "center",
   },
   subtitle: {
     fontSize: 16,
     color: "#7d848d",
     textAlign: "center",
-    marginVertical: 8,
   },
   fields: {
-    marginTop: 20,
-    gap: 16,
+    flexDirection: "column",
+    gap: 20,
+    width: "100%", // ← THÊM dòng này
   },
   fieldContainer: {
     backgroundColor: "#f7f7f9",
@@ -209,7 +208,8 @@ const styles = StyleSheet.create({
     height: 56,
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
+    paddingHorizontal: 18,
+    width: "100%", // ← THÊM dòng này
   },
   input: {
     flex: 1,
@@ -218,14 +218,18 @@ const styles = StyleSheet.create({
   },
   eyeButton: {
     marginLeft: 10,
+    padding: 4,
+    justifyContent: "center",
+    alignItems: "center",
   },
   primaryButton: {
+    width: "100%",
     backgroundColor: "#0f93c3",
     borderRadius: 16,
     height: 56,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 24,
+    marginTop: 8,
   },
   primaryButtonText: {
     color: "#fff",
@@ -234,32 +238,29 @@ const styles = StyleSheet.create({
   },
   auxiliary: {
     alignItems: "center",
-    marginTop: 20,
+    gap: 24,
+    marginTop: "auto",
+    width: "100%", // ← THÊM dòng này
   },
   signinRow: {
     flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   signinText: {
-    color: "#707b81",
+    color: "#7d848d",
   },
   signinLink: {
     color: "#0f93c3",
+    textDecorationLine: "none",
   },
   divider: {
     color: "#707b81",
-    marginVertical: 16,
+    fontSize: 14,
   },
   socialRow: {
     flexDirection: "row",
     justifyContent: "center",
-    gap: 22,
-  },
-  homeIndicator: {
-    alignSelf: "center",
-    width: 134,
-    height: 5,
-    backgroundColor: "#1b1e28",
-    borderRadius: 100,
-    marginVertical: 16,
+    gap: 18,
   },
 });
