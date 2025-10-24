@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import DestinationCard from "../components/home-temp/DestinationCard";
-import BottomNav from "../components/home-temp/BottomNav";
+import DestinationCard from "../components/home/DestinationCard";
+import BottomNav from "../components/home/BottomNav";
 
 interface Destination {
   image: string;

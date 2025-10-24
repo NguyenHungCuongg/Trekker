@@ -11,7 +11,7 @@ import Verification from "./src/screens/Verification";
 import Home from "./src/screens/Home";
 
 import { ToastProvider } from "./src/components/context/ToastContext";
-import Toast from "./src/components/home-temp/Toast";
+import Toast from "./src/components/home/Toast";
 
 export type RootStackParamList = {
   Start: undefined;
