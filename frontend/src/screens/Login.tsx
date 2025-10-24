@@ -3,28 +3,17 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import axiosInstance from "../../utils/axiosInstance";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import Svg, { Path, Circle } from "react-native-svg";
 import type { RootStackParamList } from "../../App";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Toast, { ToastType } from "../../components/Home/Toast";
-import { useToast } from "../../components/context/ToastContext";
+import Toast, { ToastType } from "../components/Home/Toast";
+import { useToast } from "../components/context/ToastContext";
 
 const BackButton = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
-    <TouchableOpacity
-      style={styles.backButton}
-      onPress={() => navigation.navigate("Start")}
-    >
+    <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("Start")}>
       <Svg width={24} height={24} viewBox="0 0 24 24">
         <Path
           d="M14.469 6.414C14.792 6.673 14.844 7.145 14.586 7.468L10.96 12L14.586 16.531C14.844 16.855 14.792 17.327 14.469 17.586C14.145 17.844 13.673 17.792 13.414 17.469L9.414 12.469C9.195 12.195 9.195 11.805 9.414 11.531L13.414 6.531C13.673 6.208 14.145 6.156 14.469 6.414Z"
@@ -35,26 +24,14 @@ const BackButton = () => {
   );
 };
 
-const AuthField = ({
-  label,
-  children,
-}: {
-  label: string;
-  children?: ReactNode;
-}) => (
+const AuthField = ({ label, children }: { label: string; children?: ReactNode }) => (
   <View style={styles.authField}>
     <Text style={styles.authLabel}>{label}</Text>
     <View style={styles.authControl}>{children}</View>
   </View>
 );
 
-const PasswordField = ({
-  password,
-  setPassword,
-}: {
-  password: string;
-  setPassword: (value: string) => void;
-}) => {
+const PasswordField = ({ password, setPassword }: { password: string; setPassword: (value: string) => void }) => {
   const [secure, setSecure] = useState(true);
   return (
     <AuthField label="Mật khẩu">
@@ -66,15 +43,8 @@ const PasswordField = ({
         value={password}
         onChangeText={setPassword}
       />
-      <TouchableOpacity
-        onPress={() => setSecure(!secure)}
-        style={styles.passwordToggle}
-      >
-        <Ionicons
-          name={secure ? "eye-off-outline" : "eye-outline"}
-          size={22}
-          color="#7d848d"
-        />
+      <TouchableOpacity onPress={() => setSecure(!secure)} style={styles.passwordToggle}>
+        <Ionicons name={secure ? "eye-off-outline" : "eye-outline"} size={22} color="#7d848d" />
       </TouchableOpacity>
     </AuthField>
   );
@@ -85,8 +55,7 @@ const SocialButton = ({ icon }: { icon: ReactNode }) => (
 );
 
 export default function Login() {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -107,17 +76,11 @@ export default function Login() {
         showToast("success", "Đăng nhập thành công!");
         navigation.navigate("Home");
       } else {
-        showToast(
-          "error",
-          "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin."
-        );
+        showToast("error", "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
       }
     } catch (error) {
-      showToast(
-        "error",
-        "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin ẹc ẹc." + error
-      );
-      console.log(axiosInstance.defaults)
+      showToast("error", "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin ẹc ẹc." + error);
+      console.log(axiosInstance.defaults);
       console.error("Login error:", error);
     }
   };
@@ -130,9 +93,7 @@ export default function Login() {
         <View style={styles.loginBody}>
           <View style={styles.loginHeader}>
             <Text style={styles.loginTitle}>Đăng nhập</Text>
-            <Text style={styles.loginSubtitle}>
-              Vui lòng đăng nhập để tiếp tục
-            </Text>
+            <Text style={styles.loginSubtitle}>Vui lòng đăng nhập để tiếp tục</Text>
           </View>
 
           <View style={styles.loginFields}>
@@ -149,17 +110,12 @@ export default function Login() {
             <PasswordField password={password} setPassword={setPassword} />
           </View>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate("ForgotPassword")}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
             <Text style={styles.forgotLink}>Quên mật khẩu?</Text>
           </TouchableOpacity>
 
           <View style={styles.primaryCta}>
-            <TouchableOpacity
-              style={styles.primaryButton}
-              onPress={handleLogin}
-            >
+            <TouchableOpacity style={styles.primaryButton} onPress={handleLogin}>
               <Text style={styles.primaryButtonText}>Đăng nhập</Text>
             </TouchableOpacity>
           </View>
@@ -175,21 +131,9 @@ export default function Login() {
             <Text style={styles.alternateDivider}>Hoặc đăng nhập bằng</Text>
 
             <View style={styles.socialRow}>
-              <SocialButton
-                icon={
-                  <Ionicons name="logo-facebook" size={28} color="#1877F2" />
-                }
-              />
-              <SocialButton
-                icon={
-                  <Ionicons name="logo-instagram" size={28} color="#EA4335" />
-                }
-              />
-              <SocialButton
-                icon={
-                  <Ionicons name="logo-twitter" size={28} color="#03A9F4" />
-                }
-              />
+              <SocialButton icon={<Ionicons name="logo-facebook" size={28} color="#1877F2" />} />
+              <SocialButton icon={<Ionicons name="logo-instagram" size={28} color="#EA4335" />} />
+              <SocialButton icon={<Ionicons name="logo-twitter" size={28} color="#03A9F4" />} />
             </View>
           </View>
         </View>

@@ -4,9 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useToast } from "../../components/context/ToastContext";
+import { useToast } from "../components/context/ToastContext";
 import axiosInstance from "../../utils/axiosInstance";
-
 
 const RegisterField = ({
   label,
@@ -14,7 +13,7 @@ const RegisterField = ({
   placeholder,
   showPasswordToggle,
   value,
-  setValue
+  setValue,
 }: {
   label: string;
   type?: string;
@@ -57,11 +56,11 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleRegister = async () => {
-    if(password !== confirmPassword) {
+    if (password !== confirmPassword) {
       showToast("error", "Mật khẩu xác nhận không khớp!");
       return;
     }
-    if(!fullName || !username || !phone || !email || !password || !confirmPassword) {
+    if (!fullName || !username || !phone || !email || !password || !confirmPassword) {
       showToast("error", "Vui lòng điền đầy đủ thông tin đăng ký!");
       return;
     }
@@ -71,16 +70,16 @@ export default function Register() {
         password,
         fullName,
         phone,
-        email
+        email,
       });
-      if(response.data) {
+      if (response.data) {
         showToast("success", "Đăng ký thành công! Vui lòng đăng nhập.");
         navigation.navigate("Login");
       }
     } catch (error) {
       showToast("error", "Đăng ký không thành công!");
     }
-  }
+  };
 
   return (
     <View style={styles.page}>
@@ -102,7 +101,12 @@ export default function Register() {
               <RegisterField label="Số điện thoại" type="tel" value={phone} setValue={setPhone} />
               <RegisterField label="Email" type="email" value={email} setValue={setEmail} />
               <RegisterField label="Mật khẩu" showPasswordToggle value={password} setValue={setPassword} />
-              <RegisterField label="Xác nhận mật khẩu" showPasswordToggle value={confirmPassword} setValue={setConfirmPassword} />
+              <RegisterField
+                label="Xác nhận mật khẩu"
+                showPasswordToggle
+                value={confirmPassword}
+                setValue={setConfirmPassword}
+              />
             </View>
 
             <TouchableOpacity style={styles.primaryButton} onPress={handleRegister}>

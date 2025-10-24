@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, SafeAreaView } from "react-native";
-import DestinationCard from "../../components/Home/DestinationCard";
-import BottomNav from "../../components/Home/BottomNav";
+import DestinationCard from "../components/Home/DestinationCard";
+import BottomNav from "../components/Home/BottomNav";
 
 interface Destination {
   image: string;
