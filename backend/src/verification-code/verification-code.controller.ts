@@ -1,5 +1,7 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, HttpStatus, Post } from "@nestjs/common";
 import { VerificationCodeService } from "./verification-code.service";
+import type { Response } from "express";
+import { ResponseEntity } from "src/common/dto/response-entity.dto";
 
 @Controller("verification-code")
 export class VerificationCodeController {
@@ -10,9 +12,13 @@ export class VerificationCodeController {
   @Post("generate")
   async generateAndSendOTP(
     @Body("email") email: string,
-  ): Promise<{ message: string }> {
+  ): Promise<ResponseEntity> {
     await this.verificationCodeService.generateAndSendOTP(email);
-    return { message: "OTP đã được gửi" };
+    return ResponseEntity.success(
+      "Mã OTP đã được gửi",
+      { email: email },
+      HttpStatus.OK,
+    );
   }
 
   @Post("verify")
@@ -21,6 +27,6 @@ export class VerificationCodeController {
     @Body("code") code: string,
   ): Promise<{ message: string }> {
     await this.verificationCodeService.verifyOTP(email, code);
-    return { message: "Xác thực OTP thành công" };
+    return ResponseEntity.success("Xác thực thành công", {}, HttpStatus.OK);
   }
 }

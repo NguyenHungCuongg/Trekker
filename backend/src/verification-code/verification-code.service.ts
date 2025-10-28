@@ -27,7 +27,21 @@ export class VerificationCodeService {
     const otp = this.generateOTP();
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes from now
 
+    const existedCode = await this.verificationCodeRepository.findOneBy({
+      email,
+    });
+
     const verificationCode = new VerificationCode();
+
+    if (existedCode) {
+      verificationCode.verificationId = existedCode.verificationId;
+      verificationCode.email = email;
+      verificationCode.code = otp;
+      verificationCode.expiresAt = expiresAt;
+      verificationCode.verified = false;
+    }
+
+    // Save new code if not existed
     verificationCode.email = email;
     verificationCode.code = otp;
     verificationCode.expiresAt = expiresAt;
