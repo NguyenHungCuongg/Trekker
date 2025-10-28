@@ -12,6 +12,7 @@ import Home from "./src/screens/Home";
 
 import { ToastProvider } from "./src/components/context/ToastContext";
 import Toast from "./src/components/home/Toast";
+import TourDetail from "./src/screens/TourDetail";
 
 export type RootStackParamList = {
   Start: undefined;
@@ -20,6 +21,7 @@ export type RootStackParamList = {
   ForgotPassword: undefined;
   Verification: undefined;
   Home: undefined;
+  TourDetail: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -29,11 +31,15 @@ export default function App() {
     <SafeAreaProvider>
       <ToastProvider>
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Start">
+          <Stack.Navigator
+            screenOptions={{ headerShown: false }}
+            initialRouteName="Start"
+          >
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="Start" component={Start} />
             <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="TourDetail" component={TourDetail} />
             <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
             <Stack.Screen name="Verification" component={Verification} />
           </Stack.Navigator>
