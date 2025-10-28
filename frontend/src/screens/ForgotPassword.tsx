@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, TextInput, StyleSheet } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../../App";
+import { useToast } from "../components/context/ToastContext";
+import axiosInstance from "../utils/axiosInstance";
 
 const BackButton = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -21,6 +23,32 @@ const BackButton = () => {
 
 export default function ForgotPassword() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [email, setEmail] = useState("");
+  const { showToast } = useToast();
+
+  const handleSentOTP = async () => {
+    if(!email){
+      showToast("error", "Vui lòng nhập email khôi phục.");
+      return;
+    }
+    try {
+      console.log(email);
+      const response = await axiosInstance.post("/verification-code/generate", {
+        email: email,
+      });
+      console.log("Response:", response.data);
+      if(response.data.statusCode === 200){
+        showToast("success", "Đã gửi mã OTP đến email của bạn.");
+        navigation.navigate("Verification", { email });
+      }
+      else {
+        showToast("error", "Đã xảy ra lỗi. Vui lòng thử lại.");
+      }
+    } catch (error) {
+      showToast("error", "Đã xảy ra lỗi. Vui lòng thử lại.");
+    }
+  }
+
   return (
     <View style={styles.page}>
       <View style={styles.frame}>
@@ -30,9 +58,9 @@ export default function ForgotPassword() {
             <Text style={styles.title}>Quên mật khẩu</Text>
             <Text style={styles.subtitle}>Nhập tài khoản email để khôi phục mật khẩu</Text>
 
-            <TextInput style={styles.input} placeholder="www.uihut@gmail.com" defaultValue="www.uihut@gmail.com" />
+            <TextInput style={styles.input} placeholder="your-email@example.com" value={email} onChangeText={setEmail} />
 
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Verification")}>
+            <TouchableOpacity style={styles.button} onPress={handleSentOTP}>
               <Text style={styles.buttonText}>Khôi phục mật khẩu</Text>
             </TouchableOpacity>
           </View>

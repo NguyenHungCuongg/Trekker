@@ -10,10 +10,14 @@ import {
   Platform,
 } from "react-native";
 import Svg, { Path, Circle } from "react-native-svg";
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import type { RootStackParamList } from "../../App";
+import { useToast } from "../components/context/ToastContext";
+import axiosInstance from "../utils/axiosInstance";
+
+type VerificationRouteProp = RouteProp<RootStackParamList, "Verification">; //Định nghĩa kiểu cho route
 
 const BackButton = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -30,9 +34,14 @@ const BackButton = () => {
 };
 
 export default function Verification({ navigation }: any) {
+  const route = useRoute<VerificationRouteProp>(); //Lấy xuống route object theo kiểu đã định nghĩa
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState(86);
   const inputRefs = useRef<(TextInput | null)[]>([]);
+
+  const { email } = route.params; // Lấy email từ params của route object
+
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (timer > 0) {
@@ -70,8 +79,28 @@ export default function Verification({ navigation }: any) {
     inputRefs.current[0]?.focus();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("OTP:", otp.join(""));
+    console.log("Email:", email);
+    if (otp.some((digit) => digit === "")) {
+      showToast("error", "Vui lòng nhập đầy đủ mã OTP.");
+      return;
+    }
+    try {
+      const response = await axiosInstance.post("/verification-code/verify", {
+        email: email,
+        code: otp.join(""),
+      });
+      console.log("Response:", response.data);
+      if (response.data.statusCode === 200) {
+        showToast("success", "Xác thực OTP thành công.");
+        //navigation.navigate("Home");
+      } else {
+        showToast("error", "Xác thực OTP thất bại.");
+      }
+    } catch (error) {
+      showToast("error", "Xác thực OTP thất bại.");
+    }
   };
 
   return (
