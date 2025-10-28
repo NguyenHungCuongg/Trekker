@@ -1,3 +1,4 @@
+// ...existing code...
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateUserDto } from "src/auth/dto/register.dto";
@@ -6,7 +7,7 @@ import { Repository } from "typeorm";
 import bcrypt from "bcryptjs";
 import { LoginDto } from "./dto/login.dto";
 import { UserService } from "src/user/user.service";
-import { JwtService } from "@nestjs/jwt/dist/jwt.service";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
@@ -20,7 +21,7 @@ export class AuthService {
     const salt = await bcrypt.genSalt();
     userDTO.password = await bcrypt.hash(userDTO.password, salt);
     const user = await this.userRepository.save(userDTO);
-    //delete user.password;
+    // delete user.password;
     return user;
   }
 

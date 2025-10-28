@@ -26,13 +26,7 @@ export default function DestinationCard({
         {showBookmark && (
           <View style={styles.bookmarkContainer}>
             <View style={styles.bookmarkBg} />
-            <Svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              style={styles.bookmarkIcon}
-            >
+            <Svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={styles.bookmarkIcon}>
               <Path
                 d="M3.00012 3.99998C3.00012 2.34312 4.34327 0.999977 6.00012 0.999977H12.0001C13.657 0.999977 15.0001 2.34312 15.0001 3.99998V14.3358C15.0001 15.2267 13.923 15.6728 13.293 15.0429L10.4143 12.1642C9.63329 11.3831 8.36696 11.3831 7.58591 12.1642L4.70723 15.0429C4.07726 15.6728 3.00012 15.2267 3.00012 14.3358V3.99998Z"
                 stroke="white"
@@ -57,13 +51,7 @@ export default function DestinationCard({
         <View style={styles.rowBetween}>
           <View style={styles.locationContainer}>
             <Svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <Circle
-                cx="8"
-                cy="7.33336"
-                r="2"
-                stroke="#7D848D"
-                strokeWidth="1.5"
-              />
+              <Circle cx="8" cy="7.33336" r="2" stroke="#7D848D" strokeWidth="1.5" />
               <Path
                 d="M14 7.25928C14 10.5321 10.25 14.6667 8 14.6667C5.75 14.6667 2 10.5321 2 7.25928C2 3.98649 4.68629 1.33336 8 1.33336C11.3137 1.33336 14 3.98649 14 7.25928Z"
                 stroke="#7D848D"

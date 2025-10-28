@@ -1,29 +1,14 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TouchableOpacity, TextInput, StyleSheet } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
-type RootStackParamList = {
-  Start: undefined;
-  Login: undefined;
-  Register: undefined;
-};
+import type { RootStackParamList } from "../../App";
 
 const BackButton = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
-    <TouchableOpacity
-      style={styles.backButton}
-      onPress={() => navigation.navigate("Login")}
-    >
+    <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("Login")}>
       <Svg width={24} height={24} viewBox="0 0 24 24">
         <Path
           d="M14.469 6.414C14.792 6.673 14.844 7.145 14.586 7.468L10.96 12L14.586 16.531C14.844 16.855 14.792 17.327 14.469 17.586C14.145 17.844 13.673 17.792 13.414 17.469L9.414 12.469C9.195 12.195 9.195 11.805 9.414 11.531L13.414 6.531C13.673 6.208 14.145 6.156 14.469 6.414Z"
@@ -35,8 +20,7 @@ const BackButton = () => {
 };
 
 export default function ForgotPassword() {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
     <View style={styles.page}>
       <View style={styles.frame}>
@@ -44,20 +28,11 @@ export default function ForgotPassword() {
           <BackButton />
           <View style={styles.content}>
             <Text style={styles.title}>Quên mật khẩu</Text>
-            <Text style={styles.subtitle}>
-              Nhập tài khoản email để khôi phục mật khẩu
-            </Text>
+            <Text style={styles.subtitle}>Nhập tài khoản email để khôi phục mật khẩu</Text>
 
-            <TextInput
-              style={styles.input}
-              placeholder="www.uihut@gmail.com"
-              defaultValue="www.uihut@gmail.com"
-            />
+            <TextInput style={styles.input} placeholder="www.uihut@gmail.com" defaultValue="www.uihut@gmail.com" />
 
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => navigation.navigate("Verification")}
-            >
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Verification")}>
               <Text style={styles.buttonText}>Khôi phục mật khẩu</Text>
             </TouchableOpacity>
           </View>

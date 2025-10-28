@@ -1,0 +1,14 @@
+export default () => ({
+  port: parseInt(process.env.PORT ?? "3000"),
+  jwt_secret: process.env.JWT_SECRET,
+  jwt_expires_in: process.env.JWT_EXPIRES_IN ?? "1d",
+  dbHost: process.env.DB_HOST ?? "localhost",
+  dbPort: parseInt(process.env.DB_PORT ?? "5432"),
+  dbUsername: process.env.DB_USERNAME,
+  dbPassword: process.env.DB_PASSWORD,
+  dbName: process.env.DB_NAME,
+  smtp_host: process.env.SMTP_HOST,
+  smtp_port: parseInt(process.env.SMTP_PORT ?? "587"),
+  smtp_user: process.env.SMTP_USER,
+  smtp_pass: process.env.SMTP_PASS,
+});
