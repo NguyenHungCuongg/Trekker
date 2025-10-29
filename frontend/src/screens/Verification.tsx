@@ -1,37 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
-import Svg, { Path, Circle } from "react-native-svg";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import type { RootStackParamList } from "../../App";
 import { useToast } from "../components/context/ToastContext";
 import axiosInstance from "../utils/axiosInstance";
+import BackButton from "../components/login&register/BackButton";
 
-type VerificationRouteProp = RouteProp<RootStackParamList, "Verification">; //Định nghĩa kiểu cho route
-
-const BackButton = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  return (
-    <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("ForgotPassword")}>
-      <Svg width={24} height={24} viewBox="0 0 24 24">
-        <Path
-          d="M14.469 6.414C14.792 6.673 14.844 7.145 14.586 7.468L10.96 12L14.586 16.531C14.844 16.855 14.792 17.327 14.469 17.586C14.145 17.844 13.673 17.792 13.414 17.469L9.414 12.469C9.195 12.195 9.195 11.805 9.414 11.531L13.414 6.531C13.673 6.208 14.145 6.156 14.469 6.414Z"
-          fill="#1b1e28"
-        />
-      </Svg>
-    </TouchableOpacity>
-  );
-};
+type VerificationRouteProp = RouteProp<RootStackParamList, "Verification">;
 
 export default function Verification({ navigation }: any) {
   const route = useRoute<VerificationRouteProp>(); //Lấy xuống route object theo kiểu đã định nghĩa
@@ -104,96 +81,95 @@ export default function Verification({ navigation }: any) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.page}>
       <View style={styles.frame}>
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.body}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}>
-            <View style={styles.content}>
-              <Text style={styles.title}>Xác thực OTP</Text>
-              <Text style={styles.subtitle}>Nhập mã xác thực đã được gửi{"\n"}tới email của bạn</Text>
+        <BackButton navigateTo="ForgotPassword" />
 
-              <View style={styles.otpSection}>
-                <Text style={styles.otpLabel}>Nhập mã OTP</Text>
-                <View style={styles.otpInputs}>
-                  {otp.map((digit, index) => (
-                    <TextInput
-                      key={index}
-                      ref={(el) => {
-                        inputRefs.current[index] = el;
-                      }}
-                      style={styles.otpInput}
-                      keyboardType="number-pad"
-                      maxLength={1}
-                      value={digit}
-                      onChangeText={(val) => handleChange(index, val)}
-                      onKeyPress={({ nativeEvent }) => handleKeyPress(index, nativeEvent.key)}
-                    />
-                  ))}
-                </View>
-              </View>
+        <View style={styles.body}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Xác thực OTP</Text>
+            <Text style={styles.subtitle}>Nhập mã xác thực đã được gửi{"\n"}tới email của bạn</Text>
+          </View>
 
-              <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-                <Text style={styles.submitText}>Verify</Text>
-              </TouchableOpacity>
-
-              <View style={styles.footer}>
-                <TouchableOpacity onPress={handleResend} disabled={timer > 0}>
-                  <Text style={[styles.resendLink, timer > 0 && { opacity: 0.5 }]}>Gửi lại mã</Text>
-                </TouchableOpacity>
-                <Text style={styles.timer}>{formatTime(timer)}</Text>
-              </View>
+          <View style={styles.otpSection}>
+            <Text style={styles.otpLabel}>Nhập mã OTP</Text>
+            <View style={styles.otpInputs}>
+              {otp.map((digit, index) => (
+                <TextInput
+                  key={index}
+                  ref={(el) => {
+                    inputRefs.current[index] = el;
+                  }}
+                  style={styles.otpInput}
+                  keyboardType="number-pad"
+                  maxLength={1}
+                  value={digit}
+                  onChangeText={(val) => handleChange(index, val)}
+                  onKeyPress={({ nativeEvent }) => handleKeyPress(index, nativeEvent.key)}
+                />
+              ))}
             </View>
-          </ScrollView>
-          <BackButton />
-        </KeyboardAvoidingView>
+          </View>
+
+          <View style={styles.primaryCta}>
+            <TouchableOpacity style={styles.primaryButton} onPress={handleSubmit}>
+              <Text style={styles.primaryButtonText}>Xác thực</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.footer}>
+            <TouchableOpacity onPress={handleResend} disabled={timer > 0}>
+              <Text style={[styles.resendLink, timer > 0 && { opacity: 0.5 }]}>Gửi lại mã</Text>
+            </TouchableOpacity>
+            <Text style={styles.timer}>{formatTime(timer)}</Text>
+          </View>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#eff4f9",
+  page: {
+    minHeight: "100%",
+    flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
+    paddingVertical: 32,
+    paddingHorizontal: 16,
+    backgroundColor: "#eff4f9",
   },
   frame: {
     width: 375,
-    height: 812,
+    maxWidth: "100%",
+    minHeight: 750,
     backgroundColor: "#fff",
     borderRadius: 30,
     shadowColor: "#152242",
-    shadowOffset: { width: 0, height: 15 },
-    shadowOpacity: 0.15,
-    shadowRadius: 30,
-    elevation: 10,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.08,
+    shadowRadius: 20,
+    elevation: 8,
     overflow: "hidden",
+    position: "relative",
   },
   body: {
-    flex: 1,
+    paddingTop: 88,
     paddingHorizontal: 20,
     paddingBottom: 72,
+    gap: 28,
+    width: "100%",
   },
-  backButton: {
-    position: "absolute",
-    top: 56,
-    left: 20,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(247,247,249,0.95)",
+  header: {
     alignItems: "center",
-    justifyContent: "center",
-  },
-  content: {
-    alignItems: "center",
-    gap: 32,
+    gap: 12,
+    marginBottom: 12,
+    width: "100%",
   },
   title: {
     fontSize: 26,
     fontWeight: "700",
-    color: "#1b1e28",
+    color: "#000",
     textAlign: "center",
   },
   subtitle: {
@@ -204,17 +180,18 @@ const styles = StyleSheet.create({
   otpSection: {
     width: "100%",
     alignItems: "center",
+    gap: 16,
   },
   otpLabel: {
     fontSize: 20,
     fontWeight: "700",
     color: "#1b1e28",
-    marginBottom: 16,
   },
   otpInputs: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "90%",
+    width: "100%",
+    paddingHorizontal: 8,
   },
   otpInput: {
     width: 46,
@@ -226,22 +203,24 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#1b1e28",
   },
-  submitButton: {
+  primaryCta: {
+    marginTop: 8,
+  },
+  primaryButton: {
     width: "100%",
     height: 56,
-    backgroundColor: "#0f93c3",
     borderRadius: 16,
+    backgroundColor: "#0f93c3",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20,
   },
-  submitText: {
+  primaryButtonText: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "700",
   },
   footer: {
-    marginTop: 24,
+    marginTop: 12,
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
@@ -253,15 +232,5 @@ const styles = StyleSheet.create({
   timer: {
     fontSize: 14,
     color: "#7d848d",
-  },
-  homeIndicator: {
-    position: "absolute",
-    bottom: 12,
-    left: "50%",
-    width: 134,
-    height: 5,
-    backgroundColor: "#1b1e28",
-    borderRadius: 100,
-    transform: [{ translateX: -67 }],
   },
 });

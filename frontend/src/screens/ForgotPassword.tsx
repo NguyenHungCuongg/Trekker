@@ -1,25 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, TextInput, StyleSheet } from "react-native";
-import Svg, { Path } from "react-native-svg";
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../../App";
 import { useToast } from "../components/context/ToastContext";
 import axiosInstance from "../utils/axiosInstance";
-
-const BackButton = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  return (
-    <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("Login")}>
-      <Svg width={24} height={24} viewBox="0 0 24 24">
-        <Path
-          d="M14.469 6.414C14.792 6.673 14.844 7.145 14.586 7.468L10.96 12L14.586 16.531C14.844 16.855 14.792 17.327 14.469 17.586C14.145 17.844 13.673 17.792 13.414 17.469L9.414 12.469C9.195 12.195 9.195 11.805 9.414 11.531L13.414 6.531C13.673 6.208 14.145 6.156 14.469 6.414Z"
-          fill="#1b1e28"
-        />
-      </Svg>
-    </TouchableOpacity>
-  );
-};
+import BackButton from "../components/login&register/BackButton";
 
 export default function ForgotPassword() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -27,7 +13,7 @@ export default function ForgotPassword() {
   const { showToast } = useToast();
 
   const handleSentOTP = async () => {
-    if(!email){
+    if (!email) {
       showToast("error", "Vui lòng nhập email khôi phục.");
       return;
     }
@@ -37,101 +23,137 @@ export default function ForgotPassword() {
         email: email,
       });
       console.log("Response:", response.data);
-      if(response.data.statusCode === 200){
+      if (response.data.statusCode === 200) {
         showToast("success", "Đã gửi mã OTP đến email của bạn.");
         navigation.navigate("Verification", { email });
-      }
-      else {
+      } else {
         showToast("error", "Đã xảy ra lỗi. Vui lòng thử lại.");
       }
     } catch (error) {
       showToast("error", "Đã xảy ra lỗi. Vui lòng thử lại.");
     }
-  }
+  };
 
   return (
-    <View style={styles.page}>
+    <ScrollView contentContainerStyle={styles.page}>
       <View style={styles.frame}>
+        <BackButton navigateTo="Login" />
+
         <View style={styles.body}>
-          <BackButton />
-          <View style={styles.content}>
+          <View style={styles.header}>
             <Text style={styles.title}>Quên mật khẩu</Text>
             <Text style={styles.subtitle}>Nhập tài khoản email để khôi phục mật khẩu</Text>
+          </View>
 
-            <TextInput style={styles.input} placeholder="your-email@example.com" value={email} onChangeText={setEmail} />
+          <View style={styles.fields}>
+            <View style={styles.inputWrapper}>
+              <Text style={styles.label}>Email</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="your-email@example.com"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </View>
+          </View>
 
-            <TouchableOpacity style={styles.button} onPress={handleSentOTP}>
-              <Text style={styles.buttonText}>Khôi phục mật khẩu</Text>
+          <View style={styles.primaryCta}>
+            <TouchableOpacity style={styles.primaryButton} onPress={handleSentOTP}>
+              <Text style={styles.primaryButtonText}>Khôi phục mật khẩu</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   page: {
-    flex: 1,
+    minHeight: "100%",
+    flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#EFF4F9",
+    paddingVertical: 32,
+    paddingHorizontal: 16,
+    backgroundColor: "#eff4f9",
   },
   frame: {
     width: 375,
-    height: 812,
+    maxWidth: "100%",
+    minHeight: 750,
     backgroundColor: "#fff",
     borderRadius: 30,
+    shadowColor: "#152242",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.08,
+    shadowRadius: 20,
+    elevation: 8,
     overflow: "hidden",
+    position: "relative",
   },
-  statusBar: {
-    height: 48,
+  body: {
+    flex: 1, // ✅ Thêm flex để body chiếm hết không gian
+    paddingTop: 88,
     paddingHorizontal: 20,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    paddingBottom: 72,
+    gap: 28,
+    width: "100%",
   },
-  time: { fontSize: 15, fontWeight: "600", color: "#1b1e28" },
-  icons: { flexDirection: "row", gap: 12 },
-  body: { flex: 1, padding: 20, paddingTop: 88 },
-  backButton: {
-    position: "absolute",
-    top: 56,
-    left: 20,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "#F7F7F9",
-    justifyContent: "center",
+  header: {
     alignItems: "center",
+    gap: 12,
+    marginBottom: 12,
+    width: "100%",
   },
-  content: { marginTop: 30 },
   title: {
     fontSize: 26,
     fontWeight: "700",
+    color: "#000",
     textAlign: "center",
-    color: "#1b1e28",
   },
   subtitle: {
     fontSize: 16,
     color: "#7d848d",
     textAlign: "center",
-    marginTop: 10,
+  },
+  fields: {
+    flexDirection: "column",
+    gap: 20,
+    width: "100%",
+  },
+  inputWrapper: {
+    gap: 8,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#1b1e28",
   },
   input: {
     height: 56,
-    backgroundColor: "#F7F7F9",
+    backgroundColor: "#f7f7f9",
     borderRadius: 14,
     paddingHorizontal: 16,
-    marginTop: 30,
+    fontSize: 16,
+    color: "#1b1e28",
   },
-  button: {
+  primaryCta: {
+    marginTop: 8,
+  },
+  primaryButton: {
+    width: "100%",
     height: 56,
-    backgroundColor: "#0f93c3",
     borderRadius: 16,
-    marginTop: 40,
-    justifyContent: "center",
+    backgroundColor: "#0f93c3",
     alignItems: "center",
+    justifyContent: "center",
   },
-  buttonText: { color: "#fff", fontWeight: "700", fontSize: 16 },
+  primaryButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "700",
+  },
 });
