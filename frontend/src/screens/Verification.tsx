@@ -94,7 +94,7 @@ export default function Verification({ navigation }: any) {
       console.log("Response:", response.data);
       if (response.data.statusCode === 200) {
         showToast("success", "Xác thực OTP thành công.");
-        //navigation.navigate("Home");
+        navigation.navigate("ResetPassword", { email });
       } else {
         showToast("error", "Xác thực OTP thất bại.");
       }

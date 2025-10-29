@@ -8,10 +8,10 @@ import Register from "./src/screens/Register";
 import Login from "./src/screens/Login";
 import ForgotPassword from "./src/screens/ForgotPassword";
 import Verification from "./src/screens/Verification";
+import ResetPassword from "./src/screens/ResetPassword";
 import Home from "./src/screens/Home";
 
 import { ToastProvider } from "./src/components/context/ToastContext";
-import Toast from "./src/components/home/Toast";
 
 export type RootStackParamList = {
   Start: undefined;
@@ -19,6 +19,7 @@ export type RootStackParamList = {
   Register: undefined;
   ForgotPassword: undefined;
   Verification: { email: string };
+  ResetPassword: { email: string };
   Home: undefined;
 };
 
@@ -36,6 +37,7 @@ export default function App() {
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
             <Stack.Screen name="Verification" component={Verification} />
+            <Stack.Screen name="ResetPassword" component={ResetPassword} />
           </Stack.Navigator>
         </NavigationContainer>
       </ToastProvider>

@@ -41,7 +41,7 @@ export default function Register() {
         navigation.navigate("Login");
       }
     } catch (error) {
-      showToast("error", "Đăng ký không thành công!");
+      showToast("error", "Đăng ký không thành công!" + error);
     }
   };
 

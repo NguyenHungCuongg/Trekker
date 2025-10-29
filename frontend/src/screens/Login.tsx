@@ -28,7 +28,7 @@ export default function Login() {
         username,
         password,
       });
-      if (response.data) {
+      if (response.data && response.data.access_token) {
         await AsyncStorage.setItem("token", response.data.access_token);
         showToast("success", "Đăng nhập thành công!");
         navigation.navigate("Home");
