@@ -30,14 +30,18 @@ export default function App() {
     <SafeAreaProvider>
       <ToastProvider>
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Start">
+          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="ResetPassword">
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="Start" component={Start} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
             <Stack.Screen name="Verification" component={Verification} />
-            <Stack.Screen name="ResetPassword" component={ResetPassword} />
+            <Stack.Screen
+              name="ResetPassword"
+              component={ResetPassword}
+              initialParams={{ email: "test@example.com" }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </ToastProvider>
