@@ -1,10 +1,17 @@
 {
   "expo": {
-    "name": "frontend",
+    "name": "Trekker",
     "slug": "frontend",
     "version": "1.0.0",
     "orientation": "portrait",
+    "icon": "./assets/adaptive-icon.png",
     "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F93C3"
+    },
+    
     "ios": {
       "supportsTablet": true
     },
