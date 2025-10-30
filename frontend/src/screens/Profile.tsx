@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  GestureResponderEvent,
-} from "react-native";
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, GestureResponderEvent } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -20,8 +12,7 @@ type MenuItemProps = {
 };
 
 export default function Profile() {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -29,7 +20,10 @@ export default function Profile() {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => navigation.goBack()}
+          activeOpacity={0.7}
+          onPress={() => {
+            navigation.navigate("Home");
+          }}
         >
           <Ionicons name="chevron-back" size={22} color="#1B1E28" />
         </TouchableOpacity>
@@ -57,39 +51,21 @@ export default function Profile() {
         />
         <Divider />
         <MenuItem
-          icon={
-            <MaterialCommunityIcons
-              name="chart-bar"
-              size={20}
-              color="#7D848D"
-            />
-          }
+          icon={<MaterialCommunityIcons name="chart-bar" size={20} color="#7D848D" />}
           label="Thống kê"
           onPress={undefined}
         />
         <Divider />
-        <MenuItem
-          icon={<Feather name="file-text" size={20} color="#7D848D" />}
-          label="Hóa đơn"
-          onPress={undefined}
-        />
+        <MenuItem icon={<Feather name="file-text" size={20} color="#7D848D" />} label="Hóa đơn" onPress={undefined} />
         <Divider />
         <MenuItem
-          icon={
-            <MaterialCommunityIcons
-              name="message-text-outline"
-              size={20}
-              color="#7D848D"
-            />
-          }
+          icon={<MaterialCommunityIcons name="message-text-outline" size={20} color="#7D848D" />}
           label="Review"
           onPress={undefined}
         />
         <Divider />
         <MenuItem
-          icon={
-            <MaterialCommunityIcons name="logout" size={20} color="#7D848D" />
-          }
+          icon={<MaterialCommunityIcons name="logout" size={20} color="#7D848D" />}
           label="Đăng xuất"
           onPress={undefined}
         />
@@ -113,12 +89,12 @@ const Divider = () => <View style={styles.divider} />;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#ffffffff",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     paddingHorizontal: 20,
     paddingTop: 56,
     paddingBottom: 16,
@@ -126,38 +102,36 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   backButton: {
+    position: "absolute",
+    left: 20,
+    top: 56,
     width: 36,
     height: 36,
     borderRadius: 18,
     backgroundColor: "#F3F4F6",
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 10,
   },
   headerTitle: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    textAlign: "center",
-    textAlignVertical: "center", // Android căn giữa theo trục Y
     fontSize: 18,
     fontWeight: "600",
     color: "#1B1E28",
-    justifyContent: "center",
-    paddingTop: 40,
+    textAlign: "center",
   },
   userSection: {
     alignItems: "center",
-    marginTop: 28,
-    marginBottom: 24,
+    marginTop: 40,
+    marginBottom: 50,
   },
   avatar: {
-    width: 90,
-    height: 90,
+    width: 120,
+    height: 120,
     borderRadius: 45,
-    marginBottom: 10,
+    marginBottom: 18,
   },
   username: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: "600",
     color: "#1B1E28",
   },
@@ -170,11 +144,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 18,
     marginHorizontal: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowColor: "#383838ff",
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 6,
-    elevation: 2,
+    elevation: 1,
     marginBottom: 40,
   },
   menuItem: {
