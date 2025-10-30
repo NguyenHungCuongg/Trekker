@@ -2,10 +2,15 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import Svg, { Path } from "react-native-svg";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../../App";
 
 export default function BottomNav() {
   const activeColor = "#0F93C3";
   const inactiveColor = "#7D848D";
+
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
     <View style={styles.container}>
@@ -16,14 +21,25 @@ export default function BottomNav() {
 
       {/* Các nút menu */}
       <View style={styles.navContainer}>
-        <NavItem label="Trang chủ" icon={<Feather name="home" size={24} color={activeColor} />} active />
-        <NavItem label="Tour" icon={<Feather name="map-pin" size={24} color={inactiveColor} />} />
+        <NavItem
+          label="Trang chủ"
+          icon={<Feather name="home" size={24} color={activeColor} />}
+          active
+          onPress={() => {}}
+        />
+        <NavItem label="Tour" icon={<Feather name="map-pin" size={24} color={inactiveColor} />} onPress={() => {}} />
         <View style={{ width: 70 }} />
         <NavItem
           label="Chỗ ở"
-          icon={<MaterialCommunityIcons name="office-building-outline" size={24} color={inactiveColor} />}
+          icon={
+            <MaterialCommunityIcons name="office-building-outline" size={24} color={inactiveColor} onPress={() => {}} />
+          }
         />
-        <NavItem label="Hồ sơ" icon={<Feather name="user" size={24} color={inactiveColor} />} />
+        <NavItem
+          label="Hồ sơ"
+          icon={<Feather name="user" size={24} color={inactiveColor} />}
+          onPress={() => navigation.navigate("Profile")}
+        />
       </View>
 
       {/* Nút trung tâm */}
@@ -36,9 +52,19 @@ export default function BottomNav() {
   );
 }
 
-function NavItem({ label, icon, active = false }: { label: string; icon: React.ReactNode; active?: boolean }) {
+function NavItem({
+  label,
+  icon,
+  active = false,
+  onPress,
+}: {
+  label: string;
+  icon: React.ReactNode;
+  active?: boolean;
+  onPress?: () => void;
+}) {
   return (
-    <TouchableOpacity style={styles.navItem}>
+    <TouchableOpacity style={styles.navItem} onPress={onPress}>
       {icon}
       <Text style={[styles.label, { color: active ? "#0F93C3" : "#7D848D" }]}>{label}</Text>
     </TouchableOpacity>
