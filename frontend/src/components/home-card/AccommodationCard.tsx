@@ -19,7 +19,7 @@ export default function AccommodationCard({ name, location, rating, price, image
       <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title} numberOfLines={1}>
+          <Text style={styles.title} numberOfLines={2}>
             {name}
           </Text>
           <View style={styles.rating}>
@@ -48,7 +48,9 @@ export default function AccommodationCard({ name, location, rating, price, image
               {location}
             </Text>
           </View>
-          <Text style={styles.price}>{price}</Text>
+          <Text style={styles.price} numberOfLines={1}>
+            {price}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -58,15 +60,17 @@ export default function AccommodationCard({ name, location, rating, price, image
 const styles = StyleSheet.create({
   card: {
     width: 268,
-    height: 384,
+    minHeight: 384,
     borderRadius: 24,
     backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOpacity: 0.12,
+    shadowColor: "#B4BCC9",
     shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
     shadowRadius: 16,
-    padding: 14,
     elevation: 6,
+    padding: 14,
+    marginHorizontal: 8,
+    marginTop: 8,
     marginBottom: 16,
   },
   image: {
@@ -77,11 +81,12 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingTop: 14,
+    flex: 1,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "flex-start",
     marginBottom: 10,
   },
   title: {
@@ -89,11 +94,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "400",
     flex: 1,
+    marginRight: 8,
   },
   rating: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+    flexShrink: 0,
   },
   ratingText: {
     color: "#1B1E28",
@@ -108,13 +115,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+    flex: 1,
+    marginRight: 8,
   },
   locationText: {
     color: "#7D848D",
     fontSize: 15,
+    flex: 1,
   },
   price: {
     color: "#15C4C8",
     fontSize: 15,
+    flexShrink: 0,
   },
 });
