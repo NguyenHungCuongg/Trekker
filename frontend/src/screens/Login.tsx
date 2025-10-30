@@ -7,9 +7,9 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-nati
 import type { RootStackParamList } from "../../App";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useToast } from "../components/context/ToastContext";
-import BackButton from "../components/login&register/BackButton";
-import AuthField from "../components/login&register/AuthField";
-import PasswordField from "../components/login&register/PasswordField";
+import BackButton from "../components/login-register/BackButton";
+import AuthField from "../components/login-register/AuthField";
+import PasswordField from "../components/login-register/PasswordField";
 
 export default function Login() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();

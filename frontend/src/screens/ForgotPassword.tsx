@@ -5,7 +5,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../../App";
 import { useToast } from "../components/context/ToastContext";
 import axiosInstance from "../utils/axiosInstance";
-import BackButton from "../components/login&register/BackButton";
+import BackButton from "../components/login-register/BackButton";
 
 export default function ForgotPassword() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();

@@ -5,8 +5,8 @@ import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-nati
 import { Ionicons } from "@expo/vector-icons";
 import { useToast } from "../components/context/ToastContext";
 import axiosInstance from "../utils/axiosInstance";
-import AuthField from "../components/login&register/AuthField";
-import BackButton from "../components/login&register/BackButton";
+import AuthField from "../components/login-register/AuthField";
+import BackButton from "../components/login-register/BackButton";
 
 export default function Register() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();

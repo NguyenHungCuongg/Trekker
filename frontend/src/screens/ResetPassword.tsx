@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
-import BackButton from "../components/login&register/BackButton";
-import PasswordField from "../components/login&register/PasswordField";
+import BackButton from "../components/login-register/BackButton";
+import PasswordField from "../components/login-register/PasswordField";
 import { useToast } from "../components/context/ToastContext";
 import axiosInstance from "../utils/axiosInstance";
 
