@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     shadowRadius: 16,
     elevation: 6,
     padding: 14,
-    marginHorizontal: 8,
+    marginHorizontal: 4,
     marginTop: 8,
     marginBottom: 16,
   },
@@ -80,12 +80,12 @@ const styles = StyleSheet.create({
     paddingTop: 14,
     paddingHorizontal: 6,
     flex: 1,
+    justifyContent: "space-between",
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: 10,
   },
   title: {
     color: "#1B1E28",

@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import Svg, { Path } from "react-native-svg";
+import Svg, { Path, Defs, Filter, FeDropShadow } from "react-native-svg";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../App";
@@ -16,7 +16,18 @@ export default function BottomNav() {
     <View style={styles.container}>
       {/* Nền cong */}
       <Svg width="100%" height="120" viewBox="0 0 375 90" preserveAspectRatio="none" style={styles.svgBackground}>
-        <Path d="M0,20 C80,0 295,0 375,20 L375,90 L0,90 Z" fill="white" />
+        <Defs>
+          <Filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+            <FeDropShadow
+              dx="0"
+              dy="-2" // Offset dọc (âm = shadow ở trên)
+              stdDeviation="8" // Độ mờ
+              floodColor="#7d7d7dff" // Màu shadow
+              floodOpacity="0.05" // Độ đậm (0-1)
+            />
+          </Filter>
+        </Defs>
+        <Path d="M0,20 C80,0 295,0 375,20 L375,90 L0,90 Z" fill="white" filter="url(#shadow)" />
       </Svg>
 
       {/* Các nút menu */}
@@ -113,11 +124,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#0F93C3",
     justifyContent: "center",
     alignItems: "center",
-    elevation: 10,
-    shadowColor: "#000",
+    elevation: 2,
+    shadowColor: "#404040ff",
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
     marginBottom: 20,
   },
 });
