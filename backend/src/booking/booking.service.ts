@@ -70,4 +70,10 @@ export class BookingService {
     const whereCondition = userId ? { userId } : {};
     return this.bookingRepository.count({ where: whereCondition });
   }
+
+  async updateStatus(id: number, status: BookingStatus): Promise<Booking> {
+    const booking = await this.findOne(id);
+    booking.status = status;
+    return this.bookingRepository.save(booking);
+  }
 }

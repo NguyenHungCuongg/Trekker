@@ -77,4 +77,14 @@ export class ReviewService {
     const review = await this.findOne(id, userId);
     await this.reviewRepository.remove(review);
   }
+
+  async removeByAdmin(id: number): Promise<void> {
+    const review = await this.reviewRepository.findOne({
+      where: { id },
+    });
+    if (!review) {
+      throw new NotFoundException(`Không tìm thấy review với Id ${id}`);
+    }
+    await this.reviewRepository.remove(review);
+  }
 }

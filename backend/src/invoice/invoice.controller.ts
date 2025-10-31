@@ -9,6 +9,10 @@ import {
 import { InvoiceService } from "./invoice.service";
 import { Invoice } from "./invoice.entity";
 import { JwtAuthGuard } from "../auth/jwt.authguard";
+import { RolesGuard } from "../auth/guards/roles.guard";
+import { Roles } from "../auth/decorators/roles.decorator";
+import { UserRole } from "../common/enums";
+
 @Controller("invoices")
 @UseGuards(JwtAuthGuard)
 export class InvoiceController {
@@ -33,5 +37,22 @@ export class InvoiceController {
     @Request() req,
   ): Promise<Invoice[]> {
     return this.invoiceService.findByBookingId(bookingId, req.user.userId);
+  }
+
+  // Admin endpoints
+  @Get("admin/all")
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async findAllInvoices(): Promise<Invoice[]> {
+    return this.invoiceService.findAll();
+  }
+
+  @Get("admin/:id")
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async findInvoiceById(
+    @Param("id", ParseIntPipe) id: number,
+  ): Promise<Invoice> {
+    return this.invoiceService.findOne(id);
   }
 }

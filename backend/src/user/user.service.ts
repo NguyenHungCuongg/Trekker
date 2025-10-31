@@ -8,6 +8,7 @@ import { Repository } from "typeorm";
 import { User } from "./user.entity";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { ChangePasswordDto } from "./dto/change-password.dto";
+import { UserRole } from "../common/enums";
 import bcrypt from "bcryptjs";
 
 @Injectable()
@@ -16,6 +17,13 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
+
+  async findAll(): Promise<User[]> {
+    return this.userRepository.find({
+      relations: ["bookings", "reviews"],
+      order: { createdAt: "DESC" },
+    });
+  }
 
   async findOne(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
@@ -81,6 +89,15 @@ export class UserService {
         user.email = updateUserDto.email;
       }
     }
+
+    if (updateUserDto.role !== undefined) {
+      user.role = updateUserDto.role;
+    }
+
+    if (updateUserDto.profileImage !== undefined) {
+      user.profileImage = updateUserDto.profileImage;
+    }
+
     return this.userRepository.save(user);
   }
 
@@ -111,5 +128,16 @@ export class UserService {
 
   async findByUsername(username: string): Promise<User | null> {
     return this.userRepository.findOne({ where: { username } });
+  }
+
+  async updateRole(id: number, role: UserRole): Promise<User> {
+    const user = await this.findOne(id);
+    user.role = role;
+    return this.userRepository.save(user);
+  }
+
+  async remove(id: number): Promise<void> {
+    const user = await this.findOne(id);
+    await this.userRepository.remove(user);
   }
 }

@@ -81,4 +81,20 @@ export class TourService {
   async count(): Promise<number> {
     return this.tourRepository.count();
   }
+
+  async create(createTourDto: Partial<Tour>): Promise<Tour> {
+    const tour = this.tourRepository.create(createTourDto);
+    return this.tourRepository.save(tour);
+  }
+
+  async update(id: number, updateTourDto: Partial<Tour>): Promise<Tour> {
+    const tour = await this.findOne(id);
+    Object.assign(tour, updateTourDto);
+    return this.tourRepository.save(tour);
+  }
+
+  async remove(id: number): Promise<void> {
+    const tour = await this.findOne(id);
+    await this.tourRepository.remove(tour);
+  }
 }
