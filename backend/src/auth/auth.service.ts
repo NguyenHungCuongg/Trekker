@@ -65,4 +65,14 @@ export class AuthService {
 
     return ResponseEntity.success("Đặt lại mật khẩu thành công");
   }
+
+  async findByUsername(username: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { username } });
+  }
+
+  //Method tạm thời để tạo admin: Tạo user với password đã hash (dùng trong create-admin). Lúc sau xóa nha
+  async createUserWithHashedPassword(userDTO: CreateUserDto): Promise<User> {
+    const user = await this.userRepository.save(userDTO);
+    return user;
+  }
 }

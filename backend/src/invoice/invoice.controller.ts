@@ -40,7 +40,7 @@ export class InvoiceController {
   }
 
   // Admin endpoints
-  @Get("admin/all")
+  @Get("admin")
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
   async findAllInvoices(): Promise<Invoice[]> {

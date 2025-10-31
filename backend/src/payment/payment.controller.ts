@@ -59,7 +59,7 @@ export class PaymentController {
   }
 
   // Admin endpoints
-  @Get("admin/all")
+  @Get("admin")
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
   async findAllPayments(): Promise<Payment[]> {

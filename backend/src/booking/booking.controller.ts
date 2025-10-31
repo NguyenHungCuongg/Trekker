@@ -63,7 +63,7 @@ export class BookingController {
   }
 
   // Admin endpoints
-  @Get("admin/all")
+  @Get("admin")
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
   async findAllBookings(): Promise<Booking[]> {

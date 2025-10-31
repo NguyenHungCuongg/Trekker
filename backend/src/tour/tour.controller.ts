@@ -44,7 +44,7 @@ export class TourController {
   }
 
   // Admin endpoints
-  @Get("admin/all")
+  @Get("admin")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   async findAllTours(): Promise<Tour[]> {

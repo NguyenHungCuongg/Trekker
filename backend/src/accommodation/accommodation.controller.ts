@@ -51,7 +51,7 @@ export class AccommodationController {
   }
 
   // Admin endpoints
-  @Get("admin/all")
+  @Get("admin")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   async findAllAccommodations(): Promise<Accommodation[]> {

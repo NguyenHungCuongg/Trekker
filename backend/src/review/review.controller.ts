@@ -67,11 +67,11 @@ export class ReviewController {
     @Request() req,
   ): Promise<{ message: string }> {
     await this.reviewService.remove(id, req.user.userId);
-    return { message: "Review deleted successfully" };
+    return { message: "Review đã được xóa thành công" };
   }
 
   // Admin endpoints
-  @Get("admin/all")
+  @Get("admin")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   async findAllReviews(): Promise<Review[]> {
@@ -92,6 +92,6 @@ export class ReviewController {
     @Param("id", ParseIntPipe) id: number,
   ): Promise<{ message: string }> {
     await this.reviewService.removeByAdmin(id);
-    return { message: "Đánh giá đã được xóa thành công" };
+    return { message: "Review đã được xóa thành công" };
   }
 }
