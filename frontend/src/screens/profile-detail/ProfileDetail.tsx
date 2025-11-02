@@ -1,19 +1,50 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Image } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Image, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../App";
+import { User } from "../../types";
+import axiosInstance from "../../utils/axiosInstance";
 import { styles } from "./profileDetailStyles";
 
 export default function ProfileDetail() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    fullName: "Đại dại di",
-    username: "Sao cũng được",
-    email: "nhom17@gmail.com",
-    phone: "+88 01758-000666",
+    fullName: "",
+    username: "",
+    email: "",
+    phone: "",
   });
+  /*
+  For Đạt:
+  Cái user là để coi dữ liệu gốc từ backend, còn 
+  cái formData là để user sửa tạm thời để m làm chức năng
+  edit nha cu!
+  */
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await axiosInstance.get("/users/profile");
+      setUser(response.data);
+      setFormData({
+        fullName: response.data.fullName || "",
+        username: response.data.username || "",
+        email: response.data.email || "",
+        phone: response.data.phone || "",
+      });
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -37,77 +68,87 @@ export default function ProfileDetail() {
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Avatar */}
-        <View style={styles.avatarSection}>
-          <Image
-            source={{
-              uri: "https://api.builder.io/api/v1/image/assets/TEMP/262654fd78b73747670ca9b2eda301ae21af9466?width=298",
-            }}
-            style={styles.avatar}
-          />
-          <Text style={styles.username}>Username</Text>
-          <TouchableOpacity>
-            <Text style={styles.changeAvatar}>Đổi ảnh đại diện</Text>
-          </TouchableOpacity>
-        </View>
+        {loading ? (
+          <ActivityIndicator size="large" color="#0F93C3" style={{ marginVertical: 40 }} />
+        ) : (
+          <>
+            {/* Avatar */}
+            <View style={styles.avatarSection}>
+              <Image
+                source={
+                  user?.profileImage ? { uri: user.profileImage } : require("../../../assets/default-profile-image.jpg")
+                }
+                style={styles.avatar}
+              />
+              <Text style={styles.username}>{user?.username || "Guest"}</Text>
+              <TouchableOpacity>
+                <Text style={styles.changeAvatar}>Đổi ảnh đại diện</Text>
+              </TouchableOpacity>
+            </View>
 
-        {/* Full Name */}
-        <View style={styles.formSection}>
-          <Text style={styles.label}>Họ và tên</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              value={formData.fullName}
-              onChangeText={(val) => handleInputChange("fullName", val)}
-              style={styles.input}
-              placeholderTextColor="#7D848D"
-            />
-            <Feather name="edit-2" size={18} color="#0F93C3" />
-          </View>
-        </View>
+            {/* Full Name */}
+            <View style={styles.formSection}>
+              <Text style={styles.label}>Họ và tên</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  value={formData.fullName}
+                  onChangeText={(val) => handleInputChange("fullName", val)}
+                  style={styles.input}
+                  placeholderTextColor="#7D848D"
+                  placeholder="Nhập họ và tên"
+                />
+                <Feather name="edit-2" size={18} color="#0F93C3" />
+              </View>
+            </View>
 
-        {/* Username */}
-        <View style={styles.formSection}>
-          <Text style={styles.label}>Tên đăng nhập</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              value={formData.username}
-              onChangeText={(val) => handleInputChange("username", val)}
-              style={styles.input}
-              placeholderTextColor="#7D848D"
-            />
-            <Feather name="edit-2" size={18} color="#0F93C3" />
-          </View>
-        </View>
+            {/* Username */}
+            <View style={styles.formSection}>
+              <Text style={styles.label}>Tên đăng nhập</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  value={formData.username}
+                  onChangeText={(val) => handleInputChange("username", val)}
+                  style={styles.input}
+                  placeholderTextColor="#7D848D"
+                  placeholder="Nhập tên đăng nhập"
+                />
+                <Feather name="edit-2" size={18} color="#0F93C3" />
+              </View>
+            </View>
 
-        {/* Email */}
-        <View style={styles.formSection}>
-          <Text style={styles.label}>Email</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              value={formData.email}
-              onChangeText={(val) => handleInputChange("email", val)}
-              style={styles.input}
-              keyboardType="email-address"
-              placeholderTextColor="#7D848D"
-            />
-            <Feather name="edit-2" size={18} color="#0F93C3" />
-          </View>
-        </View>
+            {/* Email */}
+            <View style={styles.formSection}>
+              <Text style={styles.label}>Email</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  value={formData.email}
+                  onChangeText={(val) => handleInputChange("email", val)}
+                  style={styles.input}
+                  keyboardType="email-address"
+                  placeholderTextColor="#7D848D"
+                  placeholder="Nhập email"
+                />
+                <Feather name="edit-2" size={18} color="#0F93C3" />
+              </View>
+            </View>
 
-        {/* Phone */}
-        <View style={styles.formSection}>
-          <Text style={styles.label}>Số điện thoại</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              value={formData.phone}
-              onChangeText={(val) => handleInputChange("phone", val)}
-              style={styles.input}
-              keyboardType="phone-pad"
-              placeholderTextColor="#7D848D"
-            />
-            <Feather name="edit-2" size={18} color="#0F93C3" />
-          </View>
-        </View>
+            {/* Phone */}
+            <View style={styles.formSection}>
+              <Text style={styles.label}>Số điện thoại</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  value={formData.phone}
+                  onChangeText={(val) => handleInputChange("phone", val)}
+                  style={styles.input}
+                  keyboardType="phone-pad"
+                  placeholderTextColor="#7D848D"
+                  placeholder="Nhập số điện thoại"
+                />
+                <Feather name="edit-2" size={18} color="#0F93C3" />
+              </View>
+            </View>
+          </>
+        )}
       </ScrollView>
 
       {/* Home Indicator */}

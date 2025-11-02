@@ -1,9 +1,19 @@
-import React from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView, GestureResponderEvent } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  GestureResponderEvent,
+  ActivityIndicator,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../App";
+import { User } from "../../types";
+import axiosInstance from "../../utils/axiosInstance";
 import { styles } from "./profileStyles";
 
 type MenuItemProps = {
@@ -14,10 +24,26 @@ type MenuItemProps = {
 
 export default function Profile() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await axiosInstance.get("/users/profile");
+      setUser(response.data);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
@@ -33,14 +59,20 @@ export default function Profile() {
 
       {/* User Info */}
       <View style={styles.userSection}>
-        <Image
-          source={{
-            uri: "https://api.builder.io/api/v1/image/assets/TEMP/262654fd78b73747670ca9b2eda301ae21af9466?width=298",
-          }}
-          style={styles.avatar}
-        />
-        <Text style={styles.username}>Username</Text>
-        <Text style={styles.email}>diachimail@gmail.com</Text>
+        {loading ? (
+          <ActivityIndicator size="large" color="#0F93C3" style={{ marginVertical: 40 }} />
+        ) : (
+          <>
+            <Image
+              source={
+                user?.profileImage ? { uri: user.profileImage } : require("../../../assets/default-profile-image.jpg")
+              }
+              style={styles.avatar}
+            />
+            <Text style={styles.username}>{user?.username || "Guest"}</Text>
+            <Text style={styles.email}>{user?.email || "No email"}</Text>
+          </>
+        )}
       </View>
 
       {/* Menu Card */}
