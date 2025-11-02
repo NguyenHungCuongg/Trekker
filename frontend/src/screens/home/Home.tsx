@@ -1,48 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, Image, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import LocationCard from "../components/home-card/LocationCard";
-import DestinationCard from "../components/home-card/DestinationCard";
-import TourCard from "../components/home-card/TourCard";
-import AccommodationCard from "../components/home-card/AccommodationCard";
-import BottomNav from "../components/home/BottomNav";
-import axiosInstance from "../utils/axiosInstance";
-
-interface Location {
-  name: string;
-  accommodations: number;
-  tours: number;
-  image: string;
-}
-
-interface Destination {
-  name: string;
-  tours: number;
-  image: string;
-}
-
-interface Tour {
-  title: string;
-  location: string;
-  rating: number;
-  price: string;
-  image: string;
-}
-
-interface Accommodation {
-  name: string;
-  location: string;
-  rating: number;
-  price: string;
-  image: string;
-}
-
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  profileImage: string | null;
-}
+import LocationCard from "../../components/home-card/LocationCard";
+import DestinationCard from "../../components/home-card/DestinationCard";
+import TourCard from "../../components/home-card/TourCard";
+import AccommodationCard from "../../components/home-card/AccommodationCard";
+import BottomNav from "../../components/home/BottomNav";
+import axiosInstance from "../../utils/axiosInstance";
+import { User, Location, Destination, Tour, Accommodation } from "../../types";
+import { styles } from "./homeStyles";
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
@@ -62,6 +28,7 @@ export default function Home() {
       setLoading(false);
     }
   };
+
   // Data cho LocationCard (Top tỉnh/thành)
   const locations: Location[] = [
     {
@@ -164,7 +131,9 @@ export default function Home() {
               <>
                 <Image
                   source={
-                    user?.profileImage ? { uri: user.profileImage } : require("../../assets/default-profile-image.jpg")
+                    user?.profileImage
+                      ? { uri: user.profileImage }
+                      : require("../../../assets/default-profile-image.jpg")
                   }
                   style={styles.avatar}
                 />
@@ -246,73 +215,3 @@ export default function Home() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 56,
-  },
-  profile: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  username: {
-    marginLeft: 8,
-    color: "#1B1E28",
-    fontWeight: "600",
-    fontSize: 14,
-  },
-  hero: {
-    paddingHorizontal: 20,
-    marginTop: 40,
-  },
-  heroText1: {
-    fontSize: 32,
-    color: "#1B1E28",
-    lineHeight: 40,
-  },
-  heroText2: {
-    fontSize: 32,
-    color: "#1B1E28",
-    fontWeight: "bold",
-    lineHeight: 40,
-  },
-  highlight: {
-    color: "#15C4C8",
-  },
-  section: {
-    marginTop: 40,
-    paddingHorizontal: 20,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    color: "#1B1E28",
-    fontWeight: "bold",
-  },
-  sectionLink: {
-    color: "#0F93C3",
-    fontSize: 14,
-  },
-  scrollContainer: {
-    gap: 16,
-    paddingRight: 20,
-  },
-});

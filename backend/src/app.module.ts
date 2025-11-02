@@ -16,6 +16,7 @@ import configuration from "./config/configuration";
 import { typeOrmAsyncConfig } from "./config/db.config";
 import { EmailModule } from "./email/email.module";
 import { VerificationCodeModule } from "./verification-code/verification-code.module";
+import { CloudinaryModule } from "./cloudinary/cloudinary.module";
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { VerificationCodeModule } from "./verification-code/verification-code.mo
     ReviewModule,
     EmailModule,
     VerificationCodeModule,
+    CloudinaryModule,
   ],
   controllers: [],
   providers: [],

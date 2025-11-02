@@ -1,12 +1,12 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Start from "./src/screens/Start";
-import Login from "./src/screens/Login";
-import Register from "./src/screens/Register";
-import Verification from "./src/screens/Verification";
-import ForgotPassword from "./src/screens/ForgotPassword";
-import Home from "./src/screens/Home";
+import Start from "./src/screens/start/Start";
+import Login from "./src/screens/login/Login";
+import Register from "./src/screens/register/Register";
+import Verification from "./src/screens/verification/Verification";
+import ForgotPassword from "./src/screens/forgot-password/ForgotPassword";
+import Home from "./src/screens/home/Home";
 
 export type RootStackParamList = {
   Start: undefined;
