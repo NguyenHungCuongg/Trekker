@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, Image, ActivityInd
 import { useNavigation } from "@react-navigation/native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import * as ImagePicker from "expo-image-picker";
 import { RootStackParamList } from "../../../App";
 import { User } from "../../types";
 import axiosInstance from "../../utils/axiosInstance";
@@ -15,6 +16,7 @@ export default function ProfileDetail() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     username: "",
@@ -86,6 +88,81 @@ export default function ProfileDetail() {
       return false;
     }
     return true;
+  };
+
+  // Hàm chọn và upload ảnh đại diện
+  const handleChangeAvatar = async () => {
+    try {
+      // Xin quyền truy cập thư viện ảnh
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (permissionResult.granted === false) {
+        showToast("error", "Bạn cần cấp quyền truy cập thư viện ảnh!");
+        return;
+      }
+
+      // Mở thư viện ảnh
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1], // Crop vuông
+        quality: 0.8,
+      });
+
+      if (result.canceled) {
+        return;
+      }
+
+      const imageUri = result.assets[0].uri;
+
+      // Confirm trước khi upload
+      Alert.alert("Xác nhận thay đổi", "Bạn có muốn cập nhật ảnh đại diện?", [
+        {
+          text: "Hủy",
+          style: "cancel",
+        },
+        {
+          text: "Cập nhật",
+          onPress: () => uploadAvatar(imageUri),
+        },
+      ]);
+    } catch (error) {
+      console.error("Error picking image:", error);
+      showToast("error", "Có lỗi khi chọn ảnh!");
+    }
+  };
+
+  // Hàm upload ảnh lên server
+  const uploadAvatar = async (imageUri: string) => {
+    try {
+      setUploadingImage(true);
+      const formData = new FormData();
+      const filename = imageUri.split("/").pop() || "profile.jpg";
+      const match = /\.(\w+)$/.exec(filename);
+      const type = match ? `image/${match[1]}` : "image/jpeg";
+      formData.append("file", {
+        uri: imageUri,
+        name: filename,
+        type: type,
+      } as any);
+      const response = await axiosInstance.put("/users/profile/upload-image", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setUser((prev) => (prev ? { ...prev, profileImage: response.data.imageUrl } : null));
+      showToast("success", "Cập nhật ảnh đại diện thành công!");
+    } catch (error: any) {
+      console.error("Error uploading avatar:", error);
+
+      if (error.response?.status === 400) {
+        showToast("error", error.response.data.message || "File không hợp lệ");
+      } else {
+        showToast("error", "Upload ảnh thất bại. Vui lòng thử lại!");
+      }
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleDone = async () => {
@@ -162,15 +239,25 @@ export default function ProfileDetail() {
           <>
             {/* Avatar */}
             <View style={styles.avatarSection}>
-              <Image
-                source={
-                  user?.profileImage ? { uri: user.profileImage } : require("../../../assets/default-profile-image.jpg")
-                }
-                style={styles.avatar}
-              />
+              {uploadingImage ? (
+                <View style={styles.avatar}>
+                  <ActivityIndicator size="large" color="#0F93C3" />
+                </View>
+              ) : (
+                <Image
+                  source={
+                    user?.profileImage
+                      ? { uri: user.profileImage }
+                      : require("../../../assets/default-profile-image.jpg")
+                  }
+                  style={styles.avatar}
+                />
+              )}
               <Text style={styles.username}>{user?.username || "Guest"}</Text>
-              <TouchableOpacity>
-                <Text style={styles.changeAvatar}>Đổi ảnh đại diện</Text>
+              <TouchableOpacity onPress={handleChangeAvatar} disabled={uploadingImage || saving}>
+                <Text style={[styles.changeAvatar, (uploadingImage || saving) && { opacity: 0.5 }]}>
+                  {uploadingImage ? "Đang tải lên..." : "Đổi ảnh đại diện"}
+                </Text>
               </TouchableOpacity>
             </View>
 
