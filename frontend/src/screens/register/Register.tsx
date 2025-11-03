@@ -20,29 +20,77 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleRegister = async () => {
+  const validateForm = (): boolean => {
+    if (!fullName.trim()) {
+      showToast("error", "Họ và tên không được để trống");
+      return false;
+    }
+    if (!username.trim()) {
+      showToast("error", "Tên đăng nhập không được để trống");
+      return false;
+    }
+    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+    if (!usernameRegex.test(username)) {
+      showToast("error", "Tên đăng nhập phải có 3-20 ký tự (chữ, số, _)");
+      return false;
+    }
+    if (!phone.trim()) {
+      showToast("error", "Số điện thoại không được để trống");
+      return false;
+    }
+    if (!email.trim()) {
+      showToast("error", "Email không được để trống");
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showToast("error", "Email không hợp lệ");
+      return false;
+    }
+    if (!password) {
+      showToast("error", "Mật khẩu không được để trống");
+      return false;
+    }
+    if (!confirmPassword) {
+      showToast("error", "Vui lòng xác nhận mật khẩu");
+      return false;
+    }
     if (password !== confirmPassword) {
       showToast("error", "Mật khẩu xác nhận không khớp!");
+      return false;
+    }
+    return true;
+  };
+
+  const handleRegister = async () => {
+    if (!validateForm()) {
       return;
     }
-    if (!fullName || !username || !phone || !email || !password || !confirmPassword) {
-      showToast("error", "Vui lòng điền đầy đủ thông tin đăng ký!");
-      return;
-    }
+
     try {
       const response = await axiosInstance.post("/auth/register", {
-        username,
+        username: username.trim(),
         password,
-        fullName,
-        phone,
-        email,
+        fullName: fullName.trim(),
+        phone: phone.trim().replace(/\s/g, ""),
+        email: email.trim().toLowerCase(),
       });
+
       if (response.data) {
         showToast("success", "Đăng ký thành công! Vui lòng đăng nhập.");
-        navigation.navigate("Login");
+        setTimeout(() => {
+          navigation.navigate("Login");
+        }, 1000);
       }
-    } catch (error) {
-      showToast("error", "Đăng ký không thành công!" + error);
+    } catch (error: any) {
+      console.error("Register error:", error);
+      if (error.response?.status === 400) {
+        showToast("error", error.response.data.message || "Dữ liệu không hợp lệ");
+      } else if (error.response?.status === 409) {
+        showToast("error", "Tên đăng nhập hoặc email đã tồn tại");
+      } else {
+        showToast("error", "Đăng ký không thành công! Vui lòng thử lại.");
+      }
     }
   };
 
