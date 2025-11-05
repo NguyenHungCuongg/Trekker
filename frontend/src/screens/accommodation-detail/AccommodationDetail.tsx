@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path, Circle } from "react-native-svg";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "./accommodationDetailStyles";
 
 export default function AccommodationDetail() {
   const navigation = useNavigation();
+  const [selectedRoomType, setSelectedRoomType] = useState<number | null>(null);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       {/* Hero section */}
       <View style={styles.heroSection}>
         <Image
@@ -32,7 +34,11 @@ export default function AccommodationDetail() {
       </View>
 
       {/* Content section */}
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.handle} />
 
         <View style={styles.header}>
@@ -133,40 +139,106 @@ export default function AccommodationDetail() {
         <Text style={styles.sectionTitle}>Loại phòng</Text>
         <View style={styles.roomTypesContainer}>
           {/* Room Type Card 1 */}
-          <View style={styles.roomTypeCard}>
+          <TouchableOpacity
+            style={[styles.roomTypeCard, selectedRoomType === 1 && styles.roomTypeCardSelected]}
+            onPress={() => setSelectedRoomType(selectedRoomType === 1 ? null : 1)}
+            activeOpacity={0.7}
+          >
             <View style={styles.roomTypeHeader}>
-              <Text style={styles.roomTypeName}>Phòng Deluxe</Text>
-              <Text style={styles.roomTypePrice}>1.500.000đ/đêm</Text>
+              <Text style={[styles.roomTypeName, selectedRoomType === 1 && styles.roomTypeNameSelected]}>
+                Phòng Deluxe
+              </Text>
+              <Text style={[styles.roomTypePrice, selectedRoomType === 1 && styles.roomTypePriceSelected]}>
+                1.500.000đ/đêm
+              </Text>
             </View>
             <Text style={styles.roomTypeCapacity}>Sức chứa: 2 người</Text>
             <Text style={styles.roomTypeAmenities}>Tiện nghi: WiFi, TV, Điều hòa, Minibar</Text>
-          </View>
+            {selectedRoomType === 1 && (
+              <View style={styles.selectedIndicator}>
+                <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
+                  <Circle cx="8" cy="8" r="8" fill="#0F93C3" />
+                  <Path
+                    d="M11.3346 5.33398L6.66797 10.0007L4.66797 8.00065"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </Svg>
+              </View>
+            )}
+          </TouchableOpacity>
 
           {/* Room Type Card 2 */}
-          <View style={styles.roomTypeCard}>
+          <TouchableOpacity
+            style={[styles.roomTypeCard, selectedRoomType === 2 && styles.roomTypeCardSelected]}
+            onPress={() => setSelectedRoomType(selectedRoomType === 2 ? null : 2)}
+            activeOpacity={0.7}
+          >
             <View style={styles.roomTypeHeader}>
-              <Text style={styles.roomTypeName}>Phòng Suite</Text>
-              <Text style={styles.roomTypePrice}>2.500.000đ/đêm</Text>
+              <Text style={[styles.roomTypeName, selectedRoomType === 2 && styles.roomTypeNameSelected]}>
+                Phòng Suite
+              </Text>
+              <Text style={[styles.roomTypePrice, selectedRoomType === 2 && styles.roomTypePriceSelected]}>
+                2.500.000đ/đêm
+              </Text>
             </View>
             <Text style={styles.roomTypeCapacity}>Sức chứa: 4 người</Text>
             <Text style={styles.roomTypeAmenities}>Tiện nghi: WiFi, TV, Điều hòa, Minibar, Bồn tắm</Text>
-          </View>
+            {selectedRoomType === 2 && (
+              <View style={styles.selectedIndicator}>
+                <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
+                  <Circle cx="8" cy="8" r="8" fill="#0F93C3" />
+                  <Path
+                    d="M11.3346 5.33398L6.66797 10.0007L4.66797 8.00065"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </Svg>
+              </View>
+            )}
+          </TouchableOpacity>
 
           {/* Room Type Card 3 */}
-          <View style={styles.roomTypeCard}>
+          <TouchableOpacity
+            style={[styles.roomTypeCard, selectedRoomType === 3 && styles.roomTypeCardSelected]}
+            onPress={() => setSelectedRoomType(selectedRoomType === 3 ? null : 3)}
+            activeOpacity={0.7}
+          >
             <View style={styles.roomTypeHeader}>
-              <Text style={styles.roomTypeName}>Phòng Standard</Text>
-              <Text style={styles.roomTypePrice}>800.000đ/đêm</Text>
+              <Text style={[styles.roomTypeName, selectedRoomType === 3 && styles.roomTypeNameSelected]}>
+                Phòng Standard
+              </Text>
+              <Text style={[styles.roomTypePrice, selectedRoomType === 3 && styles.roomTypePriceSelected]}>
+                800.000đ/đêm
+              </Text>
             </View>
             <Text style={styles.roomTypeCapacity}>Sức chứa: 2 người</Text>
             <Text style={styles.roomTypeAmenities}>Tiện nghi: WiFi, TV, Điều hòa</Text>
-          </View>
+            {selectedRoomType === 3 && (
+              <View style={styles.selectedIndicator}>
+                <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
+                  <Circle cx="8" cy="8" r="8" fill="#0F93C3" />
+                  <Path
+                    d="M11.3346 5.33398L6.66797 10.0007L4.66797 8.00065"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </Svg>
+              </View>
+            )}
+          </TouchableOpacity>
         </View>
 
         <TouchableOpacity style={styles.bookButton}>
           <Text style={styles.bookButtonText}>Đặt phòng</Text>
         </TouchableOpacity>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
