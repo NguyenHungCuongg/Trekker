@@ -30,17 +30,21 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   content: {
+    flex: 1,
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
     backgroundColor: "#fff",
     marginTop: -40,
-    paddingHorizontal: 20,
-    paddingTop: 20,
     shadowColor: "#000",
     shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: -4 },
     shadowRadius: 12,
     elevation: 2,
+  },
+  scrollContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 40,
   },
   handle: {
     width: 36,
@@ -152,8 +156,14 @@ export const styles = StyleSheet.create({
     backgroundColor: "#F5F7FA",
     borderRadius: 16,
     padding: 16,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "#E8ECF0",
+    position: "relative",
+  },
+  roomTypeCardSelected: {
+    backgroundColor: "#E6F7F8",
+    borderColor: "#0F93C3",
+    borderWidth: 2,
   },
   roomTypeHeader: {
     flexDirection: "row",
@@ -166,10 +176,16 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
+  roomTypeNameSelected: {
+    color: "#0F93C3",
+  },
   roomTypePrice: {
     color: "#15C4C8",
     fontSize: 16,
     fontWeight: "600",
+  },
+  roomTypePriceSelected: {
+    color: "#0F93C3",
   },
   roomTypeCapacity: {
     color: "#7D848D",
@@ -180,6 +196,11 @@ export const styles = StyleSheet.create({
     color: "#7D848D",
     fontSize: 13,
     lineHeight: 18,
+  },
+  selectedIndicator: {
+    position: "absolute",
+    top: 12,
+    right: 12,
   },
   bookButton: {
     width: "100%",
