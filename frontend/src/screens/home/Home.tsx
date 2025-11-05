@@ -9,8 +9,12 @@ import BottomNav from "../../components/home/BottomNav";
 import axiosInstance from "../../utils/axiosInstance";
 import { User, Location, Destination, Tour, Accommodation } from "../../types";
 import { styles } from "./homeStyles";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../../App";
 
 export default function Home() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -190,7 +194,7 @@ export default function Home() {
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
             {tours.map((tour, idx) => (
-              <TourCard key={idx} {...tour} />
+              <TourCard key={idx} {...tour} onPress={() => navigation.navigate("TourDetail")} />
             ))}
           </ScrollView>
         </View>
@@ -205,7 +209,11 @@ export default function Home() {
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
             {accommodations.map((accommodation, idx) => (
-              <AccommodationCard key={idx} {...accommodation} />
+              <AccommodationCard
+                key={idx}
+                {...accommodation}
+                onPress={() => navigation.navigate("AccommodationDetail")}
+              />
             ))}
           </ScrollView>
         </View>

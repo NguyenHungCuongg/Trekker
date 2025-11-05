@@ -14,6 +14,7 @@ import { ToastProvider } from "./src/components/context/ToastContext";
 import TourDetail from "./src/screens/tour-detail/TourDetail";
 import Profile from "./src/screens/profile/Profile";
 import ProfileDetail from "./src/screens/profile-detail/ProfileDetail";
+import AccommodationDetail from "./src/screens/accommodation-detail/AccommodationDetail";
 
 export type RootStackParamList = {
   Start: undefined;
@@ -26,6 +27,7 @@ export type RootStackParamList = {
   TourDetail: undefined;
   Profile: undefined;
   ProfileDetail: undefined;
+  AccommodationDetail: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -46,6 +48,7 @@ export default function App() {
             <Stack.Screen name="ResetPassword" component={ResetPassword} />
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="ProfileDetail" component={ProfileDetail} />
+            <Stack.Screen name="AccommodationDetail" component={AccommodationDetail} />
           </Stack.Navigator>
         </NavigationContainer>
       </ToastProvider>

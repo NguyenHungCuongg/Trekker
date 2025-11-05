@@ -8,11 +8,12 @@ interface TourCardProps {
   rating: number;
   price: string;
   image: string;
+  onPress?: () => void;
 }
 
-export default function TourCard({ title, location, rating, price, image }: TourCardProps) {
+export default function TourCard({ title, location, rating, price, image, onPress }: TourCardProps) {
   return (
-    <TouchableOpacity style={styles.card} activeOpacity={0.8}>
+    <TouchableOpacity style={styles.card} activeOpacity={0.8} onPress={onPress}>
       <Image source={{ uri: image }} style={styles.image} />
 
       <View style={styles.content}>
