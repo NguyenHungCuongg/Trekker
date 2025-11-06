@@ -1,0 +1,60 @@
+import { StyleSheet } from "react-native";
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFF',
+    paddingHorizontal: 20,
+    paddingTop: 60,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: 44,
+    marginBottom: 30,
+  },
+  backBtn: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backIcon: {
+    fontSize: 24,
+    color: '#1B1E28',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1B1E28',
+  },
+  cancelText: {
+    fontSize: 16,
+    color: '#0D6EFD',
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F7F7F9',
+    borderRadius: 16,
+    height: 48,
+    paddingHorizontal: 16,
+    gap: 10,
+    marginBottom: 30,
+  },
+  searchInput: {
+    flex: 1,
+    color: '#1B1E28',
+    fontSize: 16,
+  },
+  resultsTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1B1E28',
+    marginBottom: 16,
+  },
+  results: {
+    paddingBottom: 40,
+  },
+});

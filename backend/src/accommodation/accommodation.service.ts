@@ -61,4 +61,27 @@ export class AccommodationService {
   async count(): Promise<number> {
     return this.accommodationRepository.count();
   }
+
+  async create(
+    createAccommodationDto: Partial<Accommodation>,
+  ): Promise<Accommodation> {
+    const accommodation = this.accommodationRepository.create(
+      createAccommodationDto,
+    );
+    return this.accommodationRepository.save(accommodation);
+  }
+
+  async update(
+    id: number,
+    updateAccommodationDto: Partial<Accommodation>,
+  ): Promise<Accommodation> {
+    const accommodation = await this.findOne(id);
+    Object.assign(accommodation, updateAccommodationDto);
+    return this.accommodationRepository.save(accommodation);
+  }
+
+  async remove(id: number): Promise<void> {
+    const accommodation = await this.findOne(id);
+    await this.accommodationRepository.remove(accommodation);
+  }
 }

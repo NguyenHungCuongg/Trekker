@@ -11,13 +11,13 @@ import { EmailService } from "./email.service";
       inject: [ConfigService],
       useFactory: (config: ConfigService) =>
         nodemailer.createTransport({
-          host: config.getOrThrow<string>("smtp_host"),
-          port: Number(config.getOrThrow<string>("smtp_port")),
+          host: config.getOrThrow<string>("SMTP_HOST"),
+          port: Number(config.getOrThrow<string>("SMTP_PORT")),
           service: "gmail",
           secure: false,
           auth: {
-            user: config.getOrThrow<string>("smtp_user"),
-            pass: config.getOrThrow<string>("smtp_pass"),
+            user: config.getOrThrow<string>("SMTP_USER"),
+            pass: config.getOrThrow<string>("SMTP_PASS"),
           },
         }),
     },

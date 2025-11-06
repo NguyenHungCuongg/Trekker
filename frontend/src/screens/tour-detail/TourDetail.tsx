@@ -1,14 +1,8 @@
 import React from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
+import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import Svg, { Path, Circle } from "react-native-svg";
 import { useNavigation } from "@react-navigation/native";
+import { styles } from "./tourDetailStyles";
 
 export default function TourDetail() {
   const navigation = useNavigation();
@@ -25,10 +19,7 @@ export default function TourDetail() {
         />
 
         {/* Back button */}
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
             <Path
               fillRule="evenodd"
@@ -55,13 +46,7 @@ export default function TourDetail() {
         <View style={styles.meta}>
           <View style={styles.metaItem}>
             <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
-              <Circle
-                cx="8"
-                cy="7.33334"
-                r="2"
-                stroke="#7D848D"
-                strokeWidth="1.5"
-              />
+              <Circle cx="8" cy="7.33334" r="2" stroke="#7D848D" strokeWidth="1.5" />
               <Path
                 d="M14 7.25926C14 10.5321 10.25 14.6667 8 14.6667C5.75 14.6667 2 10.5321 2 7.25926C2 3.98646 4.68629 1.33334 8 1.33334C11.3137 1.33334 14 3.98646 14 7.25926Z"
                 stroke="#7D848D"
@@ -89,11 +74,7 @@ export default function TourDetail() {
         </View>
 
         {/* Gallery */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.gallery}
-        >
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.gallery}>
           {[
             "https://api.builder.io/api/v1/image/assets/TEMP/1eec378f8e06ba0df68d6f1dd0d1d6e27edc3177?width=173",
             "https://api.builder.io/api/v1/image/assets/TEMP/f58486cec84dac3d288db19aee8598689cf5ae25?width=173",
@@ -108,8 +89,7 @@ export default function TourDetail() {
         <Text style={styles.description}>
           Số người tham gia tối đa. {"\n"}
           Ngày bắt đầu - ngày kết thúc. {"\n"}
-          Các mô tả khác (Phần này tự làm flexible thôi){" "}
-          <Text style={styles.readMore}>Xem thêm</Text>
+          Các mô tả khác (Phần này tự làm flexible thôi) <Text style={styles.readMore}>Xem thêm</Text>
         </Text>
 
         <TouchableOpacity style={styles.bookButton}>
@@ -119,144 +99,3 @@ export default function TourDetail() {
     </View>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  heroSection: {
-    width: "100%",
-    height: 340, // Giảm bớt cho tỉ lệ thực tế iPhone
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    overflow: "hidden",
-    position: "relative",
-  },
-  heroImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
-  },
-  backButton: {
-    position: "absolute",
-    top: 52,
-    left: 20,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "rgba(27,30,40,0.16)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  content: {
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
-    backgroundColor: "#fff",
-    marginTop: -40,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: -4 },
-    shadowRadius: 12,
-    elevation: 2,
-  },
-  handle: {
-    width: 36,
-    height: 5,
-    borderRadius: 16,
-    backgroundColor: "#7D848D",
-    opacity: 0.2,
-    alignSelf: "center",
-    marginBottom: 24,
-  },
-  header: {
-    marginBottom: 16,
-  },
-  title: {
-    color: "#1B1E28",
-    fontSize: 22,
-    fontWeight: "700",
-    marginBottom: 4,
-  },
-  duration: {
-    color: "#7D848D",
-    fontSize: 14,
-  },
-  meta: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexWrap: "wrap",
-    marginBottom: 20,
-    rowGap: 10,
-  },
-  metaItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  metaText: {
-    color: "#7D848D",
-    fontSize: 14,
-  },
-  rating: {
-    color: "#1B1E28",
-    fontSize: 14,
-    fontWeight: "500",
-    marginLeft: 4,
-  },
-  reviews: {
-    color: "#7D848D",
-    fontSize: 14,
-  },
-  price: {
-    color: "#15C4C8",
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  priceUnit: {
-    color: "#7D848D",
-    fontSize: 14,
-  },
-  gallery: {
-    flexDirection: "row",
-    gap: 12,
-    marginBottom: 24,
-  },
-  galleryImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 16,
-  },
-  sectionTitle: {
-    color: "#1B1E28",
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 8,
-  },
-  description: {
-    color: "#7D848D",
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: 24,
-  },
-  readMore: {
-    color: "#15C4C8",
-    textDecorationLine: "underline",
-  },
-  bookButton: {
-    width: "100%",
-    height: 54,
-    borderRadius: 16,
-    backgroundColor: "#0F93C3",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 24,
-  },
-  bookButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "700",
-  },
-});

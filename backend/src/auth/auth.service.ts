@@ -1,18 +1,25 @@
 // ...existing code...
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateUserDto } from "src/auth/dto/register.dto";
+import { ResetPasswordDto } from "./dto/reset-password.dto";
 import { User } from "src/user/user.entity";
 import { Repository } from "typeorm";
 import bcrypt from "bcryptjs";
 import { LoginDto } from "./dto/login.dto";
 import { UserService } from "src/user/user.service";
 import { JwtService } from "@nestjs/jwt";
+import { ResponseEntity } from "src/common/dto/response-entity.dto";
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
     private userService: UserService,
     private jwtService: JwtService,
   ) {}
@@ -21,7 +28,6 @@ export class AuthService {
     const salt = await bcrypt.genSalt();
     userDTO.password = await bcrypt.hash(userDTO.password, salt);
     const user = await this.userRepository.save(userDTO);
-    // delete user.password;
     return user;
   }
 
@@ -29,12 +35,44 @@ export class AuthService {
     const user = await this.userService.findUserByLoginDTO(loginDTO);
     const isMatch = await bcrypt.compare(loginDTO.password, user.password);
     if (isMatch) {
-      const payload = { username: user.username, sub: user.id };
+      const payload = {
+        username: user.username,
+        sub: user.id,
+        role: user.role,
+      };
       return {
         access_token: this.jwtService.sign(payload),
       };
     } else {
-      throw new UnauthorizedException("Invalid credentials");
+      throw new UnauthorizedException("Thông tin đăng nhập không hợp lệ");
     }
+  }
+
+  async resetPassword(
+    resetPasswordDto: ResetPasswordDto,
+  ): Promise<ResponseEntity> {
+    const { email, newPassword } = resetPasswordDto;
+
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new BadRequestException("Email không tồn tại trong hệ thống");
+    }
+
+    const salt = await bcrypt.genSalt();
+    user.password = await bcrypt.hash(newPassword, salt);
+
+    await this.userRepository.save(user);
+
+    return ResponseEntity.success("Đặt lại mật khẩu thành công");
+  }
+
+  async findByUsername(username: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { username } });
+  }
+
+  //Method tạm thời để tạo admin: Tạo user với password đã hash (dùng trong create-admin). Lúc sau xóa nha
+  async createUserWithHashedPassword(userDTO: CreateUserDto): Promise<User> {
+    const user = await this.userRepository.save(userDTO);
+    return user;
   }
 }

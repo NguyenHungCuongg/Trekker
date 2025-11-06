@@ -10,13 +10,7 @@ interface LocationCardProps {
   onPress?: () => void;
 }
 
-export default function LocationCard({
-  name,
-  accommodations,
-  tours,
-  image,
-  onPress,
-}: LocationCardProps) {
+export default function LocationCard({ name, accommodations, tours, image, onPress }: LocationCardProps) {
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={onPress}>
       <Image source={{ uri: image }} style={styles.image} />
@@ -64,13 +58,15 @@ const styles = StyleSheet.create({
     height: 413,
     borderRadius: 24,
     backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOpacity: 0.12,
+    shadowColor: "#B4BCC9",
     shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
     shadowRadius: 16,
     elevation: 6,
     paddingVertical: 15,
     paddingHorizontal: 14,
+    marginHorizontal: 4,
+    marginTop: 8,
     marginBottom: 16,
   },
   image: {

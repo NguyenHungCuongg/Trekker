@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useToast } from "../components/context/ToastContext";
-import axiosInstance from "../utils/axiosInstance";
-import AuthField from "../components/login&register/AuthField";
-import BackButton from "../components/login&register/BackButton";
+import { useToast } from "../../components/context/ToastContext";
+import axiosInstance from "../../utils/axiosInstance";
+import AuthField from "../../components/login-register/AuthField";
+import BackButton from "../../components/login-register/BackButton";
+import { styles } from "./registerStyles";
 
 export default function Register() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -19,29 +20,77 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleRegister = async () => {
+  const validateForm = (): boolean => {
+    if (!fullName.trim()) {
+      showToast("error", "Họ và tên không được để trống");
+      return false;
+    }
+    if (!username.trim()) {
+      showToast("error", "Tên đăng nhập không được để trống");
+      return false;
+    }
+    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+    if (!usernameRegex.test(username)) {
+      showToast("error", "Tên đăng nhập phải có 3-20 ký tự (chữ, số, _)");
+      return false;
+    }
+    if (!phone.trim()) {
+      showToast("error", "Số điện thoại không được để trống");
+      return false;
+    }
+    if (!email.trim()) {
+      showToast("error", "Email không được để trống");
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showToast("error", "Email không hợp lệ");
+      return false;
+    }
+    if (!password) {
+      showToast("error", "Mật khẩu không được để trống");
+      return false;
+    }
+    if (!confirmPassword) {
+      showToast("error", "Vui lòng xác nhận mật khẩu");
+      return false;
+    }
     if (password !== confirmPassword) {
       showToast("error", "Mật khẩu xác nhận không khớp!");
+      return false;
+    }
+    return true;
+  };
+
+  const handleRegister = async () => {
+    if (!validateForm()) {
       return;
     }
-    if (!fullName || !username || !phone || !email || !password || !confirmPassword) {
-      showToast("error", "Vui lòng điền đầy đủ thông tin đăng ký!");
-      return;
-    }
+
     try {
       const response = await axiosInstance.post("/auth/register", {
-        username,
+        username: username.trim(),
         password,
-        fullName,
-        phone,
-        email,
+        fullName: fullName.trim(),
+        phone: phone.trim().replace(/\s/g, ""),
+        email: email.trim().toLowerCase(),
       });
+
       if (response.data) {
         showToast("success", "Đăng ký thành công! Vui lòng đăng nhập.");
-        navigation.navigate("Login");
+        setTimeout(() => {
+          navigation.navigate("Login");
+        }, 1000);
       }
-    } catch (error) {
-      showToast("error", "Đăng ký không thành công!");
+    } catch (error: any) {
+      console.error("Register error:", error);
+      if (error.response?.status === 400) {
+        showToast("error", error.response.data.message || "Dữ liệu không hợp lệ");
+      } else if (error.response?.status === 409) {
+        showToast("error", "Tên đăng nhập hoặc email đã tồn tại");
+      } else {
+        showToast("error", "Đăng ký không thành công! Vui lòng thử lại.");
+      }
     }
   };
 
@@ -120,97 +169,3 @@ export default function Register() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  page: {
-    minHeight: "100%",
-    flexGrow: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 32,
-    paddingHorizontal: 16,
-    backgroundColor: "#eff4f9",
-  },
-  frame: {
-    width: 375,
-    maxWidth: "100%",
-    backgroundColor: "#fff",
-    borderRadius: 30,
-    shadowColor: "#152242",
-    shadowOffset: { width: 0, height: 35 },
-    shadowOpacity: 0.15,
-    shadowRadius: 60,
-    elevation: 15,
-    overflow: "hidden",
-  },
-  body: {
-    paddingTop: 88,
-    paddingHorizontal: 20,
-    paddingBottom: 72,
-    gap: 28,
-    width: "100%",
-  },
-  header: {
-    alignItems: "center",
-    gap: 12,
-    marginBottom: 12,
-    width: "100%",
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: "700",
-    color: "#000",
-    textAlign: "center",
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#7d848d",
-    textAlign: "center",
-  },
-  fields: {
-    flexDirection: "column",
-    gap: 20,
-    width: "100%",
-  },
-  primaryButton: {
-    width: "100%",
-    backgroundColor: "#0f93c3",
-    borderRadius: 16,
-    height: 56,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 8,
-  },
-  primaryButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  auxiliary: {
-    alignItems: "center",
-    gap: 24,
-    marginTop: "auto",
-    width: "100%",
-  },
-  signinRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  signinText: {
-    color: "#7d848d",
-  },
-  signinLink: {
-    color: "#0f93c3",
-    textDecorationLine: "none",
-  },
-  divider: {
-    color: "#707b81",
-    fontSize: 14,
-  },
-  socialRow: {
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 18,
-  },
-});

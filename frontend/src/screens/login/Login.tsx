@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import axiosInstance from "../utils/axiosInstance";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
-import type { RootStackParamList } from "../../App";
+import axiosInstance from "../../utils/axiosInstance";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import type { RootStackParamList } from "../../../App";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useToast } from "../components/context/ToastContext";
-import BackButton from "../components/login&register/BackButton";
-import AuthField from "../components/login&register/AuthField";
-import PasswordField from "../components/login&register/PasswordField";
+import { useToast } from "../../components/context/ToastContext";
+import BackButton from "../../components/login-register/BackButton";
+import AuthField from "../../components/login-register/AuthField";
+import PasswordField from "../../components/login-register/PasswordField";
+import { styles } from "./loginStyles";
 
 export default function Login() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -28,7 +29,7 @@ export default function Login() {
         username,
         password,
       });
-      if (response.data) {
+      if (response.data && response.data.access_token) {
         await AsyncStorage.setItem("token", response.data.access_token);
         showToast("success", "Đăng nhập thành công!");
         navigation.navigate("Home");
@@ -88,89 +89,3 @@ export default function Login() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  loginPage: {
-    minHeight: "100%",
-    flexGrow: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 32,
-    paddingHorizontal: 16,
-    backgroundColor: "#eff4f9",
-  },
-  loginFrame: {
-    width: 375,
-    maxWidth: "100%",
-    backgroundColor: "#ffffff",
-    borderRadius: 30,
-    shadowColor: "#152242",
-    shadowOffset: { width: 0, height: 35 },
-    shadowOpacity: 0.15,
-    shadowRadius: 60,
-    elevation: 15,
-    overflow: "hidden",
-  },
-  loginBody: {
-    flex: 1,
-    paddingTop: 88,
-    paddingHorizontal: 20,
-    paddingBottom: 72,
-    gap: 28,
-  },
-  loginHeader: {
-    alignItems: "center",
-    gap: 12,
-    marginBottom: 12,
-  },
-  loginTitle: {
-    fontSize: 26,
-    fontWeight: "700",
-    color: "#000",
-  },
-  loginSubtitle: {
-    fontSize: 16,
-    color: "#7d848d",
-  },
-  loginFields: {
-    flexDirection: "column",
-    gap: 20,
-  },
-  forgotLink: {
-    alignSelf: "flex-end",
-    fontSize: 14,
-    color: "#0f93c3",
-    marginTop: 8,
-  },
-  primaryCta: { marginTop: 8 },
-  primaryButton: {
-    width: "100%",
-    height: 56,
-    borderRadius: 16,
-    backgroundColor: "#0f93c3",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  primaryButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  auxiliary: {
-    alignItems: "center",
-    gap: 24,
-    marginTop: "auto",
-  },
-  signupText: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  link: { color: "#0f93c3", textDecorationLine: "none" },
-  alternateDivider: { fontSize: 14, color: "#707b81" },
-  socialRow: {
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 18,
-  },
-});

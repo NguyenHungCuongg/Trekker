@@ -1,34 +1,27 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
-import { Svg, Path, Circle } from "react-native-svg";
+import Svg, { Path, Circle } from "react-native-svg";
 
-interface AccommodationCardProps {
-  name?: string;
-  location?: string;
-  rating?: number;
-  price?: string;
-  image?: string;
+interface TourCardProps {
+  title: string;
+  location: string;
+  rating: number;
+  price: string;
+  image: string;
   onPress?: () => void;
 }
 
-export default function AccommodationCard({
-  name,
-  location,
-  rating,
-  price,
-  image,
-  onPress,
-}: AccommodationCardProps) {
+export default function TourCard({ title, location, rating, price, image, onPress }: TourCardProps) {
   return (
-    <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={onPress}>
+    <TouchableOpacity style={styles.card} activeOpacity={0.8} onPress={onPress}>
       <Image source={{ uri: image }} style={styles.image} />
 
       <View style={styles.content}>
-        {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title} numberOfLines={1}>
-            {name}
+          <Text style={styles.title} numberOfLines={2}>
+            {title}
           </Text>
+
           <View style={styles.rating}>
             <Svg width={13} height={12} viewBox="0 0 13 12" fill="none">
               <Path
@@ -40,77 +33,79 @@ export default function AccommodationCard({
           </View>
         </View>
 
-        {/* Footer */}
         <View style={styles.footer}>
           <View style={styles.location}>
             <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
-              <Circle
-                cx="8"
-                cy="7.33337"
-                r="2"
-                stroke="#7D848D"
-                strokeWidth={1.5}
-              />
+              <Circle cx="8" cy="7.33333" r="2" stroke="#7D848D" strokeWidth="1.5" />
               <Path
-                d="M14 7.2593C14 10.5321 10.25 14.6667 8 14.6667C5.75 14.6667 2 10.5321 2 7.2593C2 3.9865 4.68629 1.33337 8 1.33337C11.3137 1.33337 14 3.9865 14 7.2593Z"
+                d="M14 7.25926C14 10.5321 10.25 14.6667 8 14.6667C5.75 14.6667 2 10.5321 2 7.25926C2 3.98646 4.68629 1.33333 8 1.33333C11.3137 1.33333 14 3.98646 14 7.25926Z"
                 stroke="#7D848D"
-                strokeWidth={1.5}
+                strokeWidth="1.5"
               />
             </Svg>
             <Text style={styles.locationText} numberOfLines={1}>
               {location}
             </Text>
           </View>
-          <Text style={styles.price}>{price}</Text>
+          <Text style={styles.price} numberOfLines={1}>
+            {price}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
   );
 }
-
 const styles = StyleSheet.create({
   card: {
     width: 268,
-    height: 384,
+    minHeight: 384,
     borderRadius: 24,
     backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOpacity: 0.12,
+    shadowColor: "#B4BCC9",
     shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
     shadowRadius: 16,
-    padding: 14,
     elevation: 6,
+    padding: 14,
+    marginHorizontal: 4,
+    marginTop: 8,
     marginBottom: 16,
   },
   image: {
-    width: 240,
+    width: "100%",
     height: 286,
     borderRadius: 20,
     resizeMode: "cover",
   },
   content: {
     paddingTop: 14,
+    paddingHorizontal: 6,
+    flex: 1,
+    justifyContent: "space-between",
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
+    alignItems: "flex-start",
   },
   title: {
     color: "#1B1E28",
     fontSize: 18,
     fontWeight: "400",
+    letterSpacing: 0.5,
     flex: 1,
+    marginRight: 8,
   },
   rating: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+    flexShrink: 0,
   },
   ratingText: {
     color: "#1B1E28",
     fontSize: 15,
+    letterSpacing: 0.3,
   },
   footer: {
     flexDirection: "row",
@@ -121,13 +116,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+    flex: 1,
+    marginRight: 8,
   },
   locationText: {
     color: "#7D848D",
     fontSize: 15,
+    letterSpacing: 0.3,
+    flex: 1,
   },
   price: {
     color: "#15C4C8",
     fontSize: 15,
+    letterSpacing: 0.3,
+    flexShrink: 0,
   },
 });

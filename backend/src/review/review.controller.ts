@@ -15,11 +15,15 @@ import { Review } from "./review.entity";
 import { CreateReviewDto } from "./dto/create-review.dto";
 import { UpdateReviewDto } from "./dto/update-review.dto";
 import { JwtAuthGuard } from "../auth/jwt.authguard";
+import { RolesGuard } from "../auth/guards/roles.guard";
+import { Roles } from "../auth/decorators/roles.decorator";
+import { UserRole } from "../common/enums";
 
 @Controller("reviews")
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
+  // User endpoints
   @Get()
   async findAll(): Promise<Review[]> {
     return this.reviewService.findAll();
@@ -63,6 +67,31 @@ export class ReviewController {
     @Request() req,
   ): Promise<{ message: string }> {
     await this.reviewService.remove(id, req.user.userId);
-    return { message: "Review deleted successfully" };
+    return { message: "Review đã được xóa thành công" };
+  }
+
+  // Admin endpoints
+  @Get("admin")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async findAllReviews(): Promise<Review[]> {
+    return this.reviewService.findAll();
+  }
+
+  @Get("admin/:id")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async findReviewById(@Param("id", ParseIntPipe) id: number): Promise<Review> {
+    return this.reviewService.findOne(id);
+  }
+
+  @Delete("admin/:id")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async deleteReview(
+    @Param("id", ParseIntPipe) id: number,
+  ): Promise<{ message: string }> {
+    await this.reviewService.removeByAdmin(id);
+    return { message: "Review đã được xóa thành công" };
   }
 }
