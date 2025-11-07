@@ -9,13 +9,11 @@ import Login from "./src/screens/login/Login";
 import ForgotPassword from "./src/screens/forgot-password/ForgotPassword";
 import Verification from "./src/screens/verification/Verification";
 import ResetPassword from "./src/screens/reset-password/ResetPassword";
-import Home from "./src/screens/home/Home";
+import MainTabs from "./src/navigation/MainTabs";
 import { ToastProvider } from "./src/components/context/ToastContext";
 import TourDetail from "./src/screens/tour-detail/TourDetail";
-import Profile from "./src/screens/profile/Profile";
 import ProfileDetail from "./src/screens/profile-detail/ProfileDetail";
 import AccommodationDetail from "./src/screens/accommodation-detail/AccommodationDetail";
-import Search from "./src/screens/search/Search";
 
 export type RootStackParamList = {
   Start: undefined;
@@ -24,12 +22,10 @@ export type RootStackParamList = {
   ForgotPassword: undefined;
   Verification: { email: string };
   ResetPassword: { email: string };
-  Home: undefined;
+  MainTabs: undefined;
   TourDetail: undefined;
-  Profile: undefined;
   ProfileDetail: undefined;
   AccommodationDetail: undefined;
-  Search: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -39,25 +35,17 @@ export default function App() {
     <SafeAreaProvider>
       <ToastProvider>
         <NavigationContainer>
-          <Stack.Navigator
-            screenOptions={{ headerShown: false }}
-            initialRouteName="Start"
-          >
-            <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Register" component={Register} />
+          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Start">
             <Stack.Screen name="Start" component={Start} />
             <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="TourDetail" component={TourDetail} />
+            <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
             <Stack.Screen name="Verification" component={Verification} />
             <Stack.Screen name="ResetPassword" component={ResetPassword} />
-            <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="MainTabs" component={MainTabs} />
+            <Stack.Screen name="TourDetail" component={TourDetail} />
             <Stack.Screen name="ProfileDetail" component={ProfileDetail} />
-            <Stack.Screen
-              name="AccommodationDetail"
-              component={AccommodationDetail}
-            />
-            <Stack.Screen name="Search" component={Search} />
+            <Stack.Screen name="AccommodationDetail" component={AccommodationDetail} />
           </Stack.Navigator>
         </NavigationContainer>
       </ToastProvider>

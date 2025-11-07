@@ -5,7 +5,6 @@ import LocationCard from "../../components/home-card/LocationCard";
 import DestinationCard from "../../components/home-card/DestinationCard";
 import TourCard from "../../components/home-card/TourCard";
 import AccommodationCard from "../../components/home-card/AccommodationCard";
-import BottomNav from "../../components/home/BottomNav";
 import axiosInstance from "../../utils/axiosInstance";
 import { User, Location, Destination, Tour, Accommodation } from "../../types";
 import { styles } from "./homeStyles";
@@ -218,8 +217,6 @@ export default function Home() {
           </ScrollView>
         </View>
       </ScrollView>
-
-      <BottomNav />
     </SafeAreaView>
   );
 }

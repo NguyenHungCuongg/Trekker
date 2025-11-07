@@ -2,15 +2,25 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import Svg, { Path, Defs, Filter, FeDropShadow } from "react-native-svg";
-import { useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../../App";
+import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 
-export default function BottomNav() {
+export default function BottomNav({ state, descriptors, navigation }: BottomTabBarProps) {
   const activeColor = "#0F93C3";
   const inactiveColor = "#7D848D";
 
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const handlePress = (routeName: string, index: number) => {
+    const event = navigation.emit({
+      type: "tabPress",
+      target: state.routes[index].key,
+      canPreventDefault: true,
+    });
+
+    if (!event.defaultPrevented) {
+      navigation.navigate(routeName);
+    }
+  };
+
+  const isActive = (index: number) => state.index === index;
 
   return (
     <View style={styles.container}>
@@ -18,13 +28,7 @@ export default function BottomNav() {
       <Svg width="100%" height="120" viewBox="0 0 375 90" preserveAspectRatio="none" style={styles.svgBackground}>
         <Defs>
           <Filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-            <FeDropShadow
-              dx="0"
-              dy="-2" // Offset dọc (âm = shadow ở trên)
-              stdDeviation="8" // Độ mờ
-              floodColor="#7d7d7dff" // Màu shadow
-              floodOpacity="0.05" // Độ đậm (0-1)
-            />
+            <FeDropShadow dx="0" dy="-2" stdDeviation="8" floodColor="#7d7d7dff" floodOpacity="0.08" />
           </Filter>
         </Defs>
         <Path d="M0,20 C80,0 295,0 375,20 L375,90 L0,90 Z" fill="white" filter="url(#shadow)" />
@@ -32,30 +36,48 @@ export default function BottomNav() {
 
       {/* Các nút menu */}
       <View style={styles.navContainer}>
+        {/* Nhóm trái */}
         <NavItem
           label="Trang chủ"
-          icon={<Feather name="home" size={24} color={activeColor} />}
-          active
-          onPress={() => {}}
+          icon={<Feather name="home" size={24} color={isActive(0) ? activeColor : inactiveColor} />}
+          active={isActive(0)}
+          onPress={() => handlePress("HomeTab", 0)}
         />
-        <NavItem label="Tour" icon={<Feather name="map-pin" size={24} color={inactiveColor} />} onPress={() => {}} />
-        <View style={{ width: 70 }} />
+        <NavItem
+          label="Tour"
+          icon={<Feather name="map-pin" size={24} color={isActive(1) ? activeColor : inactiveColor} />}
+          active={isActive(1)}
+          onPress={() => handlePress("TourTab", 1)}
+        />
+
+        {/* Khoảng trống cho nút Search */}
+        <View style={styles.centerSpace} />
+
+        {/* Nhóm phải */}
         <NavItem
           label="Chỗ ở"
           icon={
-            <MaterialCommunityIcons name="office-building-outline" size={24} color={inactiveColor} onPress={() => {}} />
+            <MaterialCommunityIcons
+              name="office-building-outline"
+              size={24}
+              color={isActive(3) ? activeColor : inactiveColor}
+            />
           }
+          active={isActive(3)}
+          onPress={() => handlePress("AccommodationTab", 3)}
         />
         <NavItem
           label="Hồ sơ"
-          icon={<Feather name="user" size={24} color={inactiveColor} />}
-          onPress={() => navigation.navigate("Profile")}
+          icon={<Feather name="user" size={24} color={isActive(4) ? activeColor : inactiveColor} />}
+          active={isActive(4)}
+          onPress={() => handlePress("ProfileTab", 4)}
         />
       </View>
-
-      {/* Nút trung tâm */}
       <View style={styles.centerWrapper}>
-        <TouchableOpacity style={styles.centerButton} onPress={() => navigation.navigate("Search")}>
+        <TouchableOpacity
+          style={[styles.centerButton, isActive(2) && styles.centerButtonActive]}
+          onPress={() => handlePress("SearchTab", 2)}
+        >
           <Feather name="search" size={28} color="white" />
         </TouchableOpacity>
       </View>
@@ -97,17 +119,21 @@ const styles = StyleSheet.create({
   },
   navContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
     height: "100%",
-    paddingHorizontal: 25,
+    paddingHorizontal: 20,
     paddingBottom: 30,
+  },
+  centerSpace: {
+    width: 64, // Khớp với width của nút Search
   },
   navItem: {
     alignItems: "center",
     justifyContent: "center",
     gap: 4,
+    minWidth: 60, // Đảm bảo mỗi item có độ rộng tối thiểu
   },
   label: {
     fontSize: 12,
@@ -130,5 +156,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 2,
     marginBottom: 20,
+  },
+  centerButtonActive: {
+    backgroundColor: "#0D7A9F", // Màu đậm hơn khi active
   },
 });

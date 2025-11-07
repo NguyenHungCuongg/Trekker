@@ -167,7 +167,7 @@ export default function ProfileDetail() {
 
   const handleDone = async () => {
     if (!hasChanges()) {
-      navigation.navigate("Profile");
+      navigation.goBack();
       return;
     }
 
@@ -196,7 +196,7 @@ export default function ProfileDetail() {
             setUser(response.data);
             showToast("success", "Cập nhật thông tin thành công!");
             setTimeout(() => {
-              navigation.navigate("Profile");
+              navigation.goBack();
             }, 1000);
           } catch (error: any) {
             console.error("Error updating profile:", error);
@@ -219,7 +219,7 @@ export default function ProfileDetail() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backCircle} onPress={() => navigation.navigate("Profile")} disabled={saving}>
+        <TouchableOpacity style={styles.backCircle} onPress={() => navigation.goBack()} disabled={saving}>
           <Ionicons name="chevron-back" size={24} color="#1B1E28" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Chi tiết hồ sơ</Text>
