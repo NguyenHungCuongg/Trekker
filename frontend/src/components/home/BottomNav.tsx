@@ -55,7 +55,7 @@ export default function BottomNav() {
 
       {/* Nút trung tâm */}
       <View style={styles.centerWrapper}>
-        <TouchableOpacity style={styles.centerButton}>
+        <TouchableOpacity style={styles.centerButton} onPress={() => navigation.navigate("Search")}>
           <Feather name="search" size={28} color="white" />
         </TouchableOpacity>
       </View>

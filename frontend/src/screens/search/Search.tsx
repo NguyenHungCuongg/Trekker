@@ -1,15 +1,8 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  Image,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SvgXml } from "react-native-svg";
+import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./searchStyles";
 import TourListView from "../../components/search/TourListView";
 
@@ -41,8 +34,8 @@ export default function Search() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={handleBack}>
-          <Text style={styles.backIcon}>←</Text>
+        <TouchableOpacity style={styles.backCircle} onPress={handleBack}>
+          <Ionicons name="chevron-back" size={24} color="#1B1E28" />
         </TouchableOpacity>
         <Text style={styles.title}>Tìm kiếm</Text>
         <TouchableOpacity onPress={handleCancel}>
@@ -53,11 +46,7 @@ export default function Search() {
       {/* Search Bar */}
       <View style={styles.searchBar}>
         <SvgXml xml={searchIcon} width={24} height={24} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Tìm kiếm dịch vụ du lịch"
-          placeholderTextColor="#7D848D"
-        />
+        <TextInput style={styles.searchInput} placeholder="Tìm kiếm dịch vụ du lịch" placeholderTextColor="#7D848D" />
         <TouchableOpacity>
           <SvgXml xml={filterIcon} width={24} height={24} />
         </TouchableOpacity>

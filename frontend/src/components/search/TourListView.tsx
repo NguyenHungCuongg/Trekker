@@ -10,13 +10,7 @@ interface TourListViewProps {
   imageUrl: string;
 }
 
-const TourListView: React.FC<TourListViewProps> = ({
-  tourName,
-  location,
-  rating,
-  price,
-  imageUrl,
-}) => {
+const TourListView: React.FC<TourListViewProps> = ({ tourName, location, rating, price, imageUrl }) => {
   const starIcon = `
     <svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M5.53189 0.326416C5.67923 -0.108805 6.32077 -0.108806 6.46811 0.326415L7.54709 3.51352C7.61299 3.70815 7.80197 3.83993 8.01521 3.83993H11.5069C11.9837 3.83993 12.1819 4.42552 11.7962 4.6945L8.97136 6.66424C8.79885 6.78453 8.72666 6.99775 8.79256 7.19239L9.87154 10.3795C10.0189 10.8147 9.49986 11.1766 9.11411 10.9076L6.28931 8.9379C6.1168 8.81761 5.8832 8.81761 5.71069 8.9379L2.88589 10.9076C2.50014 11.1766 1.98112 10.8147 2.12846 10.3795L3.20744 7.19239C3.27334 6.99775 3.20115 6.78453 3.02864 6.66424L0.203837 4.6945C-0.181909 4.42552 0.0163376 3.83993 0.493147 3.83993H3.98479C4.19803 3.83993 4.38701 3.70815 4.45291 3.51352L5.53189 0.326416Z" fill="#FFD336"/>
@@ -65,11 +59,11 @@ const styles = StyleSheet.create({
     height: 140,
     borderRadius: 16,
     backgroundColor: "#FFF",
-    shadowColor: "#000",
+    shadowColor: "#313131ff",
     shadowOpacity: 0.14,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 6 },
-    elevation: 5,
+    elevation: 2,
     flexDirection: "row",
     padding: 12,
     gap: 14,
