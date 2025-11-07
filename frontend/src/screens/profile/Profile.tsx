@@ -45,15 +45,6 @@ export default function Profile() {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          activeOpacity={0.7}
-          onPress={() => {
-            navigation.navigate("Home");
-          }}
-        >
-          <Ionicons name="chevron-back" size={22} color="#1B1E28" />
-        </TouchableOpacity>
         <Text style={styles.headerTitle}>Hồ sơ cá nhân</Text>
       </View>
 

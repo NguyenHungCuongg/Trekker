@@ -32,7 +32,7 @@ export default function Login() {
       if (response.data && response.data.access_token) {
         await AsyncStorage.setItem("token", response.data.access_token);
         showToast("success", "Đăng nhập thành công!");
-        navigation.navigate("Home");
+        navigation.navigate("MainTabs");
       } else {
         showToast("error", "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
       }

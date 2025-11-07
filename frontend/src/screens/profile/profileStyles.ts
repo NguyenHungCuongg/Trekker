@@ -15,18 +15,6 @@ export const styles = StyleSheet.create({
     backgroundColor: "#fff",
     position: "relative",
   },
-  backButton: {
-    position: "absolute",
-    left: 20,
-    top: 56,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#F3F4F6",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 10,
-  },
   headerTitle: {
     fontSize: 18,
     fontWeight: "600",

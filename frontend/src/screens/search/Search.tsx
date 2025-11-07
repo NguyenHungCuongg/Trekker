@@ -13,10 +13,6 @@ export default function Search() {
     navigation.goBack();
   };
 
-  const handleCancel = () => {
-    navigation.navigate("Home");
-  };
-
   const searchIcon = `
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
       <circle cx="10.9413" cy="11.9414" r="7.94134" stroke="#7D848D" stroke-width="1.6"/>
@@ -38,9 +34,7 @@ export default function Search() {
           <Ionicons name="chevron-back" size={24} color="#1B1E28" />
         </TouchableOpacity>
         <Text style={styles.title}>Tìm kiếm</Text>
-        <TouchableOpacity onPress={handleCancel}>
-          <Text style={styles.cancelText}>Hủy</Text>
-        </TouchableOpacity>
+        <View style={{ width: 40 }} />
       </View>
 
       {/* Search Bar */}
