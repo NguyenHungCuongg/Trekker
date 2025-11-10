@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, ScrollView, ActivityIndicator } from "react-native";
+import { View, Text, Image, ScrollView, ActivityIndicator, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootStackParamList } from "../../../App";
 import { User } from "../../types";
 import axiosInstance from "../../utils/axiosInstance";
@@ -27,6 +28,34 @@ export default function Profile() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleLogout = () => {
+    Alert.alert("Xác nhận đăng xuất", "Bạn có chắc chắn muốn đăng xuất?", [
+      {
+        text: "Hủy",
+        style: "cancel",
+      },
+      {
+        text: "Đăng xuất",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            // Xóa token khỏi AsyncStorage
+            await AsyncStorage.removeItem("token");
+
+            // Reset navigation stack và chuyển về Start screen
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "Start" }],
+            });
+          } catch (error) {
+            console.error("Error during logout:", error);
+            Alert.alert("Lỗi", "Có lỗi xảy ra khi đăng xuất. Vui lòng thử lại!");
+          }
+        },
+      },
+    ]);
   };
 
   return (
@@ -78,7 +107,7 @@ export default function Profile() {
         <MenuItem
           icon={<MaterialCommunityIcons name="logout" size={20} color="#7D848D" />}
           label="Đăng xuất"
-          onPress={undefined}
+          onPress={handleLogout}
         />
       </View>
     </ScrollView>
