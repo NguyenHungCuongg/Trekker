@@ -53,22 +53,6 @@ export const styles = StyleSheet.create({
     elevation: 1,
     marginBottom: 40,
   },
-  menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 16,
-    paddingHorizontal: 18,
-  },
-  menuContent: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  menuLabel: {
-    fontSize: 16,
-    color: "#1B1E28",
-    marginLeft: 10,
-  },
   divider: {
     height: 1,
     backgroundColor: "#F0F0F2",

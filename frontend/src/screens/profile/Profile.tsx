@@ -1,26 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  GestureResponderEvent,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, Image, ScrollView, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../App";
 import { User } from "../../types";
 import axiosInstance from "../../utils/axiosInstance";
+import MenuItem from "../../components/profile/MenuItem";
 import { styles } from "./profileStyles";
-
-type MenuItemProps = {
-  icon: React.ReactNode;
-  label: string;
-  onPress?: (event: GestureResponderEvent) => void;
-};
 
 export default function Profile() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -97,15 +84,5 @@ export default function Profile() {
     </ScrollView>
   );
 }
-
-const MenuItem: React.FC<MenuItemProps> = ({ icon, label, onPress }) => (
-  <TouchableOpacity style={styles.menuItem} onPress={onPress}>
-    <View style={styles.menuContent}>
-      {icon}
-      <Text style={styles.menuLabel}>{label}</Text>
-    </View>
-    <Ionicons name="chevron-forward" size={20} color="#C5C6CC" />
-  </TouchableOpacity>
-);
 
 const Divider = () => <View style={styles.divider} />;
