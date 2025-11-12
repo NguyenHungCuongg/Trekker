@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  Post,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { User } from "./user.entity";
@@ -24,7 +25,6 @@ import { CloudinaryService } from "../cloudinary/cloudinary.service";
 import { FileInterceptor } from "@nestjs/platform-express/multer/interceptors/file.interceptor";
 
 @Controller("users")
-@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(
     private userService: UserService,
@@ -33,11 +33,13 @@ export class UserController {
 
   //user endpoints
   @Get("profile")
+  @UseGuards(JwtAuthGuard)
   async getProfile(@Request() req): Promise<User> {
     return this.userService.findOne(req.user.userId);
   }
 
   @Put("profile")
+  @UseGuards(JwtAuthGuard)
   async updateProfile(
     @Request() req,
     @Body() updateUserDto: UpdateUserDto,
@@ -46,6 +48,7 @@ export class UserController {
   }
 
   @Put("profile/upload-image")
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor("file"))
   async uploadProfileImage(
     @Request() req,
@@ -96,6 +99,7 @@ export class UserController {
   }
 
   @Put("change-password")
+  @UseGuards(JwtAuthGuard)
   async changePassword(
     @Request() req,
     @Body() changePasswordDto: ChangePasswordDto,
@@ -147,5 +151,11 @@ export class UserController {
   ): Promise<{ message: string }> {
     await this.userService.remove(id);
     return { message: "Người dùng đã được xóa thành công" };
+  }
+
+  @Post("check-email")
+  async checkEmail(@Body("email") email: string): Promise<{ exists: boolean }> {
+    const exists = await this.userService.isEmailExists(email);
+    return { exists };
   }
 }
