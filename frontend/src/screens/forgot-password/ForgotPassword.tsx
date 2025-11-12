@@ -20,10 +20,14 @@ export default function ForgotPassword() {
     }
     try {
       console.log(email);
+      const isEmailExists = await axiosInstance.post("/users/check-email", { email: email });
+      if (!isEmailExists.data.exists) {
+        showToast("error", "Email không tồn tại trong hệ thống.");
+        return;
+      }
       const response = await axiosInstance.post("/verification-code/generate", {
         email: email,
       });
-      console.log("Response:", response.data);
       if (response.data.statusCode === 200) {
         showToast("success", "Đã gửi mã OTP đến email của bạn.");
         navigation.navigate("Verification", { email });
