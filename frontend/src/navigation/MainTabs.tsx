@@ -9,6 +9,8 @@ import BottomNav from "../components/home/BottomNav";
 // Placeholder screens cho Tour và Chỗ ở (tạm thời)
 import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Accommodation from "../screens/accommodation/Accommodation";
+import Tour from "../screens/tour/Tour";
 
 function TourScreen() {
   return (
@@ -66,9 +68,9 @@ export default function MainTabs() {
       }}
     >
       <Tab.Screen name="HomeTab" component={Home} />
-      <Tab.Screen name="TourTab" component={TourScreen} />
+      <Tab.Screen name="TourTab" component={Tour} />
       <Tab.Screen name="SearchTab" component={Search} />
-      <Tab.Screen name="AccommodationTab" component={AccommodationScreen} />
+      <Tab.Screen name="AccommodationTab" component={Accommodation} />
       <Tab.Screen name="ProfileTab" component={Profile} />
     </Tab.Navigator>
   );

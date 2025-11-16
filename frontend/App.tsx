@@ -14,6 +14,8 @@ import { ToastProvider } from "./src/components/context/ToastContext";
 import TourDetail from "./src/screens/tour-detail/TourDetail";
 import ProfileDetail from "./src/screens/profile-detail/ProfileDetail";
 import AccommodationDetail from "./src/screens/accommodation-detail/AccommodationDetail";
+import Tour from "./src/screens/tour/Tour";
+import Accommodation from "./src/screens/accommodation/Accommodation";
 
 export type RootStackParamList = {
   Start: undefined;
@@ -26,6 +28,8 @@ export type RootStackParamList = {
   TourDetail: undefined;
   ProfileDetail: undefined;
   AccommodationDetail: undefined;
+  Tour: undefined;
+  Accommodation: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -35,7 +39,10 @@ export default function App() {
     <SafeAreaProvider>
       <ToastProvider>
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Start">
+          <Stack.Navigator
+            screenOptions={{ headerShown: false }}
+            initialRouteName="Start"
+          >
             <Stack.Screen name="Start" component={Start} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />
@@ -45,7 +52,12 @@ export default function App() {
             <Stack.Screen name="MainTabs" component={MainTabs} />
             <Stack.Screen name="TourDetail" component={TourDetail} />
             <Stack.Screen name="ProfileDetail" component={ProfileDetail} />
-            <Stack.Screen name="AccommodationDetail" component={AccommodationDetail} />
+            <Stack.Screen
+              name="AccommodationDetail"
+              component={AccommodationDetail}
+            />
+            <Stack.Screen name="Tour" component={Tour} />
+            <Stack.Screen name="Accommodation" component={Accommodation} />
           </Stack.Navigator>
         </NavigationContainer>
       </ToastProvider>
