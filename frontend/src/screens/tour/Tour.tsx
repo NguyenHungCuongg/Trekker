@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-  Image,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Svg, Path, Circle } from "react-native-svg";
 import { styles } from "./tourStyle";
@@ -27,8 +20,7 @@ export default function Tour() {
       location: "Tên location",
       rating: 4.7,
       price: "Giá",
-      imageUrl:
-        "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
+      imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
     },
     {
       id: 2,
@@ -36,8 +28,7 @@ export default function Tour() {
       location: "Tên location",
       rating: 4.7,
       price: "Giá",
-      imageUrl:
-        "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
+      imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
     },
     {
       id: 3,
@@ -45,8 +36,7 @@ export default function Tour() {
       location: "Tên location",
       rating: 4.7,
       price: "Giá",
-      imageUrl:
-        "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
+      imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
     },
     {
       id: 4,
@@ -54,8 +44,7 @@ export default function Tour() {
       location: "Tên location",
       rating: 4.7,
       price: "Giá",
-      imageUrl:
-        "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
+      imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
     },
   ];
 
@@ -81,12 +70,12 @@ export default function Tour() {
       {/* CONTENT */}
       <ScrollView style={styles.content}>
         <View style={styles.controls}>
-          <Text style={styles.sectionTitle}>Tất cả các Tours</Text>
+          <Text style={styles.sectionTitle}>Tất cả các tours</Text>
 
           <View style={styles.viewControls}>
             <TouchableOpacity onPress={toggleView}>
               {isListView ? (
-                <Svg width="20" height="21" viewBox="0 0 20 21" fill="none">
+                <Svg width="20" height="20" viewBox="-1 -1 22 22" fill="none">
                   <Path
                     d="M20 6.06365L0 6.06365M20 13.3364L0 13.3364M7.27273 19.7H12.7273C15.2727 19.7 16.5455 19.7 17.5176 19.2046C18.3729 18.7688 19.0688 18.0734 19.5046 17.2182C20 16.2458 20 14.973 20 12.4273V6.97274C20 4.42705 20 3.1542 19.5046 2.18187C19.0688 1.32659 18.3729 0.631227 17.5176 0.195438C16.5455 -0.299988 15.2727 -0.299988 12.7273 -0.299988H7.27273C4.72705 -0.299988 3.4542 -0.299988 2.48187 0.195438C1.62659 0.631227 0.931232 1.32659 0.495443 2.18187C0 3.1542 0 4.42705 0 6.97274V12.4273C0 14.973 0 16.2458 0.495443 17.2182C0.931232 18.0734 1.62659 18.7688 2.48187 19.2046C3.4542 19.7 4.72705 19.7 7.27273 19.7Z"
                     stroke="#15C4C8"
@@ -95,7 +84,7 @@ export default function Tour() {
                   />
                 </Svg>
               ) : (
-                <Svg width="20" height="21" viewBox="0 0 20 21" fill="none">
+                <Svg width="20" height="20" viewBox="-1 -1 22 22" fill="none">
                   <Path
                     d="M10 0.7V20.7M20 10.7L0 10.7M7.27273 20.7H12.7273C15.2727 20.7 16.5455 20.7 17.5176 20.2046C18.3729 19.7688 19.0688 19.0734 19.5046 18.2182C20 17.2458 20 15.973 20 13.4273V7.97274C20 5.42705 20 4.1542 19.5046 3.18187C19.0688 2.32659 18.3729 1.63123 17.5176 1.19544C16.5455 0.700012 15.2727 0.700012 12.7273 0.700012H7.27273C4.72705 0.700012 3.4542 0.700012 2.48187 1.19544C1.62659 1.63123 0.931232 2.32659 0.495443 3.18187C0 4.1542 0 5.42705 0 7.97274V13.4273C0 15.973 0 17.2458 0.495443 18.2182C0.931232 19.0734 1.62659 19.7688 2.48187 20.2046C3.4542 20.7 4.72705 20.7 7.27273 20.7Z"
                     stroke="#15C4C8"
@@ -120,15 +109,9 @@ export default function Tour() {
         </View>
 
         {/* GRID */}
-        <View
-          style={[styles.grid, isListView ? styles.gridList : styles.gridCard]}
-        >
+        <View style={[styles.grid, isListView ? styles.gridList : styles.gridCard]}>
           {mockTours.map((tour) =>
-            isListView ? (
-              <TourListView key={tour.id} {...tour} />
-            ) : (
-              <TourCardView key={tour.id} {...tour} />
-            )
+            isListView ? <TourListView key={tour.id} {...tour} /> : <TourCardView key={tour.id} {...tour} />
           )}
         </View>
       </ScrollView>
