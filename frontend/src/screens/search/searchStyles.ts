@@ -46,6 +46,23 @@ export const styles = StyleSheet.create({
     color: "#1B1E28",
     fontSize: 16,
   },
+  filterContainer: {
+    marginBottom: 20,
+  },
+  filterBadges: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    paddingRight: 16,
+  },
+  clearAllButton: {
+    alignSelf: "flex-start",
+    marginTop: 8,
+  },
+  clearAllText: {
+    fontSize: 14,
+    color: "#0F93C3",
+    fontWeight: "600",
+  },
   resultsTitle: {
     fontSize: 20,
     fontWeight: "700",
