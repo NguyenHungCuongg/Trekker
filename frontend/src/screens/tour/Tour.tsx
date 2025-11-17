@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Svg, Path, Circle } from "react-native-svg";
 import { styles } from "./tourStyle";
 import TourListView from "../../components/search/TourListView";
-import TourCardView from "../../components/tour-card-view/tourCardView";
+import TourCardView from "../../components/tour-card-view/TourCardView";
 
 export default function Tour() {
   const navigation = useNavigation();

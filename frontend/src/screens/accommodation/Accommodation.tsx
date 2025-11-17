@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Svg, Path, Circle } from "react-native-svg";
-import { styles } from "./accommodationStyle"; // <--- đổi sang style riêng
+import { styles } from "./accommodationStyle"; //
 import AccommodationListView from "../../components/search/AccommodationListView";
-import TourCardView from "../../components/tour-card-view/tourCardView";
-import AccommodationCardView from "../../components/accommodation-card-view/accommodationCardView";
+import TourCardView from "../../components/tour-card-view/TourCardView";
+import AccommodationCardView from "../../components/accommodation-card-view/AccommodationCardView";
 
 export default function Accommodation() {
   const navigation = useNavigation();
