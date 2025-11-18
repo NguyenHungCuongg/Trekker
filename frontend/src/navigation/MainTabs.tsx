@@ -5,49 +5,10 @@ import Home from "../screens/home/Home";
 import Search from "../screens/search/Search";
 import Profile from "../screens/profile/Profile";
 import BottomNav from "../components/home/BottomNav";
-
-// Placeholder screens cho Tour và Chỗ ở (tạm thời)
 import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Accommodation from "../screens/accommodation/Accommodation";
 import Tour from "../screens/tour/Tour";
-
-function TourScreen() {
-  return (
-    <SafeAreaView style={styles.placeholder}>
-      <Text style={styles.placeholderText}>Tour Screen</Text>
-      <Text style={styles.placeholderSubtext}>Coming soon...</Text>
-    </SafeAreaView>
-  );
-}
-
-function AccommodationScreen() {
-  return (
-    <SafeAreaView style={styles.placeholder}>
-      <Text style={styles.placeholderText}>Chỗ ở Screen</Text>
-      <Text style={styles.placeholderSubtext}>Coming soon...</Text>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
-  placeholder: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#FFF",
-  },
-  placeholderText: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#1B1E28",
-    marginBottom: 8,
-  },
-  placeholderSubtext: {
-    fontSize: 16,
-    color: "#7D848D",
-  },
-});
 
 export type MainTabsParamList = {
   HomeTab: undefined;

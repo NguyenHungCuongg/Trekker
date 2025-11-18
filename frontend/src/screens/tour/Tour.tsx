@@ -70,7 +70,7 @@ export default function Tour() {
       {/* CONTENT */}
       <ScrollView style={styles.content}>
         <View style={styles.controls}>
-          <Text style={styles.sectionTitle}>Tất cả các tours</Text>
+          <Text style={styles.sectionTitle}>Tất cả các tour du lịch</Text>
 
           <View style={styles.viewControls}>
             <TouchableOpacity onPress={toggleView}>

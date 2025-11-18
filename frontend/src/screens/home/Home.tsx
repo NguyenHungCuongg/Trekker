@@ -198,7 +198,7 @@ export default function Home() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Top tour du lịch</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("MainTabs", { screen: "TourTab" })}>
               <Text style={styles.sectionLink}>Xem tất cả</Text>
             </TouchableOpacity>
           </View>
@@ -213,7 +213,7 @@ export default function Home() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Top chỗ ở</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("MainTabs", { screen: "AccommodationTab" })}>
               <Text style={styles.sectionLink}>Xem tất cả</Text>
             </TouchableOpacity>
           </View>
