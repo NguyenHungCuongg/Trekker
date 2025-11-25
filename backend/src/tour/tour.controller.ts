@@ -17,6 +17,7 @@ import { JwtAuthGuard } from "../auth/jwt.authguard";
 import { RolesGuard } from "../auth/guards/roles.guard";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { UserRole } from "../common/enums";
+import { TourCardDto } from "./dto/tour-card.dto";
 
 @Controller("tours")
 export class TourController {
@@ -36,6 +37,11 @@ export class TourController {
   @Get("search")
   async search(@Query() searchDto: SearchTourDto): Promise<Tour[]> {
     return this.tourService.search(searchDto);
+  }
+
+  @Get("top")
+  async findTopTours(): Promise<TourCardDto[]> {
+    return this.tourService.findTopTours();
   }
 
   @Get(":id")

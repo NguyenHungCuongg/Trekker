@@ -1,9 +1,10 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Svg, { Path, Circle } from "react-native-svg";
+import { formatNumber } from "../../utils/formatNumber";
 
 interface TourCardProps {
-  title: string;
+  name: string;
   location: string;
   rating: number;
   price: string;
@@ -11,18 +12,19 @@ interface TourCardProps {
   onPress?: () => void;
 }
 
-export default function TourCard({ title, location, rating, price, image, onPress }: TourCardProps) {
+export default function TourCard({ name, location, rating, price, image, onPress }: TourCardProps) {
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.8} onPress={onPress}>
-      <Image source={{ uri: image }} style={styles.image} />
+      <Image source={{ uri: image ?? "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480" }} style={styles.image} />
 
       <View style={styles.content}>
         <View style={styles.header}>
           <Text style={styles.title} numberOfLines={2}>
-            {title}
+            {name}
           </Text>
 
-          <View style={styles.rating}>
+          {/* có đánh giá mới hiện sao */}
+          {rating > 0 && (<View style={styles.rating}>
             <Svg width={13} height={12} viewBox="0 0 13 12" fill="none">
               <Path
                 d="M5.59149 0.345492C5.74042 -0.115164 6.38888 -0.115164 6.53781 0.345491L7.62841 3.71885C7.69501 3.92486 7.88603 4.06434 8.10157 4.06434H11.6308C12.1128 4.06434 12.3132 4.68415 11.9233 4.96885L9.06803 7.0537C8.89366 7.18102 8.82069 7.4067 8.8873 7.61271L9.9779 10.9861C10.1268 11.4467 9.60222 11.8298 9.21232 11.5451L6.35708 9.46024C6.18271 9.33291 5.94659 9.33291 5.77222 9.46024L2.91698 11.5451C2.52708 11.8298 2.00247 11.4467 2.1514 10.9861L3.242 7.61271C3.30861 7.4067 3.23564 7.18102 3.06127 7.0537L0.206033 4.96885C-0.183869 4.68415 0.0165137 4.06434 0.49846 4.06434H4.02773C4.24326 4.06434 4.43428 3.92486 4.50089 3.71885L5.59149 0.345492Z"
@@ -30,7 +32,7 @@ export default function TourCard({ title, location, rating, price, image, onPres
               />
             </Svg>
             <Text style={styles.ratingText}>{rating}</Text>
-          </View>
+          </View>)}
         </View>
 
         <View style={styles.footer}>
@@ -48,7 +50,7 @@ export default function TourCard({ title, location, rating, price, image, onPres
             </Text>
           </View>
           <Text style={styles.price} numberOfLines={1}>
-            {price}
+            {formatNumber(parseInt(price))} đ
           </Text>
         </View>
       </View>

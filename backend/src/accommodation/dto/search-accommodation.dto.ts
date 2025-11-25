@@ -7,7 +7,7 @@ export class SearchAccommodationDto {
   @IsOptional()
   @IsNumber()
   @Type(() => Number)
-  locationId?: number;
+  destinationId?: number;
 
   @IsOptional()
   @IsNumber()

@@ -11,12 +11,19 @@ import { styles } from "./homeStyles";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../App";
+import { useToast } from "../../components/context/ToastContext";
 
 export default function Home() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [destinations, setDestinations] = useState<Destination[]>([]);
+  const [tours, setTours] = useState<Tour[]>([]);
+  const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
+
+  const { showToast} = useToast();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -26,6 +33,10 @@ export default function Home() {
 
   useEffect(() => {
     fetchUserProfile();
+    fetchTopLocations();
+    fetchTopDestinations();
+    fetchTopTours();
+    fetchTopAccommodations();
   }, []);
 
   const fetchUserProfile = async () => {
@@ -34,101 +45,142 @@ export default function Home() {
       setUser(response.data);
     } catch (error) {
       console.error("Error fetching user profile:", error);
+      showToast("error", "Error fetching user profile:");
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchTopLocations = async () => {
+    try {
+      const response = await axiosInstance.get("/locations/top");
+      setLocations(response.data);
+    } catch (error) {
+      console.error("Error fetching top locations:", error);
+      showToast("error", "Error fetching top locations:");
+    }
+  };
+
+  const fetchTopDestinations = async () => {
+    try {
+      const response = await axiosInstance.get("/destinations/top");
+      setDestinations(response.data);
+    } catch (error) {
+      console.error("Error fetching top destinations:", error);
+      showToast("error", "Error fetching top destinations:");
+    }
+  };
+
+  const fetchTopTours = async () => {
+    try {
+      const response = await axiosInstance.get("/tours/top");
+      setTours(response.data);
+    } catch (error) {
+      console.error("Error fetching top tours:", error);
+      showToast("error", "Error fetching top tours:");
+    }
+  };
+
+  const fetchTopAccommodations = async () => {
+    try {
+      const response = await axiosInstance.get("/accommodations/top");
+      setAccommodations(response.data);
+    } catch (error) {
+      console.error("Error fetching top accommodations:", error);
+      showToast("error", "Error fetching top accommodations:");
+    }
+  };
+
   // Data cho LocationCard (Top tỉnh/thành)
-  const locations: Location[] = [
-    {
-      name: "Hồ Chí Minh",
-      accommodations: 245,
-      tours: 189,
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
-    },
-    {
-      name: "Hà Nội",
-      accommodations: 198,
-      tours: 156,
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
-    },
-    {
-      name: "Đà Nẵng",
-      accommodations: 142,
-      tours: 98,
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
-    },
-  ];
+  // const locations: Location[] = [
+  //   {
+  //     name: "Hồ Chí Minh",
+  //     accommodations: 245,
+  //     tours: 189,
+  //     image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
+  //   },
+  //   {
+  //     name: "Hà Nội",
+  //     accommodations: 198,
+  //     tours: 156,
+  //     image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
+  //   },
+  //   {
+  //     name: "Đà Nẵng",
+  //     accommodations: 142,
+  //     tours: 98,
+  //     image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
+  //   },
+  // ];
 
   // Data cho DestinationCard (Top địa điểm du lịch)
-  const destinations: Destination[] = [
-    {
-      name: "Vịnh Hạ Long",
-      tours: 45,
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
-    },
-    {
-      name: "Phố Cổ Hội An",
-      tours: 38,
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
-    },
-    {
-      name: "Chùa Một Cột",
-      tours: 32,
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
-    },
-  ];
+  // const destinations: Destination[] = [
+  //   {
+  //     name: "Vịnh Hạ Long",
+  //     tours: 45,
+  //     image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
+  //   },
+  //   {
+  //     name: "Phố Cổ Hội An",
+  //     tours: 38,
+  //     image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
+  //   },
+  //   {
+  //     name: "Chùa Một Cột",
+  //     tours: 32,
+  //     image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
+  //   },
+  // ];
 
   // Data cho TourCard (Top tour du lịch)
-  const tours: Tour[] = [
-    {
-      title: "Tour Sapa 3 ngày 2 đêm",
-      location: "Sapa, Lào Cai",
-      rating: 4.8,
-      price: "3.500.000đ",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
-    },
-    {
-      title: "Tour Phú Quốc 4N3Đ",
-      location: "Phú Quốc, Kiên Giang",
-      rating: 4.9,
-      price: "5.200.000đ",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
-    },
-    {
-      title: "Tour Đà Lạt 2N1Đ",
-      location: "Đà Lạt, Lâm Đồng",
-      rating: 4.7,
-      price: "2.800.000đ",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
-    },
-  ];
+  // const tours: Tour[] = [
+  //   {
+  //     title: "Tour Sapa 3 ngày 2 đêm",
+  //     location: "Sapa, Lào Cai",
+  //     rating: 4.8,
+  //     price: "3.500.000đ",
+  //     image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
+  //   },
+  //   {
+  //     title: "Tour Phú Quốc 4N3Đ",
+  //     location: "Phú Quốc, Kiên Giang",
+  //     rating: 4.9,
+  //     price: "5.200.000đ",
+  //     image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
+  //   },
+  //   {
+  //     title: "Tour Đà Lạt 2N1Đ",
+  //     location: "Đà Lạt, Lâm Đồng",
+  //     rating: 4.7,
+  //     price: "2.800.000đ",
+  //     image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
+  //   },
+  // ];
 
   // Data cho AccommodationCard (Top chỗ ở)
-  const accommodations: Accommodation[] = [
-    {
-      name: "Khách sạn Mường Thanh",
-      location: "Đà Nẵng",
-      rating: 4.7,
-      price: "1.200.000đ/đêm",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
-    },
-    {
-      name: "Resort Vinpearl",
-      location: "Nha Trang",
-      rating: 4.9,
-      price: "2.500.000đ/đêm",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
-    },
-    {
-      name: "Homestay Sapa View",
-      location: "Sapa, Lào Cai",
-      rating: 4.6,
-      price: "500.000đ/đêm",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
-    },
-  ];
+  // const accommodations: Accommodation[] = [
+  //   {
+  //     name: "Khách sạn Mường Thanh",
+  //     location: "Đà Nẵng",
+  //     rating: 4.7,
+  //     price: "1.200.000đ/đêm",
+  //     image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
+  //   },
+  //   {
+  //     name: "Resort Vinpearl",
+  //     location: "Nha Trang",
+  //     rating: 4.9,
+  //     price: "2.500.000đ/đêm",
+  //     image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
+  //   },
+  //   {
+  //     name: "Homestay Sapa View",
+  //     location: "Sapa, Lào Cai",
+  //     rating: 4.6,
+  //     price: "500.000đ/đêm",
+  //     image: "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
+  //   },
+  // ];
 
   return (
     <SafeAreaView style={styles.container}>

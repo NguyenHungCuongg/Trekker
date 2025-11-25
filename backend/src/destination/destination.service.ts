@@ -2,6 +2,9 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Destination } from "./destination.entity";
+import { DestinationCardDto } from "./dto/destination-card.dto";
+import { plainToInstance } from "class-transformer";
+import { snakeToCamel } from "src/utils/snakeToCamel";
 
 @Injectable()
 export class DestinationService {
@@ -38,5 +41,28 @@ export class DestinationService {
 
   async count(): Promise<number> {
     return this.destinationRepository.count();
+  }
+
+  async findTopDestinations(): Promise<DestinationCardDto[]> {
+    const destinations: DestinationCardDto[] = await this.destinationRepository
+      .query(`
+      SELECT 
+        d.destination_id AS id,
+        d.name AS name,
+        d.location_id AS location_id,
+        d.image AS image,
+        COUNT(td.tour_id) AS tour_count
+      FROM destinations d
+      LEFT JOIN tour_destination td ON d.destination_id = td.destination_id
+      GROUP BY d.destination_id, d.name, d.location_id
+      ORDER BY tour_count DESC
+      LIMIT 4
+    `);
+
+    const camelRows = destinations.map((r) => snakeToCamel(r));
+
+    return plainToInstance(DestinationCardDto, camelRows, {
+      excludeExtraneousValues: true,
+    });
   }
 }

@@ -7,16 +7,16 @@ import {
   JoinColumn,
   OneToMany,
 } from "typeorm";
-import { Location } from "../location/location.entity";
 import { RoomType } from "../room-type/room-type.entity";
+import { Destination } from "src/destination/destination.entity";
 
 @Entity("accommodations")
 export class Accommodation {
   @PrimaryGeneratedColumn({ name: "accommodation_id" })
   id: number;
 
-  @Column({ name: "location_id" })
-  locationId: number;
+  @Column({ name: "destination_id" })
+  destinationId: number;
 
   @Column({ length: 100 })
   name: string;
@@ -36,12 +36,15 @@ export class Accommodation {
   @Column({ type: "text", nullable: true })
   address: string;
 
+  @Column({ type: "varchar", length: 255, nullable: true })
+  image: string;
+
   // Relationships
-  @ManyToOne(() => Location, (location) => location.accommodations, {
+  @ManyToOne(() => Destination, (destination) => destination.accommodations, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "location_id" })
-  location: Location;
+  @JoinColumn({ name: "destination_id" })
+  destination: Destination;
 
   @OneToMany(() => RoomType, (roomType) => roomType.accommodation)
   roomTypes: RoomType[];

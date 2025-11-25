@@ -5,10 +5,12 @@ import {
   ManyToOne,
   JoinColumn,
   ManyToMany,
+  OneToMany,
 } from "typeorm";
 
 import { Location } from "../location/location.entity";
 import { Tour } from "../tour/tour.entity";
+import { Accommodation } from "src/accommodation/accommodation.entity";
 
 @Entity("destinations")
 export class Destination {
@@ -21,6 +23,9 @@ export class Destination {
   @Column({ name: "location_id" })
   locationId: number;
 
+  @Column({ type: "varchar", length: 255, nullable: true })
+  image: string;
+
   @ManyToOne(() => Location, (location) => location.destinations, {
     onDelete: "CASCADE",
   })
@@ -29,4 +34,7 @@ export class Destination {
 
   @ManyToMany(() => Tour, (tour) => tour.destinations)
   tours: Tour[];
+
+  @OneToMany(() => Accommodation, (accommodation) => accommodation.destination)
+  accommodations: Accommodation[];
 }

@@ -17,6 +17,7 @@ import { JwtAuthGuard } from "../auth/jwt.authguard";
 import { RolesGuard } from "../auth/guards/roles.guard";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { UserRole } from "../common/enums";
+import { AccommodationCardDto } from "./dto/accomodation-card.dto";
 
 @Controller("accommodations")
 export class AccommodationController {
@@ -24,10 +25,10 @@ export class AccommodationController {
 
   @Get()
   async findAll(
-    @Query("locationId", ParseIntPipe) locationId?: number,
+    @Query("locationId", ParseIntPipe) destinationId?: number,
   ): Promise<Accommodation[]> {
-    if (locationId) {
-      return this.accommodationService.findByLocationId(locationId);
+    if (destinationId) {
+      return this.accommodationService.findByDestinationId(destinationId);
     }
     return this.accommodationService.findAll();
   }
@@ -37,6 +38,11 @@ export class AccommodationController {
     @Query() searchDto: SearchAccommodationDto,
   ): Promise<Accommodation[]> {
     return this.accommodationService.search(searchDto);
+  }
+
+  @Get("top")
+  async findTopAccommodations(): Promise<AccommodationCardDto[]> {
+    return this.accommodationService.findTopAccommodations();
   }
 
   @Get(":id")

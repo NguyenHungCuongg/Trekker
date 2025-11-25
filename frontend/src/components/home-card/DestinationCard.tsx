@@ -4,15 +4,15 @@ import { Svg, Path } from "react-native-svg";
 
 interface DestinationCardProps {
   name: string;
-  tours: number;
+  tourCount: number; //sửa tours thành tourCount
   image: string;
   onPress?: () => void;
 }
 
-export default function DestinationCard({ name, tours, image, onPress }: DestinationCardProps) {
+export default function DestinationCard({ name, tourCount, image, onPress }: DestinationCardProps) {
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={onPress}>
-      <Image source={{ uri: image }} style={styles.image} />
+      <Image source={{ uri: image ?? "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480" }} style={styles.image} />
 
       <View style={styles.content}>
         <Text style={styles.title} numberOfLines={1}>
@@ -28,7 +28,7 @@ export default function DestinationCard({ name, tours, image, onPress }: Destina
               strokeLinecap="round"
             />
           </Svg>
-          <Text style={styles.statText}>Số tour du lịch: {tours}</Text>
+          <Text style={styles.statText}>Số tour du lịch: {tourCount}</Text>
         </View>
       </View>
     </TouchableOpacity>

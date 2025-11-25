@@ -4,16 +4,16 @@ import { Svg, Path } from "react-native-svg";
 
 interface LocationCardProps {
   name: string;
-  accommodations: number;
-  tours: number;
+  accommodationCount: number; //sửa accommodations thành accommodationCount
+  tourCount: number; //sửa tours thành tourCount
   image: string;
   onPress?: () => void;
 }
 
-export default function LocationCard({ name, accommodations, tours, image, onPress }: LocationCardProps) {
+export default function LocationCard({ name, accommodationCount, tourCount, image, onPress }: LocationCardProps) {
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={onPress}>
-      <Image source={{ uri: image }} style={styles.image} />
+      <Image source={{ uri: image ?? "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480" }} style={styles.image} />
 
       <View style={styles.content}>
         <Text style={styles.title} numberOfLines={1}>
@@ -31,7 +31,7 @@ export default function LocationCard({ name, accommodations, tours, image, onPre
                 strokeLinecap="round"
               />
             </Svg>
-            <Text style={styles.statText}>Số chỗ ở: {accommodations}</Text>
+            <Text style={styles.statText}>Số chỗ ở: {accommodationCount ?? 0}</Text>
           </View>
 
           {/* Tour Stat */}
@@ -44,7 +44,7 @@ export default function LocationCard({ name, accommodations, tours, image, onPre
                 strokeLinecap="round"
               />
             </Svg>
-            <Text style={styles.statText}>Số tour du lịch: {tours}</Text>
+            <Text style={styles.statText}>Số tour du lịch: {tourCount ?? 0}</Text>
           </View>
         </View>
       </View>
