@@ -1,6 +1,7 @@
 import { Controller, Get, ParseIntPipe, Param } from "@nestjs/common";
 import { LocationService } from "./location.service";
 import { Location } from "./location.entity";
+import { LocationCardDto } from "./dto/location-card.dto";
 
 @Controller("locations")
 export class LocationController {
@@ -9,6 +10,11 @@ export class LocationController {
   @Get()
   async findAll(): Promise<Location[]> {
     return this.locationService.findAll();
+  }
+
+  @Get("top")
+  async findTopLocations(): Promise<LocationCardDto[]> {
+    return this.locationService.findTopLocations();
   }
 
   @Get(":id")

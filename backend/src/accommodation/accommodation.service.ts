@@ -3,6 +3,9 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Accommodation } from "./accommodation.entity";
 import { SearchAccommodationDto } from "./dto/search-accommodation.dto";
+import { AccommodationCardDto } from "./dto/accomodation-card.dto";
+import { plainToInstance } from "class-transformer";
+import { snakeToCamel } from "src/utils/snakeToCamel";
 
 @Injectable()
 export class AccommodationService {
@@ -13,14 +16,14 @@ export class AccommodationService {
 
   async findAll(): Promise<Accommodation[]> {
     return this.accommodationRepository.find({
-      relations: ["location", "roomTypes"],
+      relations: ["destination", "roomTypes"],
     });
   }
 
   async findOne(id: number): Promise<Accommodation> {
     const accommodation = await this.accommodationRepository.findOne({
       where: { id },
-      relations: ["location", "roomTypes"],
+      relations: ["destination", "roomTypes"],
     });
     if (!accommodation) {
       throw new NotFoundException(`Không tìm thấy accommodation với id ${id}`);
@@ -31,11 +34,11 @@ export class AccommodationService {
   async search(searchDto: SearchAccommodationDto): Promise<Accommodation[]> {
     const query = this.accommodationRepository
       .createQueryBuilder("accommodation")
-      .leftJoinAndSelect("accommodation.location", "location")
+      .leftJoinAndSelect("accommodation.destination", "destination")
       .leftJoinAndSelect("accommodation.roomTypes", "roomTypes");
-    if (searchDto.locationId) {
-      query.andWhere("accommodation.locationId = :locationId", {
-        locationId: searchDto.locationId,
+    if (searchDto.destinationId) {
+      query.andWhere("accommodation.destinationId = :destinationId", {
+        destinationId: searchDto.destinationId,
       });
     }
     if (searchDto.minRating) {
@@ -51,10 +54,10 @@ export class AccommodationService {
     return query.getMany();
   }
 
-  async findByLocationId(locationId: number): Promise<Accommodation[]> {
+  async findByDestinationId(destinationId: number): Promise<Accommodation[]> {
     return this.accommodationRepository.find({
-      where: { locationId },
-      relations: ["location", "roomTypes"],
+      where: { destinationId },
+      relations: ["destination", "roomTypes"],
     });
   }
 
@@ -83,5 +86,41 @@ export class AccommodationService {
   async remove(id: number): Promise<void> {
     const accommodation = await this.findOne(id);
     await this.accommodationRepository.remove(accommodation);
+  }
+
+  async findTopAccommodations(): Promise<AccommodationCardDto[]> {
+    const accommodations: AccommodationCardDto[] = await this
+      .accommodationRepository.query(`
+      SELECT
+        a.accommodation_id AS id,
+        a.name AS name,
+        min_price_info.min_price AS price_per_night,
+        a.rating AS rating,
+        d.name AS destination,
+        a.image AS image
+        FROM
+        accommodations a
+        LEFT JOIN destinations d ON d.destination_id = a.destination_id
+        JOIN
+          (SELECT
+              accommodation_id,
+              MIN(price) AS min_price
+          FROM
+              room_types
+          GROUP BY
+              accommodation_id
+          ) AS min_price_info
+        ON
+        a.accommodation_id = min_price_info.accommodation_id
+        GROUP BY a.accommodation_id, a.name, d.name, min_price_info.min_price
+        ORDER BY a.rating DESC
+        LIMIT 8
+      `);
+
+    const camelRows = accommodations.map((r) => snakeToCamel(r));
+
+    return plainToInstance(AccommodationCardDto, camelRows, {
+      excludeExtraneousValues: true,
+    });
   }
 }

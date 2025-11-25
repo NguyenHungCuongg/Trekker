@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Tour } from "./tour.entity";
 import { Repository } from "typeorm";
 import { SearchTourDto } from "./dto/search-tour.dto";
+import { TourCardDto } from "./dto/tour-card.dto";
 
 @Injectable()
 export class TourService {
@@ -96,5 +97,22 @@ export class TourService {
   async remove(id: number): Promise<void> {
     const tour = await this.findOne(id);
     await this.tourRepository.remove(tour);
+  }
+
+  async findTopTours(): Promise<TourCardDto[]> {
+    const tours: TourCardDto[] = await this.tourRepository.query(`
+      SELECT 
+        t.tour_id AS id,
+        t.name AS name,
+        t.price AS price,
+        t.rating AS rating,
+        l.name AS location,
+        t.image AS image
+      FROM tours t
+      LEFT JOIN locations l ON t.location_id = l.location_id
+      ORDER BY t.rating DESC
+      LIMIT 4
+    `);
+    return tours;
   }
 }

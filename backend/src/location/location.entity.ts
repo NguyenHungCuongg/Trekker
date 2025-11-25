@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Destination } from "../destination/destination.entity";
 import { Tour } from "../tour/tour.entity";
-import { Accommodation } from "../accommodation/accommodation.entity"; // ← Sửa import
 
 @Entity("locations")
 export class Location {
@@ -14,12 +13,12 @@ export class Location {
   @Column({ type: "text", nullable: true })
   description: string;
 
+  @Column({ type: "varchar", length: 255, nullable: true })
+  image: string;
+
   @OneToMany(() => Destination, (destination) => destination.location)
   destinations: Destination[];
 
   @OneToMany(() => Tour, (tour) => tour.location)
   tours: Tour[];
-
-  @OneToMany(() => Accommodation, (accommodation) => accommodation.location)
-  accommodations: Accommodation[];
 }
