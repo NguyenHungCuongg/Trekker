@@ -13,19 +13,19 @@ export interface User {
 
 export interface Location {
   name: string;
-  accommodations: number;
-  tours: number;
+  accommodationCount: number;
+  tourCount: number;
   image: string;
 }
 
 export interface Destination {
   name: string;
-  tours: number;
+  tourCount: number;
   image: string;
 }
 
 export interface Tour {
-  title: string;
+  name: string;
   location: string;
   rating: number;
   price: string;
@@ -34,8 +34,8 @@ export interface Tour {
 
 export interface Accommodation {
   name: string;
-  location: string;
+  destination: string;
   rating: number;
-  price: string;
+  pricePerNight: string;
   image: string;
 }
