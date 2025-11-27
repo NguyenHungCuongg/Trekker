@@ -1,20 +1,22 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Svg, { Circle, Path } from "react-native-svg";
+import { formatNumber } from "../../utils/formatNumber";
 
 interface TourCardViewProps {
   tourName: string;
   location: string;
   rating: number;
-  price: string;
-  imageUrl: string;
+  price: number;
+  image: string;
+  onPress?: () => void;
 }
 
-export default function TourCardView({ tourName, location, rating, price, imageUrl }: TourCardViewProps) {
+export default function TourCardView({ tourName, location, rating, price, image, onPress }: TourCardViewProps) {
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={onPress}>
       <View style={styles.container}>
-        <Image source={{ uri: imageUrl }} style={styles.image} />
+        <Image source={{ uri: image ?? "https://i.pinimg.com/736x/e6/1d/80/e61d8095b0fa27d4a94db576b9782889.jpg" }} style={styles.image} />
 
         <View style={styles.content}>
           <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
@@ -36,7 +38,7 @@ export default function TourCardView({ tourName, location, rating, price, imageU
               </Text>
             </View>
 
-            <View style={styles.ratingRow}>
+            {rating > 0 && (<View style={styles.ratingRow}>
               <Svg width={12} height={11} viewBox="0 0 12 11">
                 <Path
                   d="M5.53189 0.326416C5.67923 -0.108805 6.32077 -0.108806 6.46811 0.326415L7.54709 3.51352C7.61299 3.70815 7.80197 3.83993 8.01521 3.83993H11.5069C11.9837 3.83993 12.1819 4.42552 11.7962 4.6945L8.97136 6.66424C8.79885 6.78453 8.72666 6.99775 8.79256 7.19239L9.87154 10.3795C10.0189 10.8147 9.49986 11.1766 9.11411 10.9076L6.28931 8.9379C6.1168 8.81761 5.8832 8.81761 5.71069 8.9379L2.88589 10.9076C2.50014 11.1766 1.98112 10.8147 2.12846 10.3795L3.20744 7.19239C3.27334 6.99775 3.20115 6.78453 3.02864 6.66424L0.203837 4.6945C-0.181909 4.42552 0.0163376 3.83993 0.493147 3.83993H3.98479C4.19803 3.83993 4.38701 3.70815 4.45291 3.51352L5.53189 0.326416Z"
@@ -45,13 +47,13 @@ export default function TourCardView({ tourName, location, rating, price, imageU
               </Svg>
 
               <Text style={styles.rating}>{rating}</Text>
-            </View>
+            </View>)}
           </View>
 
-          <Text style={styles.price}>{price}</Text>
+          <Text style={styles.price}>{formatNumber(price)}đ</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

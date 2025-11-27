@@ -3,19 +3,21 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { SvgXml } from "react-native-svg";
 
 interface AccommodationListViewProps {
-  accommodationName: string;
-  location: string;
+  name: string;
+  destination: string;
   rating: number;
-  price: string;
-  imageUrl: string;
+  pricePerNight: string;
+  image: string;
+  onPress?: () => void;
 }
 
 const AccommodationListView: React.FC<AccommodationListViewProps> = ({
-  accommodationName,
-  location,
+  name,
+  destination,
   rating,
-  price,
-  imageUrl,
+  pricePerNight,
+  image,
+  onPress
 }) => {
   const starIcon = `
     <svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -31,12 +33,12 @@ const AccommodationListView: React.FC<AccommodationListViewProps> = ({
   `;
 
   return (
-    <TouchableOpacity style={styles.card} activeOpacity={0.9}>
-      <Image source={{ uri: imageUrl }} style={styles.image} />
+    <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={onPress}>
+      <Image source={{ uri: image }} style={styles.image} />
       <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>{accommodationName}</Text>
+          <Text style={styles.title}>{name}</Text>
           <View style={styles.rating}>
             <SvgXml xml={starIcon} width={12} height={11} />
             <Text style={styles.ratingText}>{rating}</Text>
@@ -46,11 +48,11 @@ const AccommodationListView: React.FC<AccommodationListViewProps> = ({
         {/* Location */}
         <View style={styles.locationRow}>
           <SvgXml xml={locationIcon} width={16} height={16} />
-          <Text style={styles.locationText}>{location}</Text>
+          <Text style={styles.locationText}>{destination}</Text>
         </View>
 
         {/* Price */}
-        <Text style={styles.price}>{price}</Text>
+        <Text style={styles.price}>{pricePerNight}</Text>
       </View>
     </TouchableOpacity>
   );

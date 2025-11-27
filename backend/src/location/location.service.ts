@@ -57,8 +57,6 @@ export class LocationService {
 
     const camelRows = locations.map((r) => snakeToCamel(r));
 
-    console.log(camelRows);
-
     return plainToInstance(LocationCardDto, camelRows, {
       excludeExtraneousValues: true,
     });

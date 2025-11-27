@@ -1,18 +1,45 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Svg, Path, Circle } from "react-native-svg";
 import { styles } from "./accommodationStyle"; //
 import AccommodationListView from "../../components/search/AccommodationListView";
 import TourCardView from "../../components/tour-card-view/TourCardView";
 import AccommodationCardView from "../../components/accommodation-card-view/AccommodationCardView";
+import axiosInstance from "../../utils/axiosInstance";
+import { useToast } from "../../components/context/ToastContext";
 
 export default function Accommodation() {
   const navigation = useNavigation();
   const [isListView, setIsListView] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleBack = () => navigation.goBack();
   const toggleView = () => setIsListView(!isListView);
+  const { showToast } = useToast();
+
+  const [accommodations, setAccommodations] = useState<Array<any>>([]);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchAccommodations().finally(() => setLoading(false));
+  }, []);
+
+  const fetchAccommodations = async () => {
+    try {
+      const res = await axiosInstance.get("/accommodations/top");
+      setAccommodations(res.data);
+    } catch (error) {
+      console.error("Failed to fetch accommodations:", error);
+      showToast("error", "Lấy danh sách chỗ ở thất bại");
+    }
+  };
 
   // Mock data cho Accommodation
   const mockAccommodations = [
@@ -22,7 +49,8 @@ export default function Accommodation() {
       location: "Tên location",
       rating: 4.7,
       price: "Giá",
-      imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
+      imageUrl:
+        "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
     },
     {
       id: 2,
@@ -30,7 +58,8 @@ export default function Accommodation() {
       location: "Tên location",
       rating: 4.7,
       price: "Giá",
-      imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
+      imageUrl:
+        "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
     },
     {
       id: 3,
@@ -38,7 +67,8 @@ export default function Accommodation() {
       location: "Tên location",
       rating: 4.7,
       price: "Giá",
-      imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
+      imageUrl:
+        "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
     },
   ];
 
@@ -105,14 +135,32 @@ export default function Accommodation() {
         </View>
 
         {/* LIST / GRID */}
-        <View style={[styles.grid, isListView ? styles.gridList : styles.gridCard]}>
-          {mockAccommodations.map((item) =>
-            isListView ? (
-              <AccommodationListView key={item.id} {...item} />
+        <View
+          style={[styles.grid, isListView ? styles.gridList : styles.gridCard]}
+        >
+          {accommodations.map((accommodation) => {
+            return isListView ? (
+              <AccommodationListView
+                key={accommodation.id}
+                {...accommodation}
+                onPress={() =>
+                  navigation.navigate("AccommodationDetail", {
+                    id: accommodation.id,
+                  })
+                }
+              />
             ) : (
-              <AccommodationCardView key={item.id} {...item} />
-            )
-          )}
+              <AccommodationCardView
+                key={accommodation.id}
+                {...accommodation}
+                onPress={() =>
+                  navigation.navigate("AccommodationDetail", {
+                    id: accommodation.id,
+                  })
+                }
+              />
+            );
+          })}
         </View>
       </ScrollView>
     </View>

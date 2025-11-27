@@ -25,11 +25,10 @@ export class TourController {
 
   // User endpoints
   @Get()
-  async findAll(
-    @Query("locationId", ParseIntPipe) locationId: number,
-  ): Promise<Tour[]> {
-    if (locationId) {
-      return this.tourService.findByLocationId(locationId);
+  async findAll(@Query("locationId") locationId?: string): Promise<Tour[]> {
+    const id = locationId !== undefined ? Number(locationId) : undefined;
+    if (id !== undefined && !Number.isNaN(id)) {
+      return this.tourService.findByLocationId(id);
     }
     return this.tourService.findAll();
   }

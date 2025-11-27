@@ -88,9 +88,10 @@ export class AccommodationService {
     await this.accommodationRepository.remove(accommodation);
   }
 
-  async findTopAccommodations(): Promise<AccommodationCardDto[]> {
-    const accommodations: AccommodationCardDto[] = await this
-      .accommodationRepository.query(`
+  async findAccommodationCards(
+    limit?: number,
+  ): Promise<AccommodationCardDto[]> {
+    const rawSql = `
       SELECT
         a.accommodation_id AS id,
         a.name AS name,
@@ -114,8 +115,14 @@ export class AccommodationService {
         a.accommodation_id = min_price_info.accommodation_id
         GROUP BY a.accommodation_id, a.name, d.name, min_price_info.min_price
         ORDER BY a.rating DESC
-        LIMIT 8
-      `);
+      `;
+
+    const hasLimit = limit && limit > 0;
+    const sql = hasLimit ? `${rawSql} LIMIT $1` : rawSql;
+    const params = hasLimit ? [limit] : [];
+
+    const accommodations: AccommodationCardDto[] =
+      await this.accommodationRepository.query(sql, params);
 
     const camelRows = accommodations.map((r) => snakeToCamel(r));
 
