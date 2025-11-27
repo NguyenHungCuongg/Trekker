@@ -1,52 +1,45 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  Image,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Svg, Path, Circle } from "react-native-svg";
 import { styles } from "./tourStyle";
 import TourListView from "../../components/search/TourListView";
 import TourCardView from "../../components/tour-card-view/TourCardView";
+import axiosInstance from "../../utils/axiosInstance";
+import { useToast } from "../../components/context/ToastContext";
 
 export default function Tour() {
   const navigation = useNavigation();
   const [isListView, setIsListView] = useState(false);
+  const [tours, setTours] = useState<Array<any>>();
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const { showToast } = useToast();
 
   const handleBack = () => navigation.goBack();
   const toggleView = () => setIsListView(!isListView);
 
-  const mockTours = [
-    {
-      id: 1,
-      tourName: "Tên tour",
-      location: "Tên location",
-      rating: 4.7,
-      price: "Giá",
-      imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
-    },
-    {
-      id: 2,
-      tourName: "Tên tour",
-      location: "Tên location",
-      rating: 4.7,
-      price: "Giá",
-      imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
-    },
-    {
-      id: 3,
-      tourName: "Tên tour",
-      location: "Tên location",
-      rating: 4.7,
-      price: "Giá",
-      imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
-    },
-    {
-      id: 4,
-      tourName: "Tên tour",
-      location: "Tên location",
-      rating: 4.7,
-      price: "Giá",
-      imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
-    },
-  ];
+  useEffect(() => {
+    setLoading(true);
+    fetchTours().finally(() => setLoading(false));
+  }, []);
+
+  const fetchTours = async () => {
+    try {
+      const res = await axiosInstance.get("/tours");
+      setTours(res.data);
+    } catch (error) {
+      console.error("Failed to fetch tours:", error);
+      showToast("error", "Lấy danh sách tour thất bại");
+    }
+  };
 
   return (
     <View style={styles.page}>
@@ -109,10 +102,36 @@ export default function Tour() {
         </View>
 
         {/* GRID */}
-        <View style={[styles.grid, isListView ? styles.gridList : styles.gridCard]}>
-          {mockTours.map((tour) =>
-            isListView ? <TourListView key={tour.id} {...tour} /> : <TourCardView key={tour.id} {...tour} />
-          )}
+        <View
+          style={[styles.grid, isListView ? styles.gridList : styles.gridCard]}
+        >
+          {tours?.map((tour) => {
+            const card = {
+              id: tour.id,
+              tourName: tour.name,
+              location: tour.location.name,
+              price: tour.price,
+              rating: tour.rating,
+              image: tour.image,
+            };
+            return isListView ? (
+              <TourListView
+                key={tour.id}
+                {...card}
+                onPress={() =>
+                  navigation.navigate("TourDetail", { id: tour.id })
+                }
+              />
+            ) : (
+              <TourCardView
+                key={tour.id}
+                {...card}
+                onPress={() =>
+                  navigation.navigate("TourDetail", { id: tour.id })
+                }
+              />
+            );
+          })}
         </View>
       </ScrollView>
     </View>

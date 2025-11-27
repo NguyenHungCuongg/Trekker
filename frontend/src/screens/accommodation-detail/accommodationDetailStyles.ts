@@ -159,6 +159,7 @@ export const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#E8ECF0",
     position: "relative",
+    marginBottom: 10,
   },
   roomTypeCardSelected: {
     backgroundColor: "#E6F7F8",

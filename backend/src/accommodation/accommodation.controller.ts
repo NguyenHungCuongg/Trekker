@@ -25,7 +25,7 @@ export class AccommodationController {
 
   @Get()
   async findAll(
-    @Query("locationId", ParseIntPipe) destinationId?: number,
+    @Query("locationId") destinationId?: number,
   ): Promise<Accommodation[]> {
     if (destinationId) {
       return this.accommodationService.findByDestinationId(destinationId);
@@ -41,8 +41,10 @@ export class AccommodationController {
   }
 
   @Get("top")
-  async findTopAccommodations(): Promise<AccommodationCardDto[]> {
-    return this.accommodationService.findTopAccommodations();
+  async findTopAccommodations(
+    @Query("limit") limit: number,
+  ): Promise<AccommodationCardDto[]> {
+    return this.accommodationService.findAccommodationCards(limit);
   }
 
   @Get(":id")

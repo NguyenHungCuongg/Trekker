@@ -83,7 +83,7 @@ export default function Home() {
 
   const fetchTopAccommodations = async () => {
     try {
-      const response = await axiosInstance.get("/accommodations/top");
+      const response = await axiosInstance.get("/accommodations/top?limit=8");
       setAccommodations(response.data);
     } catch (error) {
       console.error("Error fetching top accommodations:", error);
@@ -256,7 +256,7 @@ export default function Home() {
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
             {tours.map((tour, idx) => (
-              <TourCard key={idx} {...tour} onPress={() => navigation.navigate("TourDetail")} />
+              <TourCard key={idx} {...tour} onPress={() => navigation.navigate("TourDetail", { id: tour.id })} />
             ))}
           </ScrollView>
         </View>
@@ -274,7 +274,7 @@ export default function Home() {
               <AccommodationCard
                 key={idx}
                 {...accommodation}
-                onPress={() => navigation.navigate("AccommodationDetail")}
+                onPress={() => navigation.navigate("AccommodationDetail", { id: accommodation.id })}
               />
             ))}
           </ScrollView>

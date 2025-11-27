@@ -1,13 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path, Circle } from "react-native-svg";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { styles } from "./accommodationDetailStyles";
+import axiosInstance from "../../utils/axiosInstance";
+import { useToast } from "../../components/context/ToastContext";
+import { RoomType } from "../../types";
+import { formatNumber } from "../../utils/formatNumber";
 
 export default function AccommodationDetail() {
   const navigation = useNavigation();
   const [selectedRoomType, setSelectedRoomType] = useState<number | null>(null);
+  const [accommodation, setAccommodation] = useState<any>({
+    id: null,
+    destinationId: "",
+    name: "",
+    description: "",
+    rating: 0,
+    phone: "",
+    email: "",
+    address: "",
+    image: null,
+    destination: {},
+    roomTypes: [] as RoomType[],
+  });
+  const route = useRoute();
+  const { id } = route.params as { id: any };
+  const { showToast } = useToast();
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchAccommodations(id).then(() => setLoading(false));
+  }, [id]);
+
+  const fetchAccommodations = async (id: any) => {
+    try {
+      const res = await axiosInstance.get(`/accommodations/${id}`);
+      setAccommodation(res.data);
+    } catch (error) {
+      console.error("Error fetching accommodation detail:", error);
+      showToast("error", "Lỗi khi tải chi tiết chỗ ở");
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -15,13 +51,18 @@ export default function AccommodationDetail() {
       <View style={styles.heroSection}>
         <Image
           source={{
-            uri: "https://api.builder.io/api/v1/image/assets/TEMP/0ce3e082b0ccb12a660832009bf3f49958919af7?width=750",
+            uri:
+              accommodation.image ??
+              "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
           }}
           style={styles.heroImage}
         />
 
         {/* Back button */}
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
           <Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
             <Path
               fillRule="evenodd"
@@ -43,8 +84,8 @@ export default function AccommodationDetail() {
 
         <View style={styles.header}>
           <View>
-            <Text style={styles.title}>Tên chỗ ở</Text>
-            <Text style={styles.address}>Địa chỉ chi tiết</Text>
+            <Text style={styles.title}>{accommodation.name}</Text>
+            <Text style={styles.address}>{accommodation.address}</Text>
           </View>
         </View>
 
@@ -52,31 +93,38 @@ export default function AccommodationDetail() {
         <View style={styles.meta}>
           <View style={styles.metaItem}>
             <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
-              <Circle cx="8" cy="7.33334" r="2" stroke="#7D848D" strokeWidth="1.5" />
+              <Circle
+                cx="8"
+                cy="7.33334"
+                r="2"
+                stroke="#7D848D"
+                strokeWidth="1.5"
+              />
               <Path
                 d="M14 7.25926C14 10.5321 10.25 14.6667 8 14.6667C5.75 14.6667 2 10.5321 2 7.25926C2 3.98646 4.68629 1.33334 8 1.33334C11.3137 1.33334 14 3.98646 14 7.25926Z"
                 stroke="#7D848D"
                 strokeWidth="1.5"
               />
             </Svg>
-            <Text style={styles.metaText}>Tên location</Text>
+            <Text style={styles.metaText}>
+              {accommodation.destination?.name}
+            </Text>
           </View>
 
-          <View style={styles.metaItem}>
-            <Svg width={13} height={12} viewBox="0 0 13 12" fill="none">
-              <Path
-                d="M5.59149 0.345492C5.74042 -0.115164 6.38888 -0.115164 6.53781 0.345491L7.62841 3.71885C7.69501 3.92486 7.88603 4.06434 8.10157 4.06434H11.6308C12.1128 4.06434 12.3132 4.68415 11.9233 4.96885L9.06803 7.0537C8.89366 7.18102 8.82069 7.4067 8.8873 7.61271L9.9779 10.9861C10.1268 11.4467 9.60222 11.8298 9.21232 11.5451L6.35708 9.46024C6.18271 9.33291 5.94659 9.33291 5.77222 9.46024L2.91698 11.5451C2.52708 11.8298 2.00247 11.4467 2.1514 10.9861L3.242 7.61271C3.30861 7.4067 3.23564 7.18102 3.06127 7.0537L0.206033 4.96885C-0.183869 4.68415 0.0165137 4.06434 0.49846 4.06434H4.02773C4.24326 4.06434 4.43428 3.92486 4.50089 3.71885L5.59149 0.345492Z"
-                fill="#FFD336"
-              />
-            </Svg>
-            <Text style={styles.rating}>4.7</Text>
-            <Text style={styles.reviews}>(2498)</Text>
-          </View>
-
-          <View style={styles.metaItem}>
-            <Text style={styles.price}>$giá</Text>
-            <Text style={styles.priceUnit}> /Đêm</Text>
-          </View>
+          {accommodation.rating > 0 ? (
+            <View style={styles.metaItem}>
+              <Svg width={13} height={12} viewBox="0 0 13 12" fill="none">
+                <Path
+                  d="M5.59149 0.345492C5.74042 -0.115164 6.38888 -0.115164 6.53781 0.345491L7.62841 3.71885C7.69501 3.92486 7.88603 4.06434 8.10157 4.06434H11.6308C12.1128 4.06434 12.3132 4.68415 11.9233 4.96885L9.06803 7.0537C8.89366 7.18102 8.82069 7.4067 8.8873 7.61271L9.9779 10.9861C10.1268 11.4467 9.60222 11.8298 9.21232 11.5451L6.35708 9.46024C6.18271 9.33291 5.94659 9.33291 5.77222 9.46024L2.91698 11.5451C2.52708 11.8298 2.00247 11.4467 2.1514 10.9861L3.242 7.61271C3.30861 7.4067 3.23564 7.18102 3.06127 7.0537L0.206033 4.96885C-0.183869 4.68415 0.0165137 4.06434 0.49846 4.06434H4.02773C4.24326 4.06434 4.43428 3.92486 4.50089 3.71885L5.59149 0.345492Z"
+                  fill="#FFD336"
+                />
+              </Svg>
+              <Text style={styles.rating}>{accommodation.rating}</Text>
+              <Text style={styles.reviews}>(2498)</Text>
+            </View>
+          ) : (
+            <Text style={styles.rating}>Chưa có đánh giá</Text>
+          )}
         </View>
 
         {/* Contact Info */}
@@ -91,7 +139,7 @@ export default function AccommodationDetail() {
                 strokeLinejoin="round"
               />
             </Svg>
-            <Text style={styles.contactText}>0123-456-789</Text>
+            <Text style={styles.contactText}>{accommodation.phone}</Text>
           </View>
 
           <View style={styles.contactItem}>
@@ -111,12 +159,16 @@ export default function AccommodationDetail() {
                 strokeLinejoin="round"
               />
             </Svg>
-            <Text style={styles.contactText}>accommodation@example.com</Text>
+            <Text style={styles.contactText}>{accommodation.email}</Text>
           </View>
         </View>
 
         {/* Gallery */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.gallery}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.gallery}
+        >
           {[
             "https://api.builder.io/api/v1/image/assets/TEMP/1eec378f8e06ba0df68d6f1dd0d1d6e27edc3177?width=173",
             "https://api.builder.io/api/v1/image/assets/TEMP/f58486cec84dac3d288db19aee8598689cf5ae25?width=173",
@@ -129,111 +181,76 @@ export default function AccommodationDetail() {
         {/* Description */}
         <Text style={styles.sectionTitle}>Mô tả</Text>
         <Text style={styles.description}>
-          Chỗ ở hiện đại với đầy đủ tiện nghi. {"\n"}
-          Phòng ốc sạch sẽ, thoáng mát. {"\n"}
-          Vị trí thuận lợi gần trung tâm. {"\n"}
-          Các mô tả khác về chỗ ở (Phần này tự làm flexible thôi) <Text style={styles.readMore}>Xem thêm</Text>
+          {accommodation.description} {"\n"}
+          {"\n"}
+          {accommodation.roomTypes.map((roomType: any, index: number) => (
+            <Text key={index}>
+              <Text> - {roomType.name}:</Text> {roomType.description} {"\n"}
+              {"\n"}
+            </Text>
+          ))}
+          Các mô tả khác về chỗ ở (Phần này tự làm flexible thôi){" "}
+          <Text style={styles.readMore}>Xem thêm</Text>
         </Text>
 
         {/* Room Types Section */}
         <Text style={styles.sectionTitle}>Loại phòng</Text>
-        <View style={styles.roomTypesContainer}>
-          {/* Room Type Card 1 */}
-          <TouchableOpacity
-            style={[styles.roomTypeCard, selectedRoomType === 1 && styles.roomTypeCardSelected]}
-            onPress={() => setSelectedRoomType(selectedRoomType === 1 ? null : 1)}
-            activeOpacity={0.7}
-          >
-            <View style={styles.roomTypeHeader}>
-              <Text style={[styles.roomTypeName, selectedRoomType === 1 && styles.roomTypeNameSelected]}>
-                Phòng Deluxe
-              </Text>
-              <Text style={[styles.roomTypePrice, selectedRoomType === 1 && styles.roomTypePriceSelected]}>
-                1.500.000đ/đêm
-              </Text>
-            </View>
-            <Text style={styles.roomTypeCapacity}>Sức chứa: 2 người</Text>
-            <Text style={styles.roomTypeAmenities}>Tiện nghi: WiFi, TV, Điều hòa, Minibar</Text>
-            {selectedRoomType === 1 && (
-              <View style={styles.selectedIndicator}>
-                <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
-                  <Circle cx="8" cy="8" r="8" fill="#0F93C3" />
-                  <Path
-                    d="M11.3346 5.33398L6.66797 10.0007L4.66797 8.00065"
-                    stroke="white"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </Svg>
+        {accommodation.roomTypes &&
+          accommodation?.roomTypes?.map((roomType: RoomType, index: number) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.roomTypeCard,
+                selectedRoomType === index && styles.roomTypeCardSelected,
+              ]}
+              onPress={() =>
+                setSelectedRoomType(selectedRoomType === index ? null : index)
+              }
+              activeOpacity={0.7}
+            >
+              <View style={styles.roomTypeHeader}>
+                <Text
+                  style={[
+                    styles.roomTypeName,
+                    selectedRoomType === index && styles.roomTypeNameSelected,
+                  ]}
+                >
+                  {roomType.name}
+                </Text>
+                <Text
+                  style={[
+                    styles.roomTypePrice,
+                    selectedRoomType === index && styles.roomTypePriceSelected,
+                  ]}
+                >
+                  {formatNumber(roomType.discountPrice
+                    ? roomType.discountPrice
+                    : roomType.price)}
+                  đ/đêm
+                </Text>
               </View>
-            )}
-          </TouchableOpacity>
-
-          {/* Room Type Card 2 */}
-          <TouchableOpacity
-            style={[styles.roomTypeCard, selectedRoomType === 2 && styles.roomTypeCardSelected]}
-            onPress={() => setSelectedRoomType(selectedRoomType === 2 ? null : 2)}
-            activeOpacity={0.7}
-          >
-            <View style={styles.roomTypeHeader}>
-              <Text style={[styles.roomTypeName, selectedRoomType === 2 && styles.roomTypeNameSelected]}>
-                Phòng Suite
+              <Text style={styles.roomTypeCapacity}>
+                Sức chứa: {roomType.capacity} người
               </Text>
-              <Text style={[styles.roomTypePrice, selectedRoomType === 2 && styles.roomTypePriceSelected]}>
-                2.500.000đ/đêm
+              <Text style={styles.roomTypeAmenities}>
+                Tiện nghi: {roomType.amenities}
               </Text>
-            </View>
-            <Text style={styles.roomTypeCapacity}>Sức chứa: 4 người</Text>
-            <Text style={styles.roomTypeAmenities}>Tiện nghi: WiFi, TV, Điều hòa, Minibar, Bồn tắm</Text>
-            {selectedRoomType === 2 && (
-              <View style={styles.selectedIndicator}>
-                <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
-                  <Circle cx="8" cy="8" r="8" fill="#0F93C3" />
-                  <Path
-                    d="M11.3346 5.33398L6.66797 10.0007L4.66797 8.00065"
-                    stroke="white"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </Svg>
-              </View>
-            )}
-          </TouchableOpacity>
-
-          {/* Room Type Card 3 */}
-          <TouchableOpacity
-            style={[styles.roomTypeCard, selectedRoomType === 3 && styles.roomTypeCardSelected]}
-            onPress={() => setSelectedRoomType(selectedRoomType === 3 ? null : 3)}
-            activeOpacity={0.7}
-          >
-            <View style={styles.roomTypeHeader}>
-              <Text style={[styles.roomTypeName, selectedRoomType === 3 && styles.roomTypeNameSelected]}>
-                Phòng Standard
-              </Text>
-              <Text style={[styles.roomTypePrice, selectedRoomType === 3 && styles.roomTypePriceSelected]}>
-                800.000đ/đêm
-              </Text>
-            </View>
-            <Text style={styles.roomTypeCapacity}>Sức chứa: 2 người</Text>
-            <Text style={styles.roomTypeAmenities}>Tiện nghi: WiFi, TV, Điều hòa</Text>
-            {selectedRoomType === 3 && (
-              <View style={styles.selectedIndicator}>
-                <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
-                  <Circle cx="8" cy="8" r="8" fill="#0F93C3" />
-                  <Path
-                    d="M11.3346 5.33398L6.66797 10.0007L4.66797 8.00065"
-                    stroke="white"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </Svg>
-              </View>
-            )}
-          </TouchableOpacity>
-        </View>
+              {selectedRoomType === index && (
+                <View style={styles.selectedIndicator}>
+                  <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
+                    <Circle cx="8" cy="8" r="8" fill="#0F93C3" />
+                    <Path
+                      d="M11.3346 5.33398L6.66797 10.0007L4.66797 8.00065"
+                      stroke="white"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </Svg>
+                </View>
+              )}
+            </TouchableOpacity>
+          ))}
 
         <TouchableOpacity style={styles.bookButton}>
           <Text style={styles.bookButtonText}>Đặt phòng</Text>

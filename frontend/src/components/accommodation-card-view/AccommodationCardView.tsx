@@ -1,30 +1,32 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Svg, { Circle, Path } from "react-native-svg";
 
 interface AccommodationCardViewProps {
-  accommodationName: string;
-  location: string;
+  name: string;
+  destination: string;
   rating: number;
-  price: string;
-  imageUrl: string;
+  pricePerNight: string;
+  image: string;
+  onPress?: () => void;
 }
 
 export default function AccommodationCardView({
-  accommodationName,
-  location,
+  name,
+  destination,
   rating,
-  price,
-  imageUrl,
+  pricePerNight,
+  image,
+  onPress,
 }: AccommodationCardViewProps) {
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={onPress}>
       <View style={styles.container}>
-        <Image source={{ uri: imageUrl }} style={styles.image} />
+        <Image source={{ uri: image }} style={styles.image} />
 
         <View style={styles.content}>
           <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-            {accommodationName}
+            {name}
           </Text>
 
           <View style={styles.infoRow}>
@@ -38,7 +40,7 @@ export default function AccommodationCardView({
                 />
               </Svg>
               <Text style={styles.location} numberOfLines={1} ellipsizeMode="tail">
-                {location}
+                {destination}
               </Text>
             </View>
 
@@ -54,10 +56,10 @@ export default function AccommodationCardView({
             </View>
           </View>
 
-          <Text style={styles.price}>{price}</Text>
+          <Text style={styles.price}>{pricePerNight}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

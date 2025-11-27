@@ -11,20 +11,21 @@ export interface User {
   phone?: string;
 }
 
-export interface Location {
+export interface LocationCard {
   name: string;
   accommodationCount: number;
   tourCount: number;
   image: string;
 }
 
-export interface Destination {
+export interface DestinationCard {
   name: string;
   tourCount: number;
   image: string;
 }
 
-export interface Tour {
+export interface TourCard {
+  id: any;
   name: string;
   location: string;
   rating: number;
@@ -32,10 +33,23 @@ export interface Tour {
   image: string;
 }
 
-export interface Accommodation {
+export interface AccommodationCard {
   name: string;
   destination: string;
   rating: number;
   pricePerNight: string;
+  image: string;
+}
+
+export interface RoomType {
+  id: number;
+  accommodationId: number;
+  name: string;
+  capacity: number;
+  price: number;
+  discountPrice?: number;
+  amenities: string;
+  description: string;
+  quantity: number;
   image: string;
 }
