@@ -4,7 +4,7 @@ DELIMITER ','
 CSV
 HEADER;
 
-COPY destinations (destination_name,location_id,image)
+COPY destinations (name,location_id,image)
 FROM '/duong/dan/den/file/destinations.csv'
 DELIMITER ','
 CSV

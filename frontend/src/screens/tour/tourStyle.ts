@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFF",
     paddingTop: 55,
+    paddingBottom: 120,
   },
 
   /* HEADER */
@@ -43,12 +44,13 @@ export const styles = StyleSheet.create({
   viewControls: {
     alignItems: "center",
     flexDirection: "row",
-    gap: 20
+    gap: 20,
   },
 
   /* GRID */
   grid: {
     gap: 16,
+    paddingBottom: 10,
   },
   gridCard: {
     flexDirection: "row",

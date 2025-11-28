@@ -1,30 +1,29 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Svg, Path, Circle } from "react-native-svg";
 import { styles } from "./accommodationStyle"; //
-import AccommodationListView from "../../components/search/AccommodationListView";
-import TourCardView from "../../components/tour-card-view/TourCardView";
-import AccommodationCardView from "../../components/accommodation-card-view/AccommodationCardView";
+import { SafeAreaView } from "react-native-safe-area-context";
+import AccommodationListView from "../../components/AccommodationListView";
+import AccommodationCardView from "../../components/AccommodationCardView";
 import axiosInstance from "../../utils/axiosInstance";
+import Pagination from "../../components/Pagination";
 import { useToast } from "../../components/context/ToastContext";
 
 export default function Accommodation() {
   const navigation = useNavigation();
   const [isListView, setIsListView] = useState(false);
+  const [accommodations, setAccommodations] = useState<Array<any>>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemPerPage] = useState<number>(12);
+  const lastItemIndex = currentPage * itemPerPage;
+  const firstItemIndex = lastItemIndex - itemPerPage;
+  const currentItems = accommodations?.slice(firstItemIndex, lastItemIndex);
 
   const handleBack = () => navigation.goBack();
   const toggleView = () => setIsListView(!isListView);
   const { showToast } = useToast();
-
-  const [accommodations, setAccommodations] = useState<Array<any>>([]);
 
   useEffect(() => {
     setLoading(true);
@@ -41,39 +40,8 @@ export default function Accommodation() {
     }
   };
 
-  // Mock data cho Accommodation
-  const mockAccommodations = [
-    {
-      id: 1,
-      accommodationName: "Tên chỗ ở",
-      location: "Tên location",
-      rating: 4.7,
-      price: "Giá",
-      imageUrl:
-        "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
-    },
-    {
-      id: 2,
-      accommodationName: "Tên chỗ ở",
-      location: "Tên location",
-      rating: 4.7,
-      price: "Giá",
-      imageUrl:
-        "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
-    },
-    {
-      id: 3,
-      accommodationName: "Tên chỗ ở",
-      location: "Tên location",
-      rating: 4.7,
-      price: "Giá",
-      imageUrl:
-        "https://api.builder.io/api/v1/image/assets/TEMP/e7e3700c212de6ee17d3d9b8cc67ff5f208cf750?width=274",
-    },
-  ];
-
   return (
-    <View style={styles.page}>
+    <SafeAreaView style={styles.page}>
       {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack} style={styles.backBtn}>
@@ -135,10 +103,8 @@ export default function Accommodation() {
         </View>
 
         {/* LIST / GRID */}
-        <View
-          style={[styles.grid, isListView ? styles.gridList : styles.gridCard]}
-        >
-          {accommodations.map((accommodation) => {
+        <View style={[styles.grid, isListView ? styles.gridList : styles.gridCard]}>
+          {currentItems?.map((accommodation) => {
             return isListView ? (
               <AccommodationListView
                 key={accommodation.id}
@@ -162,7 +128,15 @@ export default function Accommodation() {
             );
           })}
         </View>
+        {accommodations && accommodations.length > 0 && (
+          <Pagination
+            totalItems={accommodations.length}
+            currentPage={currentPage}
+            itemsPerPage={itemPerPage}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }

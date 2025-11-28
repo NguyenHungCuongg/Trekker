@@ -1,6 +1,9 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { SvgXml } from "react-native-svg";
+import { formatNumber } from "../utils/formatNumber";
+
+const defaultThumbnail = require("../../assets/default-thumbnail.png");
 
 interface AccommodationListViewProps {
   name: string;
@@ -17,7 +20,7 @@ const AccommodationListView: React.FC<AccommodationListViewProps> = ({
   rating,
   pricePerNight,
   image,
-  onPress
+  onPress,
 }) => {
   const starIcon = `
     <svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -34,7 +37,7 @@ const AccommodationListView: React.FC<AccommodationListViewProps> = ({
 
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={onPress}>
-      <Image source={{ uri: image }} style={styles.image} />
+      <Image source={image ? { uri: image } : defaultThumbnail} style={styles.image} />
       <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>
@@ -52,7 +55,7 @@ const AccommodationListView: React.FC<AccommodationListViewProps> = ({
         </View>
 
         {/* Price */}
-        <Text style={styles.price}>{pricePerNight}</Text>
+        <Text style={styles.price}>{formatNumber(pricePerNight)}đ</Text>
       </View>
     </TouchableOpacity>
   );

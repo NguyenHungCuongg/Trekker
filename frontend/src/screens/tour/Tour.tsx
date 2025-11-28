@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-  Image,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Svg, Path, Circle } from "react-native-svg";
 import { styles } from "./tourStyle";
-import TourListView from "../../components/search/TourListView";
-import TourCardView from "../../components/tour-card-view/TourCardView";
+import { SafeAreaView } from "react-native-safe-area-context";
+import TourListView from "../../components/TourListView";
+import TourCardView from "../../components/TourCardView";
 import axiosInstance from "../../utils/axiosInstance";
+import Pagination from "../../components/Pagination";
 import { useToast } from "../../components/context/ToastContext";
 
 export default function Tour() {
@@ -20,6 +15,11 @@ export default function Tour() {
   const [isListView, setIsListView] = useState(false);
   const [tours, setTours] = useState<Array<any>>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemPerPage] = useState<number>(12);
+  const lastItemIndex = currentPage * itemPerPage;
+  const firstItemIndex = lastItemIndex - itemPerPage;
+  const currentItems = tours?.slice(firstItemIndex, lastItemIndex);
 
   const { showToast } = useToast();
 
@@ -42,7 +42,7 @@ export default function Tour() {
   };
 
   return (
-    <View style={styles.page}>
+    <SafeAreaView style={styles.page}>
       {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack} style={styles.backBtn}>
@@ -102,10 +102,8 @@ export default function Tour() {
         </View>
 
         {/* GRID */}
-        <View
-          style={[styles.grid, isListView ? styles.gridList : styles.gridCard]}
-        >
-          {tours?.map((tour) => {
+        <View style={[styles.grid, isListView ? styles.gridList : styles.gridCard]}>
+          {currentItems?.map((tour) => {
             const card = {
               id: tour.id,
               tourName: tour.name,
@@ -118,22 +116,26 @@ export default function Tour() {
               <TourListView
                 key={tour.id}
                 {...card}
-                onPress={() =>
-                  navigation.navigate("TourDetail", { id: tour.id })
-                }
+                onPress={() => navigation.navigate("TourDetail", { id: tour.id })}
               />
             ) : (
               <TourCardView
                 key={tour.id}
                 {...card}
-                onPress={() =>
-                  navigation.navigate("TourDetail", { id: tour.id })
-                }
+                onPress={() => navigation.navigate("TourDetail", { id: tour.id })}
               />
             );
           })}
         </View>
+        {tours && tours.length > 0 && (
+          <Pagination
+            totalItems={tours.length}
+            currentPage={currentPage}
+            itemsPerPage={itemPerPage}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }

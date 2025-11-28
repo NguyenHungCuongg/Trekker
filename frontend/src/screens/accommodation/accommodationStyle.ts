@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFF",
     paddingTop: 55,
+    paddingBottom: 120,
   },
 
   header: {
@@ -51,6 +52,7 @@ export const styles = StyleSheet.create({
 
   grid: {
     gap: 16,
+    paddingBottom: 10,
   },
 
   gridCard: {

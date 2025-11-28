@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { SvgXml } from "react-native-svg";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./searchStyles";
-import TourListView from "../../components/search/TourListView";
+import TourListView from "../../components/TourListView";
 import FilterBadge from "../../components/search/FilterBadge";
 import FilterSection from "../../components/search/FilterSection";
 
