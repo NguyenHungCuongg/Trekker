@@ -9,6 +9,8 @@ import { useToast } from "../../components/context/ToastContext";
 import { RoomType } from "../../types";
 import { formatNumber } from "../../utils/formatNumber";
 
+const defaultThumbnail = require("../../../assets/default-thumbnail.png");
+
 export default function AccommodationDetail() {
   const navigation = useNavigation();
   const [selectedRoomType, setSelectedRoomType] = useState<number | null>(null);
@@ -50,19 +52,12 @@ export default function AccommodationDetail() {
       {/* Hero section */}
       <View style={styles.heroSection}>
         <Image
-          source={{
-            uri:
-              accommodation.image ??
-              "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
-          }}
+          source={accommodation.image ? { uri: accommodation.image } : defaultThumbnail}
           style={styles.heroImage}
         />
 
         {/* Back button */}
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
             <Path
               fillRule="evenodd"
@@ -93,22 +88,14 @@ export default function AccommodationDetail() {
         <View style={styles.meta}>
           <View style={styles.metaItem}>
             <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
-              <Circle
-                cx="8"
-                cy="7.33334"
-                r="2"
-                stroke="#7D848D"
-                strokeWidth="1.5"
-              />
+              <Circle cx="8" cy="7.33334" r="2" stroke="#7D848D" strokeWidth="1.5" />
               <Path
                 d="M14 7.25926C14 10.5321 10.25 14.6667 8 14.6667C5.75 14.6667 2 10.5321 2 7.25926C2 3.98646 4.68629 1.33334 8 1.33334C11.3137 1.33334 14 3.98646 14 7.25926Z"
                 stroke="#7D848D"
                 strokeWidth="1.5"
               />
             </Svg>
-            <Text style={styles.metaText}>
-              {accommodation.destination?.name}
-            </Text>
+            <Text style={styles.metaText}>{accommodation.destination?.name}</Text>
           </View>
 
           {accommodation.rating > 0 ? (
@@ -164,11 +151,7 @@ export default function AccommodationDetail() {
         </View>
 
         {/* Gallery */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.gallery}
-        >
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.gallery}>
           {[
             "https://api.builder.io/api/v1/image/assets/TEMP/1eec378f8e06ba0df68d6f1dd0d1d6e27edc3177?width=173",
             "https://api.builder.io/api/v1/image/assets/TEMP/f58486cec84dac3d288db19aee8598689cf5ae25?width=173",
@@ -189,8 +172,7 @@ export default function AccommodationDetail() {
               {"\n"}
             </Text>
           ))}
-          Các mô tả khác về chỗ ở (Phần này tự làm flexible thôi){" "}
-          <Text style={styles.readMore}>Xem thêm</Text>
+          Các mô tả khác về chỗ ở (Phần này tự làm flexible thôi) <Text style={styles.readMore}>Xem thêm</Text>
         </Text>
 
         {/* Room Types Section */}
@@ -199,42 +181,21 @@ export default function AccommodationDetail() {
           accommodation?.roomTypes?.map((roomType: RoomType, index: number) => (
             <TouchableOpacity
               key={index}
-              style={[
-                styles.roomTypeCard,
-                selectedRoomType === index && styles.roomTypeCardSelected,
-              ]}
-              onPress={() =>
-                setSelectedRoomType(selectedRoomType === index ? null : index)
-              }
+              style={[styles.roomTypeCard, selectedRoomType === index && styles.roomTypeCardSelected]}
+              onPress={() => setSelectedRoomType(selectedRoomType === index ? null : index)}
               activeOpacity={0.7}
             >
               <View style={styles.roomTypeHeader}>
-                <Text
-                  style={[
-                    styles.roomTypeName,
-                    selectedRoomType === index && styles.roomTypeNameSelected,
-                  ]}
-                >
+                <Text style={[styles.roomTypeName, selectedRoomType === index && styles.roomTypeNameSelected]}>
                   {roomType.name}
                 </Text>
-                <Text
-                  style={[
-                    styles.roomTypePrice,
-                    selectedRoomType === index && styles.roomTypePriceSelected,
-                  ]}
-                >
-                  {formatNumber(roomType.discountPrice
-                    ? roomType.discountPrice
-                    : roomType.price)}
+                <Text style={[styles.roomTypePrice, selectedRoomType === index && styles.roomTypePriceSelected]}>
+                  {formatNumber(roomType.discountPrice ? roomType.discountPrice : roomType.price)}
                   đ/đêm
                 </Text>
               </View>
-              <Text style={styles.roomTypeCapacity}>
-                Sức chứa: {roomType.capacity} người
-              </Text>
-              <Text style={styles.roomTypeAmenities}>
-                Tiện nghi: {roomType.amenities}
-              </Text>
+              <Text style={styles.roomTypeCapacity}>Sức chứa: {roomType.capacity} người</Text>
+              <Text style={styles.roomTypeAmenities}>Tiện nghi: {roomType.amenities}</Text>
               {selectedRoomType === index && (
                 <View style={styles.selectedIndicator}>
                   <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">

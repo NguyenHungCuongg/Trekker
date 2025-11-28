@@ -3,6 +3,8 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Svg, Path, Circle } from "react-native-svg";
 import { formatNumber } from "../../utils/formatNumber";
 
+const defaultThumbnail = require("../../../assets/default-thumbnail.png");
+
 interface AccommodationCardProps {
   name: string;
   destination: string;
@@ -22,7 +24,7 @@ export default function AccommodationCard({
 }: AccommodationCardProps) {
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={onPress}>
-      <Image source={{ uri: image ?? "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480" }} style={styles.image} />
+      <Image source={image ? { uri: image } : defaultThumbnail} style={styles.image} />
 
       <View style={styles.content}>
         {/* Header */}
@@ -47,13 +49,7 @@ export default function AccommodationCard({
         <View style={styles.footer}>
           <View style={styles.location}>
             <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
-              <Circle
-                cx="8"
-                cy="7.33337"
-                r="2"
-                stroke="#7D848D"
-                strokeWidth={1.5}
-              />
+              <Circle cx="8" cy="7.33337" r="2" stroke="#7D848D" strokeWidth={1.5} />
               <Path
                 d="M14 7.2593C14 10.5321 10.25 14.6667 8 14.6667C5.75 14.6667 2 10.5321 2 7.2593C2 3.9865 4.68629 1.33337 8 1.33337C11.3137 1.33337 14 3.9865 14 7.2593Z"
                 stroke="#7D848D"

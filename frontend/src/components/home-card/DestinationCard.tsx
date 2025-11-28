@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Svg, Path } from "react-native-svg";
 
+const defaultThumbnail = require("../../../assets/default-thumbnail.png");
+
 interface DestinationCardProps {
   name: string;
   tourCount: number; //sửa tours thành tourCount
@@ -12,7 +14,7 @@ interface DestinationCardProps {
 export default function DestinationCard({ name, tourCount, image, onPress }: DestinationCardProps) {
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={onPress}>
-      <Image source={{ uri: image ?? "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480" }} style={styles.image} />
+      <Image source={image ? { uri: image } : defaultThumbnail} style={styles.image} />
 
       <View style={styles.content}>
         <Text style={styles.title} numberOfLines={1}>

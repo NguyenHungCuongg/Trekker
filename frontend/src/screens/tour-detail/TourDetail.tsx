@@ -7,6 +7,8 @@ import axiosInstance from "../../utils/axiosInstance";
 import { useToast } from "../../components/context/ToastContext";
 import { formatNumber } from "../../utils/formatNumber";
 
+const defaultThumbnail = require("../../../assets/default-thumbnail.png");
+
 export default function TourDetail() {
   const navigation = useNavigation();
 
@@ -46,20 +48,10 @@ export default function TourDetail() {
     <View style={styles.container}>
       {/* Hero section */}
       <View style={styles.heroSection}>
-        <Image
-          source={{
-            uri:
-              tourDetail?.image ??
-              "https://api.builder.io/api/v1/image/assets/TEMP/3a418dd532202f2265e9644023bf652cb4b75966?width=480",
-          }}
-          style={styles.heroImage}
-        />
+        <Image source={tourDetail.image ? { uri: tourDetail.image } : defaultThumbnail} style={styles.heroImage} />
 
         {/* Back button */}
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
             <Path
               fillRule="evenodd"
@@ -86,13 +78,7 @@ export default function TourDetail() {
         <View style={styles.meta}>
           <View style={styles.metaItem}>
             <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
-              <Circle
-                cx="8"
-                cy="7.33334"
-                r="2"
-                stroke="#7D848D"
-                strokeWidth="1.5"
-              />
+              <Circle cx="8" cy="7.33334" r="2" stroke="#7D848D" strokeWidth="1.5" />
               <Path
                 d="M14 7.25926C14 10.5321 10.25 14.6667 8 14.6667C5.75 14.6667 2 10.5321 2 7.25926C2 3.98646 4.68629 1.33334 8 1.33334C11.3137 1.33334 14 3.98646 14 7.25926Z"
                 stroke="#7D848D"
@@ -110,15 +96,11 @@ export default function TourDetail() {
                   fill="#FFD336"
                 />
               </Svg>
-              <Text style={styles.rating}>
-                {tourDetail?.rating}
-              </Text>
+              <Text style={styles.rating}>{tourDetail?.rating}</Text>
               <Text style={styles.reviews}>0</Text>
             </View>
           ) : (
-            <Text style={styles.rating}>
-              Chưa có đánh giá
-            </Text>
+            <Text style={styles.rating}>Chưa có đánh giá</Text>
           )}
 
           <View style={styles.metaItem}>
@@ -128,11 +110,7 @@ export default function TourDetail() {
         </View>
 
         {/* Gallery */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.gallery}
-        >
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.gallery}>
           {[
             "https://api.builder.io/api/v1/image/assets/TEMP/1eec378f8e06ba0df68d6f1dd0d1d6e27edc3177?width=173",
             "https://api.builder.io/api/v1/image/assets/TEMP/f58486cec84dac3d288db19aee8598689cf5ae25?width=173",
@@ -143,14 +121,18 @@ export default function TourDetail() {
         </ScrollView>
 
         {/* Description */}
-        <Text style={styles.sectionTitle}>{tourDetail?.description} {"\n"}</Text>
+        <Text style={styles.sectionTitle}>
+          {tourDetail?.description} {"\n"}
+        </Text>
         <Text style={styles.description}>
-          Số người tham gia tối đa: {tourDetail?.maxGuests} {"\n"}{"\n"}
-          Thời gian: {tourDetail?.startDate} đến {tourDetail?.endDate} {"\n"}{"\n"}
+          Số người tham gia tối đa: {tourDetail?.maxGuests} {"\n"}
+          {"\n"}
+          Thời gian: {tourDetail?.startDate} đến {tourDetail?.endDate} {"\n"}
+          {"\n"}
           Các địa điểm tham quan trong tour: {"\n"}
-          {tourDetail?.destinations?.map((dest: any) => " - " + dest.name + "\n").join("")}{"\n"}
-          Các mô tả khác (Phần này tự làm flexible thôi){" "}
-          <Text style={styles.readMore}>Xem thêm</Text>
+          {tourDetail?.destinations?.map((dest: any) => " - " + dest.name + "\n").join("")}
+          {"\n"}
+          Các mô tả khác (Phần này tự làm flexible thôi) <Text style={styles.readMore}>Xem thêm</Text>
         </Text>
 
         <TouchableOpacity style={styles.bookButton}>
