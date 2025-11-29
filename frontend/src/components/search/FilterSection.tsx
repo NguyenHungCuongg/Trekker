@@ -19,6 +19,9 @@ type FilterSectionProps = {
   visible: boolean;
   onClose: () => void;
   onApply: (filters: FilterValues) => void;
+  locations: { id: number; name: string }[];
+  destinations: { id: number; name: string }[];
+  onLocationChange: (locationId: number | null) => void;
 };
 
 type FilterValues = {
@@ -27,41 +30,6 @@ type FilterValues = {
   serviceType: "all" | "tour" | "accommodation";
   minRating: number;
   priceRange: { min: number; max: number };
-};
-
-// Dummy data
-const LOCATIONS = [
-  { id: "1", name: "Hồ Chí Minh" },
-  { id: "2", name: "Hà Nội" },
-  { id: "3", name: "Đà Nẵng" },
-  { id: "4", name: "Nha Trang" },
-  { id: "5", name: "Đà Lạt" },
-];
-
-const DESTINATIONS_MAP: Record<string, { id: string; name: string }[]> = {
-  "1": [
-    { id: "1-1", name: "Bến Thành" },
-    { id: "1-2", name: "Nhà thờ Đức Bà" },
-    { id: "1-3", name: "Phố đi bộ Nguyễn Huệ" },
-  ],
-  "2": [
-    { id: "2-1", name: "Hồ Hoàn Kiếm" },
-    { id: "2-2", name: "Văn Miếu" },
-    { id: "2-3", name: "Phố Cổ" },
-  ],
-  "3": [
-    { id: "3-1", name: "Bãi biển Mỹ Khê" },
-    { id: "3-2", name: "Cầu Rồng" },
-    { id: "3-3", name: "Bà Nà Hills" },
-  ],
-  "4": [
-    { id: "4-1", name: "Vinpearl Land" },
-    { id: "4-2", name: "Đảo Hòn Mun" },
-  ],
-  "5": [
-    { id: "5-1", name: "Hồ Xuân Hương" },
-    { id: "5-2", name: "Thác Datanla" },
-  ],
 };
 
 const PRICE_RANGES = [
@@ -73,7 +41,14 @@ const PRICE_RANGES = [
   { label: "Trên 5M", min: 5000000, max: 999999999 },
 ];
 
-const FilterSection: React.FC<FilterSectionProps> = ({ visible, onClose, onApply }) => {
+const FilterSection: React.FC<FilterSectionProps> = ({
+  visible,
+  onClose,
+  onApply,
+  locations,
+  destinations,
+  onLocationChange,
+}) => {
   const [slideAnim] = useState(new Animated.Value(SCREEN_HEIGHT));
   const [filters, setFilters] = useState<FilterValues>({
     locationId: "",
@@ -82,7 +57,6 @@ const FilterSection: React.FC<FilterSectionProps> = ({ visible, onClose, onApply
     minRating: 0,
     priceRange: { min: 0, max: 999999999 },
   });
-  const [destinations, setDestinations] = useState<{ id: string; name: string }[]>([]);
 
   useEffect(() => {
     if (visible) {
@@ -103,10 +77,10 @@ const FilterSection: React.FC<FilterSectionProps> = ({ visible, onClose, onApply
   // Update destinations when location changes
   useEffect(() => {
     if (filters.locationId) {
-      setDestinations(DESTINATIONS_MAP[filters.locationId] || []);
+      onLocationChange(Number(filters.locationId));
       setFilters((prev) => ({ ...prev, destinationId: "" }));
     } else {
-      setDestinations([]);
+      onLocationChange(null);
     }
   }, [filters.locationId]);
 
@@ -118,6 +92,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({ visible, onClose, onApply
       minRating: 0,
       priceRange: { min: 0, max: 999999999 },
     });
+    onLocationChange(null);
   };
 
   const handleApply = () => {
@@ -166,8 +141,8 @@ const FilterSection: React.FC<FilterSectionProps> = ({ visible, onClose, onApply
                         style={styles.picker}
                       >
                         <Picker.Item label="Chọn tỉnh/thành phố" value="" />
-                        {LOCATIONS.map((loc) => (
-                          <Picker.Item key={loc.id} label={loc.name} value={loc.id} />
+                        {locations.map((loc) => (
+                          <Picker.Item key={loc.id} label={loc.name} value={loc.id.toString()} />
                         ))}
                       </Picker>
                     </View>
@@ -185,7 +160,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({ visible, onClose, onApply
                       >
                         <Picker.Item label="Chọn điểm đến" value="" />
                         {destinations.map((dest) => (
-                          <Picker.Item key={dest.id} label={dest.name} value={dest.id} />
+                          <Picker.Item key={dest.id} label={dest.name} value={dest.id.toString()} />
                         ))}
                       </Picker>
                     </View>

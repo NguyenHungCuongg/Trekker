@@ -34,9 +34,7 @@ export class AccommodationController {
   }
 
   @Get("search")
-  async search(
-    @Query() searchDto: SearchAccommodationDto,
-  ): Promise<Accommodation[]> {
+  async search(@Query() searchDto: SearchAccommodationDto): Promise<any[]> {
     return this.accommodationService.search(searchDto);
   }
 

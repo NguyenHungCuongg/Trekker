@@ -14,9 +14,7 @@ export class LocationService {
   ) {}
 
   async findAll(): Promise<Location[]> {
-    return this.locationRepository.find({
-      relations: ["tours", "accommodations"],
-    });
+    return this.locationRepository.find();
   }
 
   async findOne(id: number): Promise<Location> {

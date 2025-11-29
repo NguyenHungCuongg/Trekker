@@ -64,7 +64,7 @@ export default function TourCardView({ tourName, location, rating, price, image,
 const styles = StyleSheet.create({
   card: {
     width: 161,
-    height: 238,
+    minHeight: 238,
   },
   container: {
     flex: 1,
@@ -75,16 +75,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 3,
+    flexDirection: "column",
   },
   image: {
     width: 137,
     height: 124,
     borderRadius: 16,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   content: {
     paddingHorizontal: 4,
     gap: 6,
+    flex: 1,
   },
   title: {
     color: "#1B1E28",

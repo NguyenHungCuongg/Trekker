@@ -31,11 +31,12 @@ export class AccommodationService {
     return accommodation;
   }
 
-  async search(searchDto: SearchAccommodationDto): Promise<Accommodation[]> {
+  async search(searchDto: SearchAccommodationDto): Promise<any[]> {
     const query = this.accommodationRepository
       .createQueryBuilder("accommodation")
       .leftJoinAndSelect("accommodation.destination", "destination")
       .leftJoinAndSelect("accommodation.roomTypes", "roomTypes");
+
     if (searchDto.destinationId) {
       query.andWhere("accommodation.destinationId = :destinationId", {
         destinationId: searchDto.destinationId,
@@ -51,7 +52,20 @@ export class AccommodationService {
         name: `%${searchDto.name}%`,
       });
     }
-    return query.getMany();
+
+    const accommodations = await query.getMany();
+
+    // Calculate minPrice from roomTypes for each accommodation
+    return accommodations.map((accommodation) => {
+      const minPrice = accommodation.roomTypes?.length
+        ? Math.min(...accommodation.roomTypes.map((rt) => rt.price))
+        : 0;
+
+      return {
+        ...accommodation,
+        pricePerNight: minPrice.toString(),
+      };
+    });
   }
 
   async findByDestinationId(destinationId: number): Promise<Accommodation[]> {

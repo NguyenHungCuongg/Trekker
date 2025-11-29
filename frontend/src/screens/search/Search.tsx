@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { SvgXml } from "react-native-svg";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./searchStyles";
 import TourListView from "../../components/TourListView";
+import TourCardView from "../../components/TourCardView";
+import AccommodationCardView from "../../components/AccommodationCardView";
 import FilterBadge from "../../components/search/FilterBadge";
 import FilterSection from "../../components/search/FilterSection";
+import SearchBar from "../../components/search/SearchBar";
+import axiosInstance from "../../utils/axiosInstance";
+import { useToast } from "../../components/context/ToastContext";
 
 type Filter = {
   id: string;
@@ -25,19 +29,73 @@ type Destination = {
   locationId: number;
 };
 
+type Tour = {
+  id: number;
+  tourName: string;
+  location: { id: number; name: string };
+  rating: number;
+  price: number;
+  image: string;
+};
+
+type Accommodation = {
+  id: number;
+  name: string;
+  destination: { id: number; name: string };
+  rating: number;
+  pricePerNight: string;
+  image: string;
+};
+
+type FilterValues = {
+  locationId: string;
+  destinationId: string;
+  serviceType: "all" | "tour" | "accommodation";
+  minRating: number;
+  priceRange: { min: number; max: number };
+};
+
 export default function Search() {
   const navigation = useNavigation<any>();
+  const { showToast } = useToast();
   const [filterVisible, setFilterVisible] = useState(false);
   const [locations, setLocations] = useState<Location[]>([]);
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searching, setSearching] = useState(false);
+
+  // State cho search results
+  const [tours, setTours] = useState<Tour[]>([]);
+  const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
 
   // State để lưu các filter đã chọn
   const [activeFilters, setActiveFilters] = useState<Filter[]>([]);
+  const [currentFilterValues, setCurrentFilterValues] = useState<FilterValues>({
+    locationId: "",
+    destinationId: "",
+    serviceType: "all",
+    minRating: 0,
+    priceRange: { min: 0, max: 999999999 },
+  });
 
   useEffect(() => {
     fetchLocations();
   }, []);
+
+  // Debounce search query
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      if (searchQuery.trim() || activeFilters.length > 0) {
+        performSearch();
+      } else {
+        setTours([]);
+        setAccommodations([]);
+      }
+    }, 500);
+
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery, activeFilters]);
 
   const fetchLocations = async () => {
     try {
@@ -46,7 +104,7 @@ export default function Search() {
       setLocations(response.data);
     } catch (error) {
       console.error("Error fetching locations:", error);
-      toast.show("error", "Error fetching locations:");
+      showToast("error", "Không thể tải danh sách tỉnh/thành");
     } finally {
       setLoading(false);
     }
@@ -58,7 +116,65 @@ export default function Search() {
       setDestinations(response.data);
     } catch (error) {
       console.error("Error fetching destinations:", error);
-      toast.show("error", "Error fetching destination:");
+      showToast("error", "Không thể tải danh sách địa điểm");
+    }
+  };
+
+  const handleLocationChange = (locationId: number | null) => {
+    if (locationId) {
+      fetchDestination(locationId);
+    } else {
+      setDestinations([]);
+    }
+  };
+
+  const performSearch = async () => {
+    try {
+      setSearching(true);
+      const { serviceType, locationId, destinationId, minRating, priceRange } = currentFilterValues;
+
+      const tourParams: any = {};
+      const accommodationParams: any = {};
+
+      if (locationId) tourParams.locationId = locationId;
+      if (destinationId) accommodationParams.destinationId = destinationId;
+      if (minRating > 0) {
+        tourParams.minRating = minRating;
+        accommodationParams.minRating = minRating;
+      }
+      if (priceRange.min > 0) {
+        tourParams.minPrice = priceRange.min;
+        accommodationParams.minPrice = priceRange.min;
+      }
+      if (priceRange.max < 999999999) {
+        tourParams.maxPrice = priceRange.max;
+        accommodationParams.maxPrice = priceRange.max;
+      }
+      if (searchQuery.trim()) {
+        accommodationParams.name = searchQuery.trim();
+      }
+
+      // Fetch tours và/ hoặc accommodations theo serviceType
+      if (serviceType === "all" || serviceType === "tour") {
+        const tourResponse = await axiosInstance.get("/tours/search", { params: tourParams });
+        setTours(tourResponse.data);
+      } else {
+        setTours([]);
+      }
+
+      if (serviceType === "all" || serviceType === "accommodation") {
+        const accommodationResponse = await axiosInstance.get("/accommodations/search", {
+          params: accommodationParams,
+        });
+        setAccommodations(accommodationResponse.data);
+      } else {
+        setAccommodations([]);
+      }
+    } catch (error) {
+      console.error("Error searching:", error);
+      showToast("error", "Tìm kiếm thất bại");
+    } finally {
+      setSearching(false);
     }
   };
 
@@ -78,12 +194,15 @@ export default function Search() {
     setActiveFilters([]);
   };
 
-  const handleApplyFilters = (filterValues: any) => {
+  const handleApplyFilters = (filterValues: FilterValues) => {
     const newFilters: Filter[] = [];
 
-    // Add location filter
+    // Lưu lại filter
+    setCurrentFilterValues(filterValues);
+
+    // Thêm location filter
     if (filterValues.locationId) {
-      const location = LOCATIONS.find((loc) => loc.id === filterValues.locationId);
+      const location = locations.find((loc) => loc.id.toString() === filterValues.locationId);
       if (location) {
         newFilters.push({
           id: `location-${filterValues.locationId}`,
@@ -93,10 +212,9 @@ export default function Search() {
       }
     }
 
-    // Add destination filter
+    // Thêm chỗ ở filter
     if (filterValues.destinationId) {
-      const allDestinations = Object.values(DESTINATIONS_MAP).flat();
-      const destination = allDestinations.find((dest) => dest.id === filterValues.destinationId);
+      const destination = destinations.find((dest) => dest.id.toString() === filterValues.destinationId);
       if (destination) {
         newFilters.push({
           id: `destination-${filterValues.destinationId}`,
@@ -106,7 +224,7 @@ export default function Search() {
       }
     }
 
-    // Add service type filter
+    // Thêm loại service filter
     if (filterValues.serviceType !== "all") {
       const serviceLabel = filterValues.serviceType === "tour" ? "Tour du lịch" : "Chỗ ở";
       newFilters.push({
@@ -116,7 +234,7 @@ export default function Search() {
       });
     }
 
-    // Add rating filter
+    // Thêm rating filter
     if (filterValues.minRating > 0) {
       newFilters.push({
         id: `rating-${filterValues.minRating}`,
@@ -125,7 +243,7 @@ export default function Search() {
       });
     }
 
-    // Add price filter
+    // Thêm giá filter
     if (filterValues.priceRange.min > 0 || filterValues.priceRange.max < 999999999) {
       const priceLabel = getPriceLabel(filterValues.priceRange);
       newFilters.push({
@@ -147,19 +265,6 @@ export default function Search() {
     return "Tùy chỉnh";
   };
 
-  const searchIcon = `
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <circle cx="10.9413" cy="11.9414" r="7.94134" stroke="#7D848D" stroke-width="1.6"/>
-      <path d="M20.0003 21.0001L17.0009 18.0006" stroke="#7D848D" stroke-width="1.6"/>
-    </svg>
-  `;
-
-  const filterIcon = `
-    <svg width="23" height="23" viewBox="0 0 23 23" fill="none">
-      <path d="M20.05 0.7H2.35C1.44 0.7 0.7 1.44 0.7 2.35C0.7 2.79 0.87 3.21 1.18 3.52L7.11 9.45C7.49 9.82 7.7 10.33 7.7 10.86V16.96C7.7 17.72 8.13 18.41 8.81 18.75L13.98 21.34C14.31 21.5 14.7 21.26 14.7 20.89V10.86C14.7 10.33 14.91 9.82 15.29 9.45L21.22 3.52C21.53 3.21 21.7 2.79 21.7 2.35C21.7 1.44 20.96 0.7 20.05 0.7Z" stroke="#7D848D" stroke-width="1.4"/>
-    </svg>
-  `;
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -170,13 +275,12 @@ export default function Search() {
         <View style={{ width: 40 }} />
       </View>
 
-      <View style={styles.searchBar}>
-        <SvgXml xml={searchIcon} width={24} height={24} />
-        <TextInput style={styles.searchInput} placeholder="Tìm kiếm dịch vụ du lịch" placeholderTextColor="#7D848D" />
-        <TouchableOpacity onPress={handleOpenFilter}>
-          <SvgXml xml={filterIcon} width={24} height={24} />
-        </TouchableOpacity>
-      </View>
+      <SearchBar
+        placeholder="Tìm kiếm dịch vụ du lịch"
+        onFilterPress={handleOpenFilter}
+        onChangeText={setSearchQuery}
+        value={searchQuery}
+      />
 
       {activeFilters.length > 0 && (
         <View style={styles.filterContainer}>
@@ -193,9 +297,73 @@ export default function Search() {
         </View>
       )}
 
-      <Text style={styles.resultsTitle}>Kết quả tìm kiếm</Text>
+      <ScrollView style={styles.resultsContainer} showsVerticalScrollIndicator={false}>
+        {searching ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#0F93C3" />
+            <Text style={styles.loadingText}>Đang tìm kiếm...</Text>
+          </View>
+        ) : (
+          <>
+            {tours.length === 0 && accommodations.length === 0 && (searchQuery || activeFilters.length > 0) ? (
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>Không tìm thấy kết quả nào</Text>
+                <Text style={styles.emptySubtext}>Thử thay đổi từ khóa hoặc bộ lọc</Text>
+              </View>
+            ) : (
+              <>
+                {tours.length > 0 && (
+                  <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Tour du lịch ({tours.length})</Text>
+                    <View style={styles.cardGrid}>
+                      {tours.map((tour) => (
+                        <TourCardView
+                          key={tour.id}
+                          tourName={tour.name}
+                          location={tour.location?.name || "Unknown"}
+                          rating={tour.rating}
+                          price={tour.price}
+                          image={tour.image}
+                          onPress={() => navigation.navigate("TourDetail", { id: tour.id })}
+                        />
+                      ))}
+                    </View>
+                  </View>
+                )}
+
+                {accommodations.length > 0 && (
+                  <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Chỗ ở ({accommodations.length})</Text>
+                    <View style={styles.cardGrid}>
+                      {accommodations.map((accommodation) => (
+                        <AccommodationCardView
+                          key={accommodation.id}
+                          name={accommodation.name}
+                          destination={accommodation.destination?.name || "Unknown"}
+                          rating={accommodation.rating}
+                          pricePerNight={accommodation.pricePerNight}
+                          image={accommodation.image}
+                          onPress={() => navigation.navigate("AccommodationDetail", { id: accommodation.id })}
+                        />
+                      ))}
+                    </View>
+                  </View>
+                )}
+              </>
+            )}
+          </>
+        )}
+      </ScrollView>
+
       {/* Filter Bottom Sheet */}
-      <FilterSection visible={filterVisible} onClose={() => setFilterVisible(false)} onApply={handleApplyFilters} />
+      <FilterSection
+        visible={filterVisible}
+        onClose={() => setFilterVisible(false)}
+        onApply={handleApplyFilters}
+        locations={locations}
+        destinations={destinations}
+        onLocationChange={handleLocationChange}
+      />
     </View>
   );
 }
