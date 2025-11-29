@@ -142,7 +142,7 @@ export const styles = StyleSheet.create({
     color: "#7D848D",
     fontSize: 14,
     lineHeight: 20,
-    marginBottom: 24,
+    marginBottom: 12,
   },
   readMore: {
     color: "#15C4C8",
@@ -167,9 +167,9 @@ export const styles = StyleSheet.create({
     borderWidth: 2,
   },
   roomTypeHeader: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "flex-start",
     marginBottom: 8,
   },
   roomTypeName: {

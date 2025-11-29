@@ -109,30 +109,15 @@ export default function TourDetail() {
           </View>
         </View>
 
-        {/* Gallery */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.gallery}>
-          {[
-            "https://api.builder.io/api/v1/image/assets/TEMP/1eec378f8e06ba0df68d6f1dd0d1d6e27edc3177?width=173",
-            "https://api.builder.io/api/v1/image/assets/TEMP/f58486cec84dac3d288db19aee8598689cf5ae25?width=173",
-            "https://api.builder.io/api/v1/image/assets/TEMP/45d9be22b8577d98eb84edc24f32490442b57cca?width=173",
-          ].map((url, i) => (
-            <Image key={i} source={{ uri: url }} style={styles.galleryImage} />
-          ))}
-        </ScrollView>
-
         {/* Description */}
         <Text style={styles.sectionTitle}>
           {tourDetail?.description} {"\n"}
         </Text>
         <Text style={styles.description}>
           Số người tham gia tối đa: {tourDetail?.maxGuests} {"\n"}
-          {"\n"}
           Thời gian: {tourDetail?.startDate} đến {tourDetail?.endDate} {"\n"}
-          {"\n"}
           Các địa điểm tham quan trong tour: {"\n"}
           {tourDetail?.destinations?.map((dest: any) => " - " + dest.name + "\n").join("")}
-          {"\n"}
-          Các mô tả khác (Phần này tự làm flexible thôi) <Text style={styles.readMore}>Xem thêm</Text>
         </Text>
 
         <TouchableOpacity style={styles.bookButton}>
