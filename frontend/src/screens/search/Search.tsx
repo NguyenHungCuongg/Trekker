@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SvgXml } from "react-native-svg";
@@ -14,12 +14,53 @@ type Filter = {
   label: string;
 };
 
+type Location = {
+  id: number;
+  name: string;
+};
+
+type Destination = {
+  id: number;
+  name: string;
+  locationId: number;
+};
+
 export default function Search() {
   const navigation = useNavigation<any>();
   const [filterVisible, setFilterVisible] = useState(false);
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [destinations, setDestinations] = useState<Destination[]>([]);
+  const [loading, setLoading] = useState(false);
 
   // State để lưu các filter đã chọn
   const [activeFilters, setActiveFilters] = useState<Filter[]>([]);
+
+  useEffect(() => {
+    fetchLocations();
+  }, []);
+
+  const fetchLocations = async () => {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.get("/locations");
+      setLocations(response.data);
+    } catch (error) {
+      console.error("Error fetching locations:", error);
+      toast.show("error", "Error fetching locations:");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchDestination = async (locationId: number) => {
+    try {
+      const response = await axiosInstance.get(`/destinations?locationId=${locationId}`);
+      setDestinations(response.data);
+    } catch (error) {
+      console.error("Error fetching destinations:", error);
+      toast.show("error", "Error fetching destination:");
+    }
+  };
 
   const handleBack = () => {
     navigation.goBack();
@@ -106,41 +147,6 @@ export default function Search() {
     return "Tùy chỉnh";
   };
 
-  // Dummy data (same as FilterSection)
-  const LOCATIONS = [
-    { id: "1", name: "Hồ Chí Minh" },
-    { id: "2", name: "Hà Nội" },
-    { id: "3", name: "Đà Nẵng" },
-    { id: "4", name: "Nha Trang" },
-    { id: "5", name: "Đà Lạt" },
-  ];
-
-  const DESTINATIONS_MAP: Record<string, { id: string; name: string }[]> = {
-    "1": [
-      { id: "1-1", name: "Bến Thành" },
-      { id: "1-2", name: "Nhà thờ Đức Bà" },
-      { id: "1-3", name: "Phố đi bộ Nguyễn Huệ" },
-    ],
-    "2": [
-      { id: "2-1", name: "Hồ Hoàn Kiếm" },
-      { id: "2-2", name: "Văn Miếu" },
-      { id: "2-3", name: "Phố Cổ" },
-    ],
-    "3": [
-      { id: "3-1", name: "Bãi biển Mỹ Khê" },
-      { id: "3-2", name: "Cầu Rồng" },
-      { id: "3-3", name: "Bà Nà Hills" },
-    ],
-    "4": [
-      { id: "4-1", name: "Vinpearl Land" },
-      { id: "4-2", name: "Đảo Hòn Mun" },
-    ],
-    "5": [
-      { id: "5-1", name: "Hồ Xuân Hương" },
-      { id: "5-2", name: "Thác Datanla" },
-    ],
-  };
-
   const searchIcon = `
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
       <circle cx="10.9413" cy="11.9414" r="7.94134" stroke="#7D848D" stroke-width="1.6"/>
@@ -188,17 +194,6 @@ export default function Search() {
       )}
 
       <Text style={styles.resultsTitle}>Kết quả tìm kiếm</Text>
-
-      <ScrollView contentContainerStyle={styles.results}>
-        <TourListView
-          tourName="Tên tour"
-          location="Tên location"
-          rating={4.8}
-          price="Giá"
-          imageUrl="https://api.builder.io/api/v1/image/assets/TEMP/c0ccc56e65e45b05b9dc85d49b3b6c63e7d69013?width=190"
-        />
-      </ScrollView>
-
       {/* Filter Bottom Sheet */}
       <FilterSection visible={filterVisible} onClose={() => setFilterVisible(false)} onApply={handleApplyFilters} />
     </View>
