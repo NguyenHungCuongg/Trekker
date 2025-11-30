@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./searchStyles";
 import TourListView from "../../components/TourListView";
@@ -57,6 +58,7 @@ type FilterValues = {
 
 export default function Search() {
   const navigation = useNavigation<any>();
+  const route = useRoute<any>();
   const { showToast } = useToast();
   const [filterVisible, setFilterVisible] = useState(false);
   const [locations, setLocations] = useState<Location[]>([]);
@@ -78,6 +80,77 @@ export default function Search() {
     minRating: 0,
     priceRange: { min: 0, max: 999999999 },
   });
+
+  // Initialize with route params if provided
+  useEffect(() => {
+    const params = route.params;
+    if (!params) return;
+
+    // Check if we have any initial params to process
+    const hasInitialParams = params.initialServiceType || params.initialLocationId || params.initialDestinationId;
+
+    if (!hasInitialParams) return;
+
+    const newFilters: Filter[] = [];
+    const newFilterValues: FilterValues = {
+      locationId: "",
+      destinationId: "",
+      serviceType: "all",
+      minRating: 0,
+      priceRange: { min: 0, max: 999999999 },
+    };
+
+    // Handle service type filter
+    if (params.initialServiceType) {
+      const serviceType = params.initialServiceType as "tour" | "accommodation";
+      newFilterValues.serviceType = serviceType;
+
+      const serviceLabel = serviceType === "tour" ? "Tour du lịch" : "Chỗ ở";
+      newFilters.push({
+        id: `service-${serviceType}`,
+        type: "serviceType",
+        label: serviceLabel,
+      });
+    }
+
+    // Handle location filter
+    if (params.initialLocationId && params.initialLocationName) {
+      newFilterValues.locationId = params.initialLocationId.toString();
+      newFilters.push({
+        id: `location-${params.initialLocationId}`,
+        type: "location",
+        label: params.initialLocationName,
+      });
+
+      // Fetch destinations for this location
+      fetchDestination(params.initialLocationId);
+    }
+
+    // Handle destination filter
+    if (params.initialDestinationId && params.initialDestinationName) {
+      newFilterValues.destinationId = params.initialDestinationId.toString();
+      newFilters.push({
+        id: `destination-${params.initialDestinationId}`,
+        type: "destination",
+        label: params.initialDestinationName,
+      });
+    }
+
+    setCurrentFilterValues(newFilterValues);
+    setActiveFilters(newFilters);
+
+    // Clear route params after processing to allow renavigation
+    // Use setTimeout to avoid infinite loop
+    setTimeout(() => {
+      navigation.setParams({
+        initialServiceType: undefined,
+        initialLocationId: undefined,
+        initialLocationName: undefined,
+        initialDestinationId: undefined,
+        initialDestinationName: undefined,
+      });
+    }, 0);
+  }, [route.params?.initialServiceType, route.params?.initialLocationId, route.params?.initialDestinationId]);
 
   useEffect(() => {
     fetchLocations();
@@ -136,8 +209,14 @@ export default function Search() {
       const tourParams: any = {};
       const accommodationParams: any = {};
 
-      if (locationId) tourParams.locationId = locationId;
-      if (destinationId) accommodationParams.destinationId = destinationId;
+      if (locationId) {
+        tourParams.locationId = locationId;
+        accommodationParams.locationId = locationId;
+      }
+      if (destinationId) {
+        tourParams.destinationId = destinationId;
+        accommodationParams.destinationId = destinationId;
+      }
       if (minRating > 0) {
         tourParams.minRating = minRating;
         accommodationParams.minRating = minRating;
@@ -266,7 +345,7 @@ export default function Search() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.backCircle} onPress={handleBack}>
           <Ionicons name="chevron-back" size={24} color="#1B1E28" />
@@ -364,6 +443,6 @@ export default function Search() {
         destinations={destinations}
         onLocationChange={handleLocationChange}
       />
-    </View>
+    </SafeAreaView>
   );
 }

@@ -4,6 +4,9 @@ import { Type } from "class-transformer";
 export class SearchAccommodationDto {
   @IsOptional()
   @IsNumber()
+  @Type(() => Number)
+  locationId?: number;
+
   @IsOptional()
   @IsNumber()
   @Type(() => Number)

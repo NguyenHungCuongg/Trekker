@@ -37,6 +37,11 @@ export class AccommodationService {
       .leftJoinAndSelect("accommodation.destination", "destination")
       .leftJoinAndSelect("accommodation.roomTypes", "roomTypes");
 
+    if (searchDto.locationId) {
+      query.andWhere("destination.locationId = :locationId", {
+        locationId: searchDto.locationId,
+      });
+    }
     if (searchDto.destinationId) {
       query.andWhere("accommodation.destinationId = :destinationId", {
         destinationId: searchDto.destinationId,

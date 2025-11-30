@@ -135,7 +135,16 @@ export default function Home() {
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
             {locations.map((location, idx) => (
-              <LocationCard key={idx} {...location} />
+              <LocationCard
+                key={idx}
+                {...location}
+                onPress={() =>
+                  navigation.navigate("SearchTab", {
+                    initialLocationId: location.id,
+                    initialLocationName: location.name,
+                  })
+                }
+              />
             ))}
           </ScrollView>
         </View>
@@ -149,9 +158,24 @@ export default function Home() {
             </TouchableOpacity>
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
-            {destinations.map((destination, idx) => (
-              <DestinationCard key={idx} {...destination} />
-            ))}
+            {destinations.map((destination, idx) => {
+              // Find the location for this destination
+              const location = locations.find((loc) => loc.id === destination.locationId);
+              return (
+                <DestinationCard
+                  key={idx}
+                  {...destination}
+                  onPress={() =>
+                    navigation.navigate("SearchTab", {
+                      initialLocationId: destination.locationId,
+                      initialLocationName: location?.name || "",
+                      initialDestinationId: destination.id,
+                      initialDestinationName: destination.name,
+                    })
+                  }
+                />
+              );
+            })}
           </ScrollView>
         </View>
 
@@ -159,7 +183,7 @@ export default function Home() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Top tour du lịch</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("MainTabs", { screen: "TourTab" })}>
+            <TouchableOpacity onPress={() => navigation.navigate("SearchTab", { initialServiceType: "tour" })}>
               <Text style={styles.sectionLink}>Xem tất cả</Text>
             </TouchableOpacity>
           </View>
@@ -174,7 +198,7 @@ export default function Home() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Top chỗ ở</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("MainTabs", { screen: "AccommodationTab" })}>
+            <TouchableOpacity onPress={() => navigation.navigate("SearchTab", { initialServiceType: "accommodation" })}>
               <Text style={styles.sectionLink}>Xem tất cả</Text>
             </TouchableOpacity>
           </View>

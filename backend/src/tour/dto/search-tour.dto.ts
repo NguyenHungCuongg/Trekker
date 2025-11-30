@@ -9,6 +9,11 @@ export class SearchTourDto {
 
   @IsOptional()
   @IsNumber()
+  @Type(() => Number)
+  destinationId?: number;
+
+  @IsOptional()
+  @IsNumber()
   @Min(0)
   @Type(() => Number)
   minPrice?: number;

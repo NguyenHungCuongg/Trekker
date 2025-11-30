@@ -5,6 +5,7 @@ import { Svg, Path } from "react-native-svg";
 const defaultThumbnail = require("../../../assets/default-thumbnail.png");
 
 interface LocationCardProps {
+  id?: number;
   name: string;
   accommodationCount: number; //sửa accommodations thành accommodationCount
   tourCount: number; //sửa tours thành tourCount
@@ -12,7 +13,7 @@ interface LocationCardProps {
   onPress?: () => void;
 }
 
-export default function LocationCard({ name, accommodationCount, tourCount, image, onPress }: LocationCardProps) {
+export default function LocationCard({ id, name, accommodationCount, tourCount, image, onPress }: LocationCardProps) {
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={onPress}>
       <Image source={image ? { uri: image } : defaultThumbnail} style={styles.image} />

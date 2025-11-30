@@ -39,6 +39,11 @@ export class TourService {
         locationId: searchDto.locationId,
       });
     }
+    if (searchDto.destinationId) {
+      query.andWhere("destinations.id = :destinationId", {
+        destinationId: searchDto.destinationId,
+      });
+    }
     if (searchDto.minPrice) {
       query.andWhere("tour.price >= :minPrice", {
         minPrice: searchDto.minPrice,
