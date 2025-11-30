@@ -104,8 +104,8 @@ export class TourService {
     await this.tourRepository.remove(tour);
   }
 
-  async findTopTours(): Promise<TourCardDto[]> {
-    const tours: TourCardDto[] = await this.tourRepository.query(`
+  async findTopTours(limit?: number): Promise<TourCardDto[]> {
+    const rawSql = `
       SELECT 
         t.tour_id AS id,
         t.name AS name,
@@ -116,8 +116,13 @@ export class TourService {
       FROM tours t
       LEFT JOIN locations l ON t.location_id = l.location_id
       ORDER BY t.rating DESC
-      LIMIT 4
-    `);
+    `;
+
+    const hasLimit = limit && limit > 0;
+    const sql = hasLimit ? `${rawSql} LIMIT $1` : rawSql;
+    const params = hasLimit ? [limit] : [];
+
+    const tours: TourCardDto[] = await this.tourRepository.query(sql, params);
     return tours;
   }
 }

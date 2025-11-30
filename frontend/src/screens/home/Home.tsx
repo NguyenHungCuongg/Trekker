@@ -22,6 +22,8 @@ export default function Home() {
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [tours, setTours] = useState<Tour[]>([]);
   const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
+  const [locationLimit, setLocationLimit] = useState(5);
+  const [destinationLimit, setDestinationLimit] = useState(5);
 
   const { showToast } = useToast();
 
@@ -33,11 +35,17 @@ export default function Home() {
 
   useEffect(() => {
     fetchUserProfile();
-    fetchTopLocations();
-    fetchTopDestinations();
     fetchTopTours();
     fetchTopAccommodations();
   }, []);
+
+  useEffect(() => {
+    fetchTopLocations();
+  }, [locationLimit]);
+
+  useEffect(() => {
+    fetchTopDestinations();
+  }, [destinationLimit]);
 
   const fetchUserProfile = async () => {
     try {
@@ -53,7 +61,7 @@ export default function Home() {
 
   const fetchTopLocations = async () => {
     try {
-      const response = await axiosInstance.get("/locations/top");
+      const response = await axiosInstance.get(`/locations/top?limit=${locationLimit}`);
       setLocations(response.data);
     } catch (error) {
       console.error("Error fetching top locations:", error);
@@ -63,7 +71,7 @@ export default function Home() {
 
   const fetchTopDestinations = async () => {
     try {
-      const response = await axiosInstance.get("/destinations/top");
+      const response = await axiosInstance.get(`/destinations/top?limit=${destinationLimit}`);
       setDestinations(response.data);
     } catch (error) {
       console.error("Error fetching top destinations:", error);
@@ -73,7 +81,7 @@ export default function Home() {
 
   const fetchTopTours = async () => {
     try {
-      const response = await axiosInstance.get("/tours/top");
+      const response = await axiosInstance.get("/tours/top?limit=10");
       setTours(response.data);
     } catch (error) {
       console.error("Error fetching top tours:", error);
@@ -83,7 +91,7 @@ export default function Home() {
 
   const fetchTopAccommodations = async () => {
     try {
-      const response = await axiosInstance.get("/accommodations/top?limit=8");
+      const response = await axiosInstance.get("/accommodations/top?limit=10");
       setAccommodations(response.data);
     } catch (error) {
       console.error("Error fetching top accommodations:", error);
@@ -129,7 +137,7 @@ export default function Home() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Top tỉnh/thành</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => setLocationLimit(-1)}>
               <Text style={styles.sectionLink}>Xem tất cả</Text>
             </TouchableOpacity>
           </View>
@@ -153,7 +161,7 @@ export default function Home() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Top địa điểm du lịch</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => setDestinationLimit(-1)}>
               <Text style={styles.sectionLink}>Xem tất cả</Text>
             </TouchableOpacity>
           </View>

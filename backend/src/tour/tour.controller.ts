@@ -39,8 +39,10 @@ export class TourController {
   }
 
   @Get("top")
-  async findTopTours(): Promise<TourCardDto[]> {
-    return this.tourService.findTopTours();
+  async findTopTours(
+    @Query("limit", ParseIntPipe) limit?: number,
+  ): Promise<TourCardDto[]> {
+    return this.tourService.findTopTours(limit);
   }
 
   @Get(":id")
