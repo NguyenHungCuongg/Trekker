@@ -18,8 +18,10 @@ export class DestinationController {
   }
 
   @Get("top")
-  async findTopDestinations(): Promise<DestinationCardDto[]> {
-    return this.destinationService.findTopDestinations();
+  async findTopDestinations(
+    @Query("limit", ParseIntPipe) limit?: number,
+  ): Promise<DestinationCardDto[]> {
+    return this.destinationService.findTopDestinations(limit);
   }
 
   @Get(":id")

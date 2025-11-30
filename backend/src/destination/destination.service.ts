@@ -43,9 +43,8 @@ export class DestinationService {
     return this.destinationRepository.count();
   }
 
-  async findTopDestinations(): Promise<DestinationCardDto[]> {
-    const destinations: DestinationCardDto[] = await this.destinationRepository
-      .query(`
+  async findTopDestinations(limit?: number): Promise<DestinationCardDto[]> {
+    const rawSql = `
       SELECT 
         d.destination_id AS id,
         d.name AS name,
@@ -56,8 +55,14 @@ export class DestinationService {
       LEFT JOIN tour_destination td ON d.destination_id = td.destination_id
       GROUP BY d.destination_id, d.name, d.location_id
       ORDER BY tour_count DESC
-      LIMIT 4
-    `);
+    `;
+
+    const hasLimit = limit && limit > 0;
+    const sql = hasLimit ? `${rawSql} LIMIT $1` : rawSql;
+    const params = hasLimit ? [limit] : [];
+
+    const destinations: DestinationCardDto[] =
+      await this.destinationRepository.query(sql, params);
 
     const camelRows = destinations.map((r) => snakeToCamel(r));
 

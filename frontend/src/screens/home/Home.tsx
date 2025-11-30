@@ -53,7 +53,7 @@ export default function Home() {
 
   const fetchTopLocations = async () => {
     try {
-      const response = await axiosInstance.get("/locations/top");
+      const response = await axiosInstance.get("/locations/top?limit=4");
       setLocations(response.data);
     } catch (error) {
       console.error("Error fetching top locations:", error);
@@ -63,7 +63,7 @@ export default function Home() {
 
   const fetchTopDestinations = async () => {
     try {
-      const response = await axiosInstance.get("/destinations/top");
+      const response = await axiosInstance.get("/destinations/top?limit=4");
       setDestinations(response.data);
     } catch (error) {
       console.error("Error fetching top destinations:", error);
@@ -73,7 +73,7 @@ export default function Home() {
 
   const fetchTopTours = async () => {
     try {
-      const response = await axiosInstance.get("/tours/top");
+      const response = await axiosInstance.get("/tours/top?limit=4");
       setTours(response.data);
     } catch (error) {
       console.error("Error fetching top tours:", error);
@@ -83,7 +83,7 @@ export default function Home() {
 
   const fetchTopAccommodations = async () => {
     try {
-      const response = await axiosInstance.get("/accommodations/top?limit=8");
+      const response = await axiosInstance.get("/accommodations/top?limit=4");
       setAccommodations(response.data);
     } catch (error) {
       console.error("Error fetching top accommodations:", error);

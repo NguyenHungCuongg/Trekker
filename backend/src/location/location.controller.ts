@@ -1,4 +1,4 @@
-import { Controller, Get, ParseIntPipe, Param } from "@nestjs/common";
+import { Controller, Get, ParseIntPipe, Param, Query } from "@nestjs/common";
 import { LocationService } from "./location.service";
 import { Location } from "./location.entity";
 import { LocationCardDto } from "./dto/location-card.dto";
@@ -13,8 +13,10 @@ export class LocationController {
   }
 
   @Get("top")
-  async findTopLocations(): Promise<LocationCardDto[]> {
-    return this.locationService.findTopLocations();
+  async findTopLocations(
+    @Query("limit", ParseIntPipe) limit?: number,
+  ): Promise<LocationCardDto[]> {
+    return this.locationService.findTopLocations(limit);
   }
 
   @Get(":id")
