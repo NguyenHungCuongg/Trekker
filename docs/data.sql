@@ -1,4 +1,4 @@
-COPY locations (location_name, description, image)
+COPY locations (name, description, image)
 FROM '/duong/dan/den/file/locations.csv'
 DELIMITER ','
 CSV

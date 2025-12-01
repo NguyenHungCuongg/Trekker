@@ -36,7 +36,7 @@ export class Accommodation {
   @Column({ type: "text", nullable: true })
   address: string;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "text", nullable: true })
   image: string;
 
   // Relationships

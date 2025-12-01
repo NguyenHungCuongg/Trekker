@@ -23,7 +23,7 @@ export class Destination {
   @Column({ name: "location_id" })
   locationId: number;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "text", nullable: true })
   image: string;
 
   @ManyToOne(() => Location, (location) => location.destinations, {

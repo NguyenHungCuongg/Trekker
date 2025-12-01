@@ -13,7 +13,7 @@ export class Location {
   @Column({ type: "text", nullable: true })
   description: string;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "text", nullable: true })
   image: string;
 
   @OneToMany(() => Destination, (destination) => destination.location)

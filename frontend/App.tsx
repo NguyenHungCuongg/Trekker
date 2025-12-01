@@ -39,10 +39,7 @@ export default function App() {
     <SafeAreaProvider>
       <ToastProvider>
         <NavigationContainer>
-          <Stack.Navigator
-            screenOptions={{ headerShown: false }}
-            initialRouteName="Start"
-          >
+          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Start">
             <Stack.Screen name="Start" component={Start} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />
@@ -52,10 +49,7 @@ export default function App() {
             <Stack.Screen name="MainTabs" component={MainTabs} />
             <Stack.Screen name="TourDetail" component={TourDetail} />
             <Stack.Screen name="ProfileDetail" component={ProfileDetail} />
-            <Stack.Screen
-              name="AccommodationDetail"
-              component={AccommodationDetail}
-            />
+            <Stack.Screen name="AccommodationDetail" component={AccommodationDetail} />
             <Stack.Screen name="Tour" component={Tour} />
             <Stack.Screen name="Accommodation" component={Accommodation} />
           </Stack.Navigator>

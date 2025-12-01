@@ -36,7 +36,7 @@ export class RoomType {
   @Column()
   quantity: number;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "text", nullable: true })
   image: string;
 
   @ManyToOne(() => Accommodation, (accommodation) => accommodation.roomTypes, {
