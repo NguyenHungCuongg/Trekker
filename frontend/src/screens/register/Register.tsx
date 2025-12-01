@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useToast } from "../../components/context/ToastContext";
 import axiosInstance from "../../utils/axiosInstance";
@@ -158,9 +158,15 @@ export default function Register() {
               <Text style={styles.divider}>Hoặc xác thực bằng</Text>
 
               <View style={styles.socialRow}>
-                <Ionicons name="logo-facebook" size={40} color="#1877F2" />
-                <Ionicons name="logo-instagram" size={40} color="#C13584" />
-                <Ionicons name="logo-twitter" size={40} color="#03A9F4" />
+                <TouchableOpacity>
+                  <Image
+                    source={{
+                      uri: "https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA",
+                    }}
+                    style={{ width: 40, height: 40 }}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
               </View>
             </View>
           </View>

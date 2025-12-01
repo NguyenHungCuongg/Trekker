@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import axiosInstance from "../../utils/axiosInstance";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import type { RootStackParamList } from "../../../App";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useToast } from "../../components/context/ToastContext";
@@ -79,9 +79,15 @@ export default function Login() {
             <Text style={styles.alternateDivider}>Hoặc đăng nhập bằng</Text>
 
             <View style={styles.socialRow}>
-              <Ionicons name="logo-facebook" size={40} color="#1877F2" />
-              <Ionicons name="logo-instagram" size={40} color="#C13584" />
-              <Ionicons name="logo-twitter" size={40} color="#03A9F4" />
+              <TouchableOpacity>
+                <Image
+                  source={{
+                    uri: "https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA",
+                  }}
+                  style={{ width: 40, height: 40 }}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
