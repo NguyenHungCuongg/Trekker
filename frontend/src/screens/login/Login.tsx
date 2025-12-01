@@ -3,21 +3,37 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import axiosInstance from "../../utils/axiosInstance";
-import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Image, ActivityIndicator } from "react-native";
 import type { RootStackParamList } from "../../../App";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useToast } from "../../components/context/ToastContext";
 import BackButton from "../../components/login-register/BackButton";
 import AuthField from "../../components/login-register/AuthField";
 import PasswordField from "../../components/login-register/PasswordField";
+import { useGoogleAuth } from "../../hooks/useGoogleAuth";
 import { styles } from "./loginStyles";
 
 export default function Login() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const { showToast } = useToast();
+
+  // Google Auth Hook
+  const { request, promptAsync } = useGoogleAuth({
+    onSuccess: () => {
+      setIsGoogleLoading(false);
+      showToast("success", "Đăng nhập Google thành công!");
+      navigation.navigate("MainTabs");
+    },
+    onError: (error) => {
+      setIsGoogleLoading(false);
+      showToast("error", "Đăng nhập Google thất bại. Vui lòng thử lại.");
+      console.error("Google login error:", error);
+    },
+  });
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -78,8 +94,23 @@ export default function Login() {
 
             <Text style={styles.alternateDivider}>Hoặc đăng nhập bằng</Text>
 
-            <View style={styles.socialRow}>
-              <TouchableOpacity>
+            <TouchableOpacity
+              style={styles.googleButton}
+              onPress={async () => {
+                setIsGoogleLoading(true);
+                try {
+                  await promptAsync();
+                } catch (error) {
+                  setIsGoogleLoading(false);
+                  showToast("error", "Không thể mở Google login. Vui lòng thử lại.");
+                  console.error("Google prompt error:", error);
+                }
+              }}
+              disabled={!request || isGoogleLoading}
+            >
+              {isGoogleLoading ? (
+                <ActivityIndicator size="small" color="#DB4437" />
+              ) : (
                 <Image
                   source={{
                     uri: "https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA",
@@ -87,8 +118,8 @@ export default function Login() {
                   style={{ width: 40, height: 40 }}
                   resizeMode="contain"
                 />
-              </TouchableOpacity>
-            </View>
+              )}
+            </TouchableOpacity>
           </View>
         </View>
       </View>

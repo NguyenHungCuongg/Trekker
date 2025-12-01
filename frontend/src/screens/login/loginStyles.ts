@@ -84,4 +84,10 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 18,
   },
+  googleButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 10,
+    minHeight: 60,
+  },
 });

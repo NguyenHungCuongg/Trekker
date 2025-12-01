@@ -157,17 +157,21 @@ export default function Register() {
 
               <Text style={styles.divider}>Hoặc xác thực bằng</Text>
 
-              <View style={styles.socialRow}>
-                <TouchableOpacity>
-                  <Image
-                    source={{
-                      uri: "https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA",
-                    }}
-                    style={{ width: 40, height: 40 }}
-                    resizeMode="contain"
-                  />
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity
+                onPress={async () => {
+                  showToast("info", "Đang mở Google...");
+                  // Reuse same Google OAuth hook as Login
+                  navigation.navigate("Login");
+                }}
+              >
+                <Image
+                  source={{
+                    uri: "https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA",
+                  }}
+                  style={{ width: 40, height: 40 }}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>

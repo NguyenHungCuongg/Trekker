@@ -29,6 +29,15 @@ export class AuthController {
     return this.authService.resetPassword(resetPasswordDto);
   }
 
+  // ========== Google OAuth2 Endpoint ==========
+  @Post("google")
+  async googleAuth(@Body("accessToken") accessToken: string) {
+    if (!accessToken) {
+      throw new Error("Access token is required");
+    }
+    return this.authService.validateGoogleToken(accessToken);
+  }
+
   // API để tạo admin user đầu tiên, code xong xóa nha ae
   @Post("create-admin")
   @HttpCode(HttpStatus.CREATED)

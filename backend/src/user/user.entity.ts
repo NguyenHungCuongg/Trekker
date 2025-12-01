@@ -12,14 +12,14 @@ export class User {
   @Column({ unique: true })
   username: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Exclude()
   password: string;
 
   @Column({ nullable: true, name: "full_name" })
   fullName: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   phone: string;
 
   @Column({ unique: true })
@@ -30,11 +30,16 @@ export class User {
 
   @Column({
     name: "profile_image",
-    type: "varchar",
-    length: 255,
+    type: "text",
     nullable: true,
   })
   profileImage: string;
+
+  @Column({ name: "google_id", nullable: true, unique: true })
+  googleId: string;
+
+  @Column({ name: "auth_provider", default: "local" })
+  authProvider: string;
 
   @Column({
     name: "created_at",

@@ -11,17 +11,17 @@
       "resizeMode": "contain",
       "backgroundColor": "#0F93C3"
     },
-    
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.frontend.app"
     },
     "android": {
       "package": "com.frontend.app",
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
-    }
+      }
+    },
+    "scheme": "trekker",
+    "plugins": ["expo-web-browser"]
   }
 }
