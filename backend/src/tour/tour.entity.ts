@@ -42,7 +42,7 @@ export class Tour {
   @Column({ name: "max_guests", nullable: true })
   maxGuests: number;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "text", nullable: true })
   image: string;
 
   @ManyToOne(() => Location, (location) => location.tours, {
