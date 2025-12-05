@@ -6,14 +6,17 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Booking } from "./booking.entity";
+import { Payment } from "../payment/payment.entity";
 import { CreateBookingDto } from "./dto/create-booking.dto";
-import { BookingStatus } from "src/common/enums";
+import { BookingStatus, PaymentStatus } from "src/common/enums";
 
 @Injectable()
 export class BookingService {
   constructor(
     @InjectRepository(Booking)
     private bookingRepository: Repository<Booking>,
+    @InjectRepository(Payment)
+    private paymentRepository: Repository<Payment>,
   ) {}
 
   async findAll(userId?: number): Promise<Booking[]> {
@@ -41,11 +44,34 @@ export class BookingService {
     if (createBookingDto.startDate >= createBookingDto.endDate) {
       throw new BadRequestException("Ngày kết thúc phải sau ngày bắt đầu");
     }
+
+    // Tạo booking
     const booking = this.bookingRepository.create({
-      ...createBookingDto,
-      status: BookingStatus.CONFIRMED,
+      userId: createBookingDto.userId,
+      serviceType: createBookingDto.serviceType,
+      serviceId: createBookingDto.serviceId,
+      startDate: createBookingDto.startDate,
+      endDate: createBookingDto.endDate,
+      quantity: createBookingDto.quantity,
+      totalPrice: createBookingDto.totalPrice,
+      customerName: createBookingDto.customerName || "",
+      customerEmail: createBookingDto.customerEmail || "",
+      customerPhone: createBookingDto.customerPhone || "",
+      notes: createBookingDto.notes || "",
+      status: BookingStatus.PENDING,
     });
-    return this.bookingRepository.save(booking);
+    const savedBooking = await this.bookingRepository.save(booking);
+
+    // Tự động tạo Payment record
+    const payment = this.paymentRepository.create({
+      bookingId: savedBooking.id,
+      amount: createBookingDto.totalPrice,
+      method: createBookingDto.paymentMethod,
+      status: PaymentStatus.PENDING,
+    });
+    await this.paymentRepository.save(payment);
+
+    return savedBooking;
   }
 
   async remove(id: number, userId?: number): Promise<void> {

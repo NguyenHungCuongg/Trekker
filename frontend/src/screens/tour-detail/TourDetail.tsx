@@ -17,6 +17,7 @@ export default function TourDetail() {
   const route = useRoute();
   const { id } = route.params as { id: any };
   const [loading, setLoading] = React.useState<boolean>(true);
+  const [numberOfPeople, setNumberOfPeople] = React.useState<number>(1);
   const [tourDetail, setTourDetail] = React.useState<any>({
     id: null,
     name: "",
@@ -120,7 +121,40 @@ export default function TourDetail() {
           {tourDetail?.destinations?.map((dest: any) => " - " + dest.name + "\n").join("")}
         </Text>
 
-        <TouchableOpacity style={styles.bookButton}>
+        <View style={styles.bookingSection}>
+          <Text style={styles.sectionTitle}>Số người tham gia</Text>
+          <View style={styles.quantitySelector}>
+            <TouchableOpacity
+              style={styles.quantityButton}
+              onPress={() => setNumberOfPeople(Math.max(1, numberOfPeople - 1))}
+            >
+              <Text style={styles.quantityButtonText}>-</Text>
+            </TouchableOpacity>
+            <Text style={styles.quantityText}>{numberOfPeople}</Text>
+            <TouchableOpacity
+              style={styles.quantityButton}
+              onPress={() => setNumberOfPeople(Math.min(tourDetail.maxGuests, numberOfPeople + 1))}
+            >
+              <Text style={styles.quantityButtonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <TouchableOpacity
+          style={styles.bookButton}
+          onPress={() => {
+            navigation.navigate("BookingConfirmation", {
+              serviceType: "tour",
+              serviceId: tourDetail.id,
+              serviceName: tourDetail.name,
+              servicePrice: tourDetail.price,
+              quantity: numberOfPeople,
+              startDate: tourDetail.startDate,
+              endDate: tourDetail.endDate,
+              serviceImage: tourDetail.image,
+            });
+          }}
+        >
           <Text style={styles.bookButtonText}>Đặt ngay</Text>
         </TouchableOpacity>
       </ScrollView>

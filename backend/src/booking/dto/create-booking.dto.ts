@@ -4,8 +4,11 @@ import {
   IsEnum,
   IsDateString,
   Min,
+  IsString,
+  IsEmail,
+  IsOptional,
 } from "class-validator";
-import { ServiceType } from "src/common/enums";
+import { ServiceType, PaymentMethod } from "src/common/enums";
 
 export class CreateBookingDto {
   @IsNumber()
@@ -37,4 +40,24 @@ export class CreateBookingDto {
   @IsNotEmpty()
   @Min(0)
   totalPrice: number;
+
+  @IsString()
+  @IsNotEmpty()
+  customerName: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  customerEmail: string;
+
+  @IsString()
+  @IsNotEmpty()
+  customerPhone: string;
+
+  @IsString()
+  @IsOptional()
+  notes?: string;
+
+  @IsEnum(PaymentMethod)
+  @IsNotEmpty()
+  paymentMethod: PaymentMethod;
 }

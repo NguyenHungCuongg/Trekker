@@ -16,6 +16,7 @@ import ProfileDetail from "./src/screens/profile-detail/ProfileDetail";
 import AccommodationDetail from "./src/screens/accommodation-detail/AccommodationDetail";
 import Tour from "./src/screens/tour/Tour";
 import Accommodation from "./src/screens/accommodation/Accommodation";
+import BookingConfirmation from "./src/screens/booking-confirmation/BookingConfirmation";
 
 export type RootStackParamList = {
   Start: undefined;
@@ -30,6 +31,16 @@ export type RootStackParamList = {
   AccommodationDetail: undefined;
   Tour: undefined;
   Accommodation: undefined;
+  BookingConfirmation: {
+    serviceType: "tour" | "accommodation";
+    serviceId: number;
+    serviceName: string;
+    servicePrice: number;
+    quantity: number;
+    startDate: string;
+    endDate: string;
+    serviceImage?: string;
+  };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -52,6 +63,7 @@ export default function App() {
             <Stack.Screen name="AccommodationDetail" component={AccommodationDetail} />
             <Stack.Screen name="Tour" component={Tour} />
             <Stack.Screen name="Accommodation" component={Accommodation} />
+            <Stack.Screen name="BookingConfirmation" component={BookingConfirmation} />
           </Stack.Navigator>
         </NavigationContainer>
       </ToastProvider>

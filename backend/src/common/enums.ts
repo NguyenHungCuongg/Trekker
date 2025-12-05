@@ -11,7 +11,7 @@ export enum ServiceType {
 
 export enum PaymentMethod {
   VNPAY = "vnpay",
-  MOMO = "momo",
+  CASH = "cash",
 }
 
 export enum PaymentStatus {
