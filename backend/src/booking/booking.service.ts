@@ -8,7 +8,9 @@ import { Repository } from "typeorm";
 import { Booking } from "./booking.entity";
 import { Payment } from "../payment/payment.entity";
 import { CreateBookingDto } from "./dto/create-booking.dto";
-import { BookingStatus, PaymentStatus } from "src/common/enums";
+import { BookingStatus, PaymentStatus, ServiceType } from "src/common/enums";
+import { Tour } from "../tour/tour.entity";
+import { Accommodation } from "../accommodation/accommodation.entity";
 
 @Injectable()
 export class BookingService {
@@ -17,15 +19,56 @@ export class BookingService {
     private bookingRepository: Repository<Booking>,
     @InjectRepository(Payment)
     private paymentRepository: Repository<Payment>,
+    @InjectRepository(Tour)
+    private tourRepository: Repository<Tour>,
+    @InjectRepository(Accommodation)
+    private accommodationRepository: Repository<Accommodation>,
   ) {}
 
-  async findAll(userId?: number): Promise<Booking[]> {
+  async findAll(userId?: number): Promise<any[]> {
     const whereCondition = userId ? { userId } : {};
-    return this.bookingRepository.find({
+    const bookings = await this.bookingRepository.find({
       where: whereCondition,
       relations: ["user", "payments", "invoices"],
       order: { createdAt: "DESC" },
     });
+
+    // Load tour or accommodation data for each booking
+    const bookingsWithDetails = await Promise.all(
+      bookings.map(async (booking) => {
+        // Flatten payment data
+        const payment = booking.payments?.[0];
+
+        let serviceData = null;
+        if (booking.serviceType === ServiceType.TOUR) {
+          serviceData = await this.tourRepository.findOne({
+            where: { id: booking.serviceId },
+            relations: ["location"],
+          });
+        } else if (booking.serviceType === ServiceType.ACCOMMODATION) {
+          serviceData = await this.accommodationRepository.findOne({
+            where: { id: booking.serviceId },
+          });
+        }
+
+        const result: any = {
+          ...booking,
+          paymentMethod: payment?.method || null,
+          paymentStatus: payment?.status || null,
+          paidAt: payment?.paidAt || null,
+        };
+
+        if (booking.serviceType === ServiceType.TOUR) {
+          result.tour = serviceData;
+        } else if (booking.serviceType === ServiceType.ACCOMMODATION) {
+          result.accommodation = serviceData;
+        }
+
+        return result;
+      }),
+    );
+
+    return bookingsWithDetails;
   }
 
   async findOne(id: number, userId?: number): Promise<Booking> {
@@ -88,7 +131,7 @@ export class BookingService {
     return this.bookingRepository.save(booking);
   }
 
-  async findByUserId(userId: number): Promise<Booking[]> {
+  async findByUserId(userId: number): Promise<any[]> {
     return this.findAll(userId);
   }
 

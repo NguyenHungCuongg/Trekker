@@ -24,7 +24,7 @@ export class BookingController {
   constructor(private bookingService: BookingService) {}
 
   @Get()
-  async findAll(@Request() req): Promise<Booking[]> {
+  async findAll(@Request() req): Promise<any[]> {
     return this.bookingService.findAll(req.user.userId);
   }
 

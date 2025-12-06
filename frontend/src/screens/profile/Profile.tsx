@@ -107,7 +107,11 @@ export default function Profile() {
           onPress={undefined}
         />
         <Divider />
-        <MenuItem icon={<Feather name="file-text" size={20} color="#7D848D" />} label="Hóa đơn" onPress={undefined} />
+        <MenuItem
+          icon={<Feather name="file-text" size={20} color="#7D848D" />}
+          label="Đơn đặt dịch vụ"
+          onPress={() => navigation.navigate("Booking")}
+        />
         <Divider />
         <MenuItem
           icon={<MaterialCommunityIcons name="message-text-outline" size={20} color="#7D848D" />}
