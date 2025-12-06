@@ -39,7 +39,7 @@ export class BookingService {
         // Flatten payment data
         const payment = booking.payments?.[0];
 
-        let serviceData = null;
+        let serviceData: any = null;
         if (booking.serviceType === ServiceType.TOUR) {
           serviceData = await this.tourRepository.findOne({
             where: { id: booking.serviceId },

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl, Image } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Feather } from "@expo/vector-icons";
 import axiosInstance from "../../utils/axiosInstance";
 import { useToast } from "../../components/context/ToastContext";
-import { formatNumber } from "../../utils/formatNumber";
+import BookingCard from "../../components/booking/BookingCard";
 import { styles } from "./bookingStyles";
 
 interface BookingItem {
@@ -67,15 +67,6 @@ export default function Booking() {
     setRefreshing(false);
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("vi-VN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
-
   const getStatusText = (status: string) => {
     switch (status) {
       case "pending":
@@ -89,100 +80,20 @@ export default function Booking() {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "pending":
-        return "#FF9800";
-      case "confirmed":
-        return "#4CAF50";
-      case "cancelled":
-        return "#F44336";
-      default:
-        return "#7D848D";
-    }
-  };
-
   const filteredBookings = bookings.filter((booking) => {
     if (filter === "all") return true;
     return booking.status === filter;
   });
 
-  const renderBookingCard = (booking: BookingItem) => {
-    const serviceName = booking.serviceType === "tour" ? booking.tour?.name : booking.accommodation?.name;
-    const serviceImage = booking.serviceType === "tour" ? booking.tour?.image : booking.accommodation?.image;
-    const serviceLocation =
-      booking.serviceType === "tour" ? booking.tour?.location?.name : booking.accommodation?.address;
-
-    return (
-      <TouchableOpacity
-        key={booking.id}
-        style={styles.bookingCard}
-        onPress={() => {
-          // Navigate to booking detail if needed
-        }}
-      >
-        <View style={styles.cardHeader}>
-          <View style={styles.serviceTypeTag}>
-            <Text style={styles.serviceTypeText}>{booking.serviceType === "tour" ? "Tour" : "Chỗ ở"}</Text>
-          </View>
-          <View style={[styles.statusBadge, { backgroundColor: getStatusColor(booking.status) }]}>
-            <Text style={styles.statusText}>{getStatusText(booking.status)}</Text>
-          </View>
-        </View>
-
-        <View style={styles.cardContent}>
-          {serviceImage && (
-            <Image
-              source={{ uri: serviceImage }}
-              style={styles.serviceImage}
-              defaultSource={require("../../../assets/default-thumbnail.png")}
-            />
-          )}
-          <View style={styles.serviceInfo}>
-            <Text style={styles.serviceName} numberOfLines={2}>
-              {serviceName}
-            </Text>
-            {serviceLocation && (
-              <View style={styles.locationRow}>
-                <Feather name="map-pin" size={14} color="#7D848D" />
-                <Text style={styles.locationText} numberOfLines={1}>
-                  {serviceLocation}
-                </Text>
-              </View>
-            )}
-            <View style={styles.dateRow}>
-              <Feather name="calendar" size={14} color="#7D848D" />
-              <Text style={styles.dateText}>
-                {formatDate(booking.startDate)} - {formatDate(booking.endDate)}
-              </Text>
-            </View>
-            <View style={styles.quantityRow}>
-              <Feather name="users" size={14} color="#7D848D" />
-              <Text style={styles.quantityText}>{booking.quantity} người</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.cardFooter}>
-          <View style={styles.paymentInfo}>
-            <Feather
-              name={booking.paymentMethod === "cash" ? "dollar-sign" : "credit-card"}
-              size={16}
-              color="#7D848D"
-            />
-            <Text style={styles.paymentText}>{booking.paymentMethod === "cash" ? "Tiền mặt" : "VNPAY"}</Text>
-          </View>
-          <Text style={styles.totalPrice}>{formatNumber(booking.totalPrice)} VND</Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
   if (loading) {
     return (
       <SafeAreaView style={styles.container} edges={["top"]}>
         <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Feather name="arrow-left" size={24} color="#1B1E28" />
+          </TouchableOpacity>
           <Text style={styles.headerTitle}>Đơn đặt của tôi</Text>
+          <View style={styles.headerRight} />
         </View>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#0F93C3" />
@@ -194,7 +105,11 @@ export default function Booking() {
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Feather name="arrow-left" size={24} color="#1B1E28" />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Đơn đặt của tôi</Text>
+        <View style={styles.headerRight} />
       </View>
 
       {/* Filter Tabs */}
@@ -252,7 +167,17 @@ export default function Booking() {
             </Text>
           </View>
         ) : (
-          <View style={styles.bookingList}>{filteredBookings.map(renderBookingCard)}</View>
+          <View style={styles.bookingList}>
+            {filteredBookings.map((booking) => (
+              <BookingCard
+                key={booking.id}
+                booking={booking}
+                onPress={() => {
+                  // Navigate to booking detail if needed
+                }}
+              />
+            ))}
+          </View>
         )}
       </ScrollView>
     </SafeAreaView>
