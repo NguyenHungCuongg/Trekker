@@ -66,6 +66,17 @@ export class AuthService {
     return ResponseEntity.success("Đặt lại mật khẩu thành công");
   }
 
+  async getProfile(userId: number): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new BadRequestException("Người dùng không tồn tại");
+    }
+    // Remove password from response
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword as User;
+  }
+
   async findByUsername(username: string): Promise<User | null> {
     return this.userRepository.findOne({ where: { username } });
   }

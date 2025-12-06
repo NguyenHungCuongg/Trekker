@@ -16,7 +16,7 @@ import { CreateBookingDto } from "./dto/create-booking.dto";
 import { JwtAuthGuard } from "../auth/jwt.authguard";
 import { RolesGuard } from "../auth/guards/roles.guard";
 import { Roles } from "../auth/decorators/roles.decorator";
-import { UserRole, BookingStatus } from "../common/enums";
+import { UserRole, BookingStatus, PaymentMethod } from "../common/enums";
 
 @UseGuards(JwtAuthGuard)
 @Controller("bookings")
@@ -24,7 +24,7 @@ export class BookingController {
   constructor(private bookingService: BookingService) {}
 
   @Get()
-  async findAll(@Request() req): Promise<Booking[]> {
+  async findAll(@Request() req): Promise<any[]> {
     return this.bookingService.findAll(req.user.userId);
   }
 
@@ -40,9 +40,19 @@ export class BookingController {
   async create(
     @Body() createBookingDto: CreateBookingDto,
     @Request() req,
-  ): Promise<Booking> {
+  ): Promise<{ booking: Booking; message: string }> {
     createBookingDto.userId = req.user.userId;
-    return this.bookingService.create(createBookingDto);
+    const booking = await this.bookingService.create(createBookingDto);
+
+    let message: string;
+    if (createBookingDto.paymentMethod === PaymentMethod.CASH) {
+      message =
+        "Đặt chỗ thành công! Vui lòng thanh toán tiền mặt khi gặp hướng dẫn viên.";
+    } else {
+      message = "Đặt chỗ thành công! Đang chuyển đến trang thanh toán.";
+    }
+
+    return { booking, message };
   }
 
   @Put(":id/cancel")

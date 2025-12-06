@@ -44,9 +44,21 @@ export class Booking {
   @Column({
     type: "enum",
     enum: BookingStatus,
-    default: BookingStatus.CONFIRMED,
+    default: BookingStatus.PENDING,
   })
   status: BookingStatus;
+
+  @Column({ name: "customer_name", nullable: true })
+  customerName: string;
+
+  @Column({ name: "customer_email", nullable: true })
+  customerEmail: string;
+
+  @Column({ name: "customer_phone", nullable: true })
+  customerPhone: string;
+
+  @Column({ type: "text", nullable: true })
+  notes: string;
 
   @Column({
     name: "created_at",

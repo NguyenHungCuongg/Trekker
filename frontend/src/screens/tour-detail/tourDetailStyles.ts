@@ -126,6 +126,36 @@ export const styles = StyleSheet.create({
     color: "#15C4C8",
     textDecorationLine: "underline",
   },
+  bookingSection: {
+    marginBottom: 16,
+  },
+  quantitySelector: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 20,
+    marginTop: 8,
+  },
+  quantityButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#0F93C3",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  quantityButtonText: {
+    color: "#fff",
+    fontSize: 24,
+    fontWeight: "600",
+  },
+  quantityText: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#1B1E28",
+    minWidth: 40,
+    textAlign: "center",
+  },
   bookButton: {
     width: "100%",
     height: 54,

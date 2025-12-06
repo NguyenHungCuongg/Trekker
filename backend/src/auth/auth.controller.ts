@@ -1,4 +1,13 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Request,
+  UseGuards,
+} from "@nestjs/common";
 import { CreateUserDto } from "src/auth/dto/register.dto";
 import { ResetPasswordDto } from "./dto/reset-password.dto";
 import { User } from "src/user/user.entity";
@@ -7,6 +16,7 @@ import { LoginDto } from "./dto/login.dto";
 import { ResponseEntity } from "src/common/dto/response-entity.dto";
 import * as bcrypt from "bcryptjs";
 import { UserRole } from "src/common/enums";
+import { JwtAuthGuard } from "./jwt.authguard";
 
 @Controller("auth")
 export class AuthController {
@@ -27,6 +37,12 @@ export class AuthController {
     @Body() resetPasswordDto: ResetPasswordDto,
   ): Promise<ResponseEntity> {
     return this.authService.resetPassword(resetPasswordDto);
+  }
+
+  @Get("profile")
+  @UseGuards(JwtAuthGuard)
+  async getProfile(@Request() req) {
+    return this.authService.getProfile(req.user.userId);
   }
 
   // API để tạo admin user đầu tiên, code xong xóa nha ae

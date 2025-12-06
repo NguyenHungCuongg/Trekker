@@ -14,6 +14,7 @@ const defaultThumbnail = require("../../../assets/default-thumbnail.png");
 export default function AccommodationDetail() {
   const navigation = useNavigation();
   const [selectedRoomType, setSelectedRoomType] = useState<number | null>(null);
+  const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
   const [accommodation, setAccommodation] = useState<any>({
     id: null,
     destinationId: "",
@@ -31,6 +32,8 @@ export default function AccommodationDetail() {
   const { id } = route.params as { id: any };
   const { showToast } = useToast();
   const [loading, setLoading] = useState<boolean>(true);
+  const [checkInDate, setCheckInDate] = useState<string>(new Date().toISOString());
+  const [checkOutDate, setCheckOutDate] = useState<string>(new Date(Date.now() + 86400000).toISOString());
 
   useEffect(() => {
     setLoading(true);
@@ -201,7 +204,52 @@ export default function AccommodationDetail() {
             </TouchableOpacity>
           ))}
 
-        <TouchableOpacity style={styles.bookButton}>
+        <View style={styles.bookingSection}>
+          <Text style={styles.sectionTitle}>Số người</Text>
+          <View style={styles.quantitySelector}>
+            <TouchableOpacity
+              style={styles.quantityButton}
+              onPress={() => setNumberOfPeople(Math.max(1, numberOfPeople - 1))}
+            >
+              <Text style={styles.quantityButtonText}>-</Text>
+            </TouchableOpacity>
+            <Text style={styles.quantityText}>{numberOfPeople}</Text>
+            <TouchableOpacity
+              style={styles.quantityButton}
+              onPress={() =>
+                setNumberOfPeople(
+                  Math.min(
+                    selectedRoomType !== null ? accommodation.roomTypes[selectedRoomType].capacity : 10,
+                    numberOfPeople + 1
+                  )
+                )
+              }
+            >
+              <Text style={styles.quantityButtonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <TouchableOpacity
+          style={styles.bookButton}
+          onPress={() => {
+            if (selectedRoomType === null) {
+              showToast("error", "Vui lòng chọn loại phòng");
+              return;
+            }
+            const roomType = accommodation.roomTypes[selectedRoomType];
+            navigation.navigate("BookingConfirmation", {
+              serviceType: "accommodation",
+              serviceId: accommodation.id,
+              serviceName: `${accommodation.name} - ${roomType.name}`,
+              servicePrice: roomType.discountPrice || roomType.price,
+              quantity: numberOfPeople,
+              startDate: checkInDate,
+              endDate: checkOutDate,
+              serviceImage: accommodation.image,
+            });
+          }}
+        >
           <Text style={styles.bookButtonText}>Đặt phòng</Text>
         </TouchableOpacity>
       </ScrollView>
