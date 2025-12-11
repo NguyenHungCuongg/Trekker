@@ -233,6 +233,9 @@ export const styles = StyleSheet.create({
     minWidth: 40,
     textAlign: "center",
   },
+  reviewsContainer: {
+    marginTop: 12,
+  },
   bookButton: {
     width: "100%",
     height: 54,

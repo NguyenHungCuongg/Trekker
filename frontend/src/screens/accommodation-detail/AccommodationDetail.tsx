@@ -8,6 +8,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { useToast } from "../../components/context/ToastContext";
 import { RoomType } from "../../types";
 import { formatNumber } from "../../utils/formatNumber";
+import ReviewServiceCard from "../../components/ReviewServiceCard";
 
 const defaultThumbnail = require("../../../assets/default-thumbnail.png");
 
@@ -34,6 +35,7 @@ export default function AccommodationDetail() {
   const [loading, setLoading] = useState<boolean>(true);
   const [checkInDate, setCheckInDate] = useState<string>(new Date().toISOString());
   const [checkOutDate, setCheckOutDate] = useState<string>(new Date(Date.now() + 86400000).toISOString());
+  const [reviews, setReviews] = useState<any[]>([]);
 
   useEffect(() => {
     setLoading(true);
@@ -42,8 +44,12 @@ export default function AccommodationDetail() {
 
   const fetchAccommodations = async (id: any) => {
     try {
-      const res = await axiosInstance.get(`/accommodations/${id}`);
-      setAccommodation(res.data);
+      const [accommodationRes, reviewsRes] = await Promise.all([
+        axiosInstance.get(`/accommodations/${id}`),
+        axiosInstance.get(`/reviews?serviceType=accommodation&serviceId=${id}`),
+      ]);
+      setAccommodation(accommodationRes.data);
+      setReviews(reviewsRes.data);
     } catch (error) {
       console.error("Error fetching accommodation detail:", error);
       showToast("error", "Lỗi khi tải chi tiết chỗ ở");
@@ -229,6 +235,18 @@ export default function AccommodationDetail() {
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* Reviews Section */}
+        {reviews.length > 0 && (
+          <>
+            <Text style={styles.sectionTitle}>Đánh giá ({reviews.length})</Text>
+            <View style={styles.reviewsContainer}>
+              {reviews.map((review) => (
+                <ReviewServiceCard key={review.id} review={review} />
+              ))}
+            </View>
+          </>
+        )}
 
         <TouchableOpacity
           style={styles.bookButton}

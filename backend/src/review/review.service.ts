@@ -25,6 +25,17 @@ export class ReviewService {
     });
   }
 
+  async findByService(
+    serviceType: string,
+    serviceId: number,
+  ): Promise<Review[]> {
+    return this.reviewRepository.find({
+      where: { serviceType: serviceType as any, serviceId },
+      relations: ["user"],
+      order: { createdAt: "DESC" },
+    });
+  }
+
   async findOne(id: number, userId?: number): Promise<Review> {
     const whereCondition = userId ? { userId } : {};
     const review = await this.reviewRepository.findOne({

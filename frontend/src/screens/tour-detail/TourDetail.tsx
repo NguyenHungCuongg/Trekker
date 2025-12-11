@@ -6,6 +6,7 @@ import { styles } from "./tourDetailStyles";
 import axiosInstance from "../../utils/axiosInstance";
 import { useToast } from "../../components/context/ToastContext";
 import { formatNumber } from "../../utils/formatNumber";
+import ReviewServiceCard from "../../components/ReviewServiceCard";
 
 const defaultThumbnail = require("../../../assets/default-thumbnail.png");
 
@@ -18,6 +19,7 @@ export default function TourDetail() {
   const { id } = route.params as { id: any };
   const [loading, setLoading] = React.useState<boolean>(true);
   const [numberOfPeople, setNumberOfPeople] = React.useState<number>(1);
+  const [reviews, setReviews] = React.useState<any[]>([]);
   const [tourDetail, setTourDetail] = React.useState<any>({
     id: null,
     name: "",
@@ -37,8 +39,12 @@ export default function TourDetail() {
 
   const fetchTourDetail = async (id: any) => {
     try {
-      const res = await axiosInstance.get(`/tours/${id}`);
-      setTourDetail(res.data);
+      const [tourRes, reviewsRes] = await Promise.all([
+        axiosInstance.get(`/tours/${id}`),
+        axiosInstance.get(`/reviews?serviceType=tour&serviceId=${id}`),
+      ]);
+      setTourDetail(tourRes.data);
+      setReviews(reviewsRes.data);
     } catch (error) {
       console.error("Error fetching tour detail:", error);
       showToast("error", "Lỗi khi tải chi tiết tour");
@@ -139,6 +145,18 @@ export default function TourDetail() {
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* Reviews Section */}
+        {reviews.length > 0 && (
+          <>
+            <Text style={styles.sectionTitle}>Đánh giá ({reviews.length})</Text>
+            <View style={styles.reviewsContainer}>
+              {reviews.map((review) => (
+                <ReviewServiceCard key={review.id} review={review} />
+              ))}
+            </View>
+          </>
+        )}
 
         <TouchableOpacity
           style={styles.bookButton}
