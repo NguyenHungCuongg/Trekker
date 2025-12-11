@@ -39,21 +39,39 @@ export default function Review() {
 
   const fetchConfirmedServices = async () => {
     try {
-      const response = await axiosInstance.get("/bookings/confirmed-services/list");
+      const [servicesResponse, reviewsResponse] = await Promise.all([
+        axiosInstance.get("/bookings/confirmed-services/list"),
+        axiosInstance.get("/reviews/my-reviews"),
+      ]);
+
+      const services = servicesResponse.data;
+      const userReviews = reviewsResponse.data;
+
+      // Create a map of existing reviews by service
+      const reviewsMap = new Map();
+      userReviews.forEach((review: any) => {
+        const key = `${review.serviceType}-${review.serviceId}`;
+        reviewsMap.set(key, review);
+      });
 
       // Transform backend data to ReviewItem format
-      const reviewItems: ReviewItem[] = response.data.map((service: any, index: number) => ({
-        id: index + 1,
-        serviceType: service.serviceType,
-        serviceId: service.serviceId,
-        serviceName: service.serviceName,
-        serviceImage: service.serviceImage,
-        serviceLocation: service.serviceLocation,
-        hasReviewed: false, // TODO: Check if user has reviewed this service
-        rating: undefined,
-        comment: undefined,
-        reviewDate: undefined,
-      }));
+      const reviewItems: ReviewItem[] = services.map((service: any, index: number) => {
+        const key = `${service.serviceType}-${service.serviceId}`;
+        const existingReview = reviewsMap.get(key);
+
+        return {
+          id: existingReview?.id || index + 1,
+          serviceType: service.serviceType,
+          serviceId: service.serviceId,
+          serviceName: service.serviceName,
+          serviceImage: service.serviceImage,
+          serviceLocation: service.serviceLocation,
+          hasReviewed: !!existingReview,
+          rating: existingReview?.rating,
+          comment: existingReview?.comment,
+          reviewDate: existingReview?.createdAt,
+        };
+      });
 
       setReviews(reviewItems);
     } catch (error) {
@@ -75,8 +93,28 @@ export default function Review() {
     setShowReviewPopup(true);
   };
 
-  const handleSubmitReview = (rating: number, comment: string) => {
-    if (selectedReview) {
+  const handleSubmitReview = async (rating: number, comment: string) => {
+    if (!selectedReview) return;
+
+    try {
+      if (selectedReview.hasReviewed) {
+        // Update existing review
+        await axiosInstance.put(`/reviews/${selectedReview.id}`, {
+          rating,
+          comment,
+        });
+        showToast("success", "Cập nhật đánh giá thành công");
+      } else {
+        // Create new review
+        await axiosInstance.post("/reviews", {
+          serviceType: selectedReview.serviceType,
+          serviceId: selectedReview.serviceId,
+          rating,
+          comment,
+        });
+        showToast("success", "Gửi đánh giá thành công");
+      }
+
       // Update the review in the list
       setReviews((prevReviews) =>
         prevReviews.map((r) =>
@@ -91,9 +129,14 @@ export default function Review() {
             : r
         )
       );
+    } catch (error: any) {
+      console.error("Error submitting review:", error);
+      const errorMessage = error.response?.data?.message || "Không thể gửi đánh giá";
+      showToast("error", errorMessage);
+    } finally {
+      setShowReviewPopup(false);
+      setSelectedReview(null);
     }
-    setShowReviewPopup(false);
-    setSelectedReview(null);
   };
 
   const filteredReviews = reviews.filter((review) => {
