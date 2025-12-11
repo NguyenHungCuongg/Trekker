@@ -18,6 +18,7 @@ import Tour from "./src/screens/tour/Tour";
 import Accommodation from "./src/screens/accommodation/Accommodation";
 import BookingConfirmation from "./src/screens/booking-confirmation/BookingConfirmation";
 import Booking from "./src/screens/booking/Booking";
+import Review from "./src/screens/review/Review";
 
 export type RootStackParamList = {
   Start: undefined;
@@ -33,6 +34,7 @@ export type RootStackParamList = {
   Tour: undefined;
   Accommodation: undefined;
   Booking: undefined;
+  Review: undefined;
   BookingConfirmation: {
     serviceType: "tour" | "accommodation";
     serviceId: number;
@@ -66,6 +68,7 @@ export default function App() {
             <Stack.Screen name="Tour" component={Tour} />
             <Stack.Screen name="Accommodation" component={Accommodation} />
             <Stack.Screen name="Booking" component={Booking} />
+            <Stack.Screen name="Review" component={Review} />
             <Stack.Screen name="BookingConfirmation" component={BookingConfirmation} />
           </Stack.Navigator>
         </NavigationContainer>

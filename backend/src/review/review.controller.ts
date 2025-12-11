@@ -25,7 +25,11 @@ export class ReviewController {
 
   // User endpoints
   @Get()
-  async findAll(): Promise<Review[]> {
+  async findAll(@Request() req: any): Promise<Review[]> {
+    const { serviceType, serviceId } = req.query;
+    if (serviceType && serviceId) {
+      return this.reviewService.findByService(serviceType, parseInt(serviceId));
+    }
     return this.reviewService.findAll();
   }
 

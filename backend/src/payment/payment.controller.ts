@@ -74,4 +74,22 @@ export class PaymentController {
   ): Promise<Payment> {
     return this.paymentService.findOne(id);
   }
+
+  @Put("admin/:id/mark-paid")
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async adminMarkAsPaid(
+    @Param("id", ParseIntPipe) id: number,
+  ): Promise<Payment> {
+    return this.paymentService.markAsPaid(id);
+  }
+
+  @Put("admin/:id/mark-failed")
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async adminMarkAsFailed(
+    @Param("id", ParseIntPipe) id: number,
+  ): Promise<Payment> {
+    return this.paymentService.markAsFailed(id);
+  }
 }
