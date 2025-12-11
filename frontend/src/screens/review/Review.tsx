@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Feather } from "@expo/vector-icons";
 import ReviewCard from "../../components/review/ReviewCard";
 import ReviewPopup from "../../components/review/ReviewPopup";
+import axiosInstance from "../../utils/axiosInstance";
+import { useToast } from "../../components/context/ToastContext";
 import { styles } from "./reviewStyles";
 
 interface ReviewItem {
@@ -21,78 +23,51 @@ interface ReviewItem {
   reviewDate?: string;
 }
 
-// Dummy data for testing
-const DUMMY_REVIEWS: ReviewItem[] = [
-  {
-    id: 1,
-    serviceType: "tour",
-    serviceId: 5,
-    serviceName: "Du lịch Phú Quốc 3 ngày 2 đêm",
-    serviceImage: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400",
-    serviceLocation: "Phú Quốc, Kiên Giang",
-    hasReviewed: true,
-    rating: 5,
-    comment: "Chuyến đi tuyệt vời! Hướng dẫn viên nhiệt tình, phong cảnh đẹp. Sẽ quay lại lần nữa.",
-    reviewDate: "2024-12-01T10:00:00Z",
-  },
-  {
-    id: 2,
-    serviceType: "accommodation",
-    serviceId: 3,
-    serviceName: "Vinpearl Resort & Spa Nha Trang Bay",
-    serviceImage: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400",
-    serviceLocation: "Nha Trang, Khánh Hòa",
-    hasReviewed: false,
-  },
-  {
-    id: 3,
-    serviceType: "tour",
-    serviceId: 8,
-    serviceName: "Tour Sapa 2 ngày 1 đêm",
-    serviceImage: "https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=400",
-    serviceLocation: "Sapa, Lào Cai",
-    hasReviewed: true,
-    rating: 4,
-    comment: "Khung cảnh đẹp, không khí mát mẻ. Tuy nhiên đường đi hơi xa.",
-    reviewDate: "2024-11-28T14:30:00Z",
-  },
-  {
-    id: 4,
-    serviceType: "accommodation",
-    serviceId: 7,
-    serviceName: "Pullman Danang Beach Resort",
-    serviceImage: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400",
-    serviceLocation: "Đà Nẵng",
-    hasReviewed: false,
-  },
-  {
-    id: 5,
-    serviceType: "tour",
-    serviceId: 12,
-    serviceName: "Khám phá Hạ Long 1 ngày",
-    serviceImage: "https://images.unsplash.com/photo-1528127269322-539801943592?w=400",
-    serviceLocation: "Hạ Long, Quảng Ninh",
-    hasReviewed: true,
-    rating: 5,
-    comment: "Vịnh Hạ Long thật sự tuyệt đẹp! Dịch vụ tốt, thức ăn ngon.",
-    reviewDate: "2024-11-25T09:00:00Z",
-  },
-];
-
 export default function Review() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const [reviews, setReviews] = useState<ReviewItem[]>(DUMMY_REVIEWS);
+  const { showToast } = useToast();
+  const [reviews, setReviews] = useState<ReviewItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<"all" | "reviewed" | "not-reviewed">("all");
   const [showReviewPopup, setShowReviewPopup] = useState(false);
   const [selectedReview, setSelectedReview] = useState<ReviewItem | null>(null);
 
+  useEffect(() => {
+    fetchConfirmedServices();
+  }, []);
+
+  const fetchConfirmedServices = async () => {
+    try {
+      const response = await axiosInstance.get("/bookings/confirmed-services/list");
+
+      // Transform backend data to ReviewItem format
+      const reviewItems: ReviewItem[] = response.data.map((service: any, index: number) => ({
+        id: index + 1,
+        serviceType: service.serviceType,
+        serviceId: service.serviceId,
+        serviceName: service.serviceName,
+        serviceImage: service.serviceImage,
+        serviceLocation: service.serviceLocation,
+        hasReviewed: false, // TODO: Check if user has reviewed this service
+        rating: undefined,
+        comment: undefined,
+        reviewDate: undefined,
+      }));
+
+      setReviews(reviewItems);
+    } catch (error) {
+      console.error("Error fetching confirmed services:", error);
+      showToast("error", "Không thể tải danh sách dịch vụ");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const onRefresh = async () => {
     setRefreshing(true);
-    // Simulate fetching data
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
+    await fetchConfirmedServices();
+    setRefreshing(false);
   };
 
   const handleReviewPress = (review: ReviewItem) => {
@@ -127,6 +102,23 @@ export default function Review() {
     if (filter === "not-reviewed") return !review.hasReviewed;
     return true;
   });
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container} edges={["top"]}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Feather name="arrow-left" size={24} color="#1B1E28" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Đánh giá dịch vụ</Text>
+          <View style={styles.headerRight} />
+        </View>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#0F93C3" />
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>

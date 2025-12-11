@@ -32,6 +32,11 @@ export const styles = StyleSheet.create({
     width: 40,
     height: 40,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   filterContainer: {
     backgroundColor: "#fff",
     paddingVertical: 12,
