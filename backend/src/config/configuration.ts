@@ -16,4 +16,17 @@ export default () => ({
     apiKey: process.env.CLOUDINARY_API_KEY,
     apiSecret: process.env.CLOUDINARY_API_SECRET,
   },
+  vnpay: {
+    vnp_TmnCode: process.env.VNP_TMN_CODE,
+    vnp_HashSecret: process.env.VNP_HASH_SECRET,
+    vnp_Url: process.env.VNP_URL,
+    vnp_ReturnUrl: process.env.VNP_RETURN_URL,
+    vnp_IpnUrl: process.env.VNP_IPN_URL,
+  },
+  googleOAuth: {
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    redirectUri: process.env.GOOGLE_REDIRECT_URI,
+  },
+  ipAddress: process.env.IP_ADDRESS,
 });

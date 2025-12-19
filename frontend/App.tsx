@@ -18,6 +18,9 @@ import Tour from "./src/screens/tour/Tour";
 import Accommodation from "./src/screens/accommodation/Accommodation";
 import BookingConfirmation from "./src/screens/booking-confirmation/BookingConfirmation";
 import Booking from "./src/screens/booking/Booking";
+import { config } from "process";
+import { Linking } from "react-native";
+import VnpayReturn from "./src/screens/booking-confirmation/VnpayReturn";
 
 export type RootStackParamList = {
   Start: undefined;
@@ -43,11 +46,18 @@ export type RootStackParamList = {
     endDate: string;
     serviceImage?: string;
   };
+  VnpayReturn: {
+    status: "success" | "failed";
+    message?: string;
+    amount?: number;
+    orderId?: string;
+  }
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
+
   return (
     <SafeAreaProvider>
       <ToastProvider>
@@ -67,6 +77,7 @@ export default function App() {
             <Stack.Screen name="Accommodation" component={Accommodation} />
             <Stack.Screen name="Booking" component={Booking} />
             <Stack.Screen name="BookingConfirmation" component={BookingConfirmation} />
+            <Stack.Screen name="VnpayReturn" component={VnpayReturn} />
           </Stack.Navigator>
         </NavigationContainer>
       </ToastProvider>

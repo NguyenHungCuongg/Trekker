@@ -32,6 +32,17 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
+  @Post("google/callback")
+  async handleGoogleCode(@Body() body: { code: string }): Promise<any> {
+    const { code } = body;
+
+    // Gọi service để xử lý trao đổi token
+    const result = await this.authService.googleLogin(code);
+
+    // Trả về kết quả
+    return result;
+  }
+
   @Post("reset-password")
   resetPassword(
     @Body() resetPasswordDto: ResetPasswordDto,

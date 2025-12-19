@@ -2,8 +2,8 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
   JoinColumn,
+  OneToOne,
 } from "typeorm";
 import { Booking } from "../booking/booking.entity";
 import { PaymentMethod, PaymentStatus } from "../common/enums";
@@ -37,7 +37,7 @@ export class Payment {
   paidAt: Date;
 
   // Relationships
-  @ManyToOne(() => Booking, (booking) => booking.payments, {
+  @OneToOne(() => Booking, (booking) => booking.payment, {
     onDelete: "CASCADE",
   })
   @JoinColumn({ name: "booking_id" })

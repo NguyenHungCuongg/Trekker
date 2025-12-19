@@ -29,7 +29,7 @@ export class BookingService {
     const whereCondition = userId ? { userId } : {};
     const bookings = await this.bookingRepository.find({
       where: whereCondition,
-      relations: ["user", "payments", "invoices"],
+      relations: ["user", "payment", "invoices"],
       order: { createdAt: "DESC" },
     });
 
@@ -37,7 +37,7 @@ export class BookingService {
     const bookingsWithDetails = await Promise.all(
       bookings.map(async (booking) => {
         // Flatten payment data
-        const payment = booking.payments?.[0];
+        const payment = booking.payment;
 
         let serviceData: any = null;
         if (booking.serviceType === ServiceType.TOUR) {
@@ -75,7 +75,7 @@ export class BookingService {
     const whereCondition = userId ? { id, userId } : { id };
     const booking = await this.bookingRepository.findOne({
       where: whereCondition,
-      relations: ["user", "payments", "invoices"],
+      relations: ["user", "payment", "invoices"],
     });
     if (!booking) {
       throw new NotFoundException(`Không tìm thấy đặt chỗ với id ${id}`);
@@ -123,7 +123,12 @@ export class BookingService {
   }
 
   async cancel(id: number, userId?: number): Promise<Booking> {
-    const booking = await this.findOne(id, userId);
+    const booking = await this.bookingRepository.findOne({
+      where: { id, userId },
+    });
+    if (!booking) {
+      throw new NotFoundException(`Không tìm thấy đặt chỗ với id ${id}`);
+    }
     if (booking.status === BookingStatus.CANCELLED) {
       throw new BadRequestException("Đặt chỗ đã bị hủy");
     }
@@ -143,6 +148,19 @@ export class BookingService {
   async updateStatus(id: number, status: BookingStatus): Promise<Booking> {
     const booking = await this.findOne(id);
     booking.status = status;
+    return this.bookingRepository.save(booking);
+  }
+
+  async cancelVnpayBooking(id: number): Promise<Booking> {
+    const booking = await this.bookingRepository.findOne({ where: { id } });
+    if (!booking) {
+      throw new NotFoundException(`Không tìm thấy đặt chỗ với id ${id}`);
+    }
+    booking.status = BookingStatus.CANCELLED;
+    if (booking.payment) {
+      booking.payment.status = PaymentStatus.FAILED;
+      await this.paymentRepository.save(booking.payment);
+    }
     return this.bookingRepository.save(booking);
   }
 }

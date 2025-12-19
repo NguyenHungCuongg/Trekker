@@ -5,6 +5,7 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  OneToOne,
 } from "typeorm";
 import { User } from "../user/user.entity";
 import { Payment } from "../payment/payment.entity";
@@ -71,8 +72,8 @@ export class Booking {
   @JoinColumn({ name: "user_id" })
   user: User;
 
-  @OneToMany(() => Payment, (payment) => payment.booking)
-  payments: Payment[];
+  @OneToOne(() => Payment, (payment) => payment.booking)
+  payment: Payment;
 
   @OneToMany(() => Invoice, (invoice) => invoice.booking)
   invoices: Invoice[];
