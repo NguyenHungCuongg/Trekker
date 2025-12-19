@@ -17,12 +17,13 @@ import { typeOrmAsyncConfig } from "./config/db.config";
 import { EmailModule } from "./email/email.module";
 import { VerificationCodeModule } from "./verification-code/verification-code.module";
 import { CloudinaryModule } from "./cloudinary/cloudinary.module";
+import { VnpayModule } from "./vnpay/vnpay.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ".env",
+      envFilePath: [".env.local", ".env"],
       load: [configuration],
     }),
     TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
@@ -40,6 +41,7 @@ import { CloudinaryModule } from "./cloudinary/cloudinary.module";
     EmailModule,
     VerificationCodeModule,
     CloudinaryModule,
+    VnpayModule,
   ],
   controllers: [],
   providers: [],

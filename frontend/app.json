@@ -2,18 +2,29 @@
   "expo": {
     "name": "Trekker",
     "slug": "frontend",
+    "scheme": "trekker",
+    "owner": "senko",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/adaptive-icon.png",
     "userInterfaceStyle": "light",
+    "extra": {
+      "apiUrl": "${API_BASE_URL}"
+    },
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#0F93C3"
     },
-    
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.frontend.app",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true,
+          "NSAllowsArbitraryLoadsInWebContent": true
+        }
+      }
     },
     "android": {
       "package": "com.frontend.app",
@@ -22,6 +33,9 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
-    }
+    },
+    "plugins": [
+      "expo-web-browser"
+    ]
   }
 }

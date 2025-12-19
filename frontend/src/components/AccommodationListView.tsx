@@ -42,10 +42,12 @@ const AccommodationListView: React.FC<AccommodationListViewProps> = ({
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>{name}</Text>
-          <View style={styles.rating}>
-            <SvgXml xml={starIcon} width={12} height={11} />
-            <Text style={styles.ratingText}>{rating}</Text>
-          </View>
+          {rating > 0 && (
+            <View style={styles.rating}>
+              <SvgXml xml={starIcon} width={12} height={11} />
+              <Text style={styles.ratingText}>{rating}</Text>
+            </View>
+          )}
         </View>
 
         {/* Location */}
