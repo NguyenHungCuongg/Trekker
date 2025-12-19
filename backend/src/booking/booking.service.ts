@@ -71,6 +71,62 @@ export class BookingService {
     return bookingsWithDetails;
   }
 
+  async findConfirmedServices(userId: number): Promise<any[]> {
+    const bookings = await this.bookingRepository.find({
+      where: { userId, status: BookingStatus.CONFIRMED },
+      relations: ["user"],
+      order: { createdAt: "DESC" },
+    });
+
+    // Load service details and return unique services
+    const servicesMap = new Map();
+
+    await Promise.all(
+      bookings.map(async (booking) => {
+        const key = `${booking.serviceType}-${booking.serviceId}`;
+
+        // Skip if we already have this service
+        if (servicesMap.has(key)) {
+          return;
+        }
+
+        let serviceData: any = null;
+        if (booking.serviceType === ServiceType.TOUR) {
+          serviceData = await this.tourRepository.findOne({
+            where: { id: booking.serviceId },
+            relations: ["location"],
+          });
+
+          if (serviceData) {
+            servicesMap.set(key, {
+              serviceType: booking.serviceType,
+              serviceId: booking.serviceId,
+              serviceName: serviceData.name,
+              serviceImage: serviceData.image,
+              serviceLocation: serviceData.location?.name || "",
+            });
+          }
+        } else if (booking.serviceType === ServiceType.ACCOMMODATION) {
+          serviceData = await this.accommodationRepository.findOne({
+            where: { id: booking.serviceId },
+          });
+
+          if (serviceData) {
+            servicesMap.set(key, {
+              serviceType: booking.serviceType,
+              serviceId: booking.serviceId,
+              serviceName: serviceData.name,
+              serviceImage: serviceData.image,
+              serviceLocation: serviceData.address || "",
+            });
+          }
+        }
+      }),
+    );
+
+    return Array.from(servicesMap.values());
+  }
+
   async findOne(id: number, userId?: number): Promise<Booking> {
     const whereCondition = userId ? { id, userId } : { id };
     const booking = await this.bookingRepository.findOne({

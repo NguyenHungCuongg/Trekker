@@ -28,6 +28,11 @@ export class BookingController {
     return this.bookingService.findAll(req.user.userId);
   }
 
+  @Get("confirmed-services/list")
+  async findConfirmedServices(@Request() req): Promise<any[]> {
+    return this.bookingService.findConfirmedServices(req.user.userId);
+  }
+
   @Get(":id")
   async findOne(
     @Param("id", ParseIntPipe) id: number,

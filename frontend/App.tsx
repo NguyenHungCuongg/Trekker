@@ -21,6 +21,7 @@ import Booking from "./src/screens/booking/Booking";
 import { config } from "process";
 import { Linking } from "react-native";
 import VnpayReturn from "./src/screens/booking-confirmation/VnpayReturn";
+import Review from "./src/screens/review/Review";
 
 export type RootStackParamList = {
   Start: undefined;
@@ -36,6 +37,7 @@ export type RootStackParamList = {
   Tour: undefined;
   Accommodation: undefined;
   Booking: undefined;
+  Review: undefined;
   BookingConfirmation: {
     serviceType: "tour" | "accommodation";
     serviceId: number;
@@ -76,6 +78,7 @@ export default function App() {
             <Stack.Screen name="Tour" component={Tour} />
             <Stack.Screen name="Accommodation" component={Accommodation} />
             <Stack.Screen name="Booking" component={Booking} />
+            <Stack.Screen name="Review" component={Review} />
             <Stack.Screen name="BookingConfirmation" component={BookingConfirmation} />
             <Stack.Screen name="VnpayReturn" component={VnpayReturn} />
           </Stack.Navigator>

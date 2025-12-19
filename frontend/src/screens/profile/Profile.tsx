@@ -116,7 +116,7 @@ export default function Profile() {
         <MenuItem
           icon={<MaterialCommunityIcons name="message-text-outline" size={20} color="#7D848D" />}
           label="Review"
-          onPress={undefined}
+          onPress={() => navigation.navigate("Review")}
         />
         <Divider />
         <MenuItem
