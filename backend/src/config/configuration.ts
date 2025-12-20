@@ -23,10 +23,5 @@ export default () => ({
     vnp_ReturnUrl: process.env.VNP_RETURN_URL,
     vnp_IpnUrl: process.env.VNP_IPN_URL,
   },
-  googleOAuth: {
-    clientId: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    redirectUri: process.env.GOOGLE_REDIRECT_URI,
-  },
   ipAddress: process.env.IP_ADDRESS,
 });
