@@ -11,6 +11,7 @@ import { CreateBookingDto } from "./dto/create-booking.dto";
 import { BookingStatus, PaymentStatus, ServiceType } from "src/common/enums";
 import { Tour } from "../tour/tour.entity";
 import { Accommodation } from "../accommodation/accommodation.entity";
+import { RoomType } from "../room-type/room-type.entity";
 
 @Injectable()
 export class BookingService {
@@ -23,6 +24,8 @@ export class BookingService {
     private tourRepository: Repository<Tour>,
     @InjectRepository(Accommodation)
     private accommodationRepository: Repository<Accommodation>,
+    @InjectRepository(RoomType)
+    private roomTypeRepository: Repository<RoomType>,
   ) {}
 
   async findAll(userId?: number): Promise<any[]> {
@@ -144,11 +147,45 @@ export class BookingService {
       throw new BadRequestException("Ngày kết thúc phải sau ngày bắt đầu");
     }
 
+    // Kiểm tra số lượng còn lại
+    if (createBookingDto.serviceType === ServiceType.TOUR) {
+      const tour = await this.tourRepository.findOne({
+        where: { id: createBookingDto.serviceId },
+      });
+      if (!tour) {
+        throw new NotFoundException("Không tìm thấy tour");
+      }
+      const availableSlots = tour.maxGuests - tour.bookedGuests;
+      if (availableSlots < createBookingDto.quantity) {
+        throw new BadRequestException(
+          `Chỉ còn ${availableSlots} chỗ trống. Không thể đặt ${createBookingDto.quantity} người.`,
+        );
+      }
+    } else if (createBookingDto.serviceType === ServiceType.ACCOMMODATION) {
+      // Đối với accommodation, cần có roomTypeId
+      if (!createBookingDto.roomTypeId) {
+        throw new BadRequestException("Vui lòng chọn loại phòng");
+      }
+      const roomType = await this.roomTypeRepository.findOne({
+        where: { id: createBookingDto.roomTypeId },
+      });
+      if (!roomType) {
+        throw new NotFoundException("Không tìm thấy loại phòng");
+      }
+      const availableRooms = roomType.quantity - roomType.bookedRooms;
+      if (availableRooms < createBookingDto.quantity) {
+        throw new BadRequestException(
+          `Chỉ còn ${availableRooms} phòng trống. Không thể đặt ${createBookingDto.quantity} phòng.`,
+        );
+      }
+    }
+
     // Tạo booking
     const booking = this.bookingRepository.create({
       userId: createBookingDto.userId,
       serviceType: createBookingDto.serviceType,
       serviceId: createBookingDto.serviceId,
+      roomTypeId: createBookingDto.roomTypeId,
       startDate: createBookingDto.startDate,
       endDate: createBookingDto.endDate,
       quantity: createBookingDto.quantity,
@@ -160,6 +197,26 @@ export class BookingService {
       status: BookingStatus.PENDING,
     });
     const savedBooking = await this.bookingRepository.save(booking);
+
+    // Cập nhật số lượng đã đặt
+    if (createBookingDto.serviceType === ServiceType.TOUR) {
+      await this.tourRepository.update(
+        { id: createBookingDto.serviceId },
+        {
+          bookedGuests: () => `booked_guests + ${createBookingDto.quantity}`,
+        },
+      );
+    } else if (
+      createBookingDto.serviceType === ServiceType.ACCOMMODATION &&
+      createBookingDto.roomTypeId
+    ) {
+      await this.roomTypeRepository.update(
+        { id: createBookingDto.roomTypeId },
+        {
+          bookedRooms: () => `booked_rooms + ${createBookingDto.quantity}`,
+        },
+      );
+    }
 
     // Tự động tạo Payment record
     const payment = this.paymentRepository.create({
@@ -188,6 +245,27 @@ export class BookingService {
     if (booking.status === BookingStatus.CANCELLED) {
       throw new BadRequestException("Đặt chỗ đã bị hủy");
     }
+
+    // Hoàn lại số lượng khi hủy booking
+    if (booking.serviceType === ServiceType.TOUR) {
+      await this.tourRepository.update(
+        { id: booking.serviceId },
+        {
+          bookedGuests: () => `booked_guests - ${booking.quantity}`,
+        },
+      );
+    } else if (
+      booking.serviceType === ServiceType.ACCOMMODATION &&
+      booking.roomTypeId
+    ) {
+      await this.roomTypeRepository.update(
+        { id: booking.roomTypeId },
+        {
+          bookedRooms: () => `booked_rooms - ${booking.quantity}`,
+        },
+      );
+    }
+
     booking.status = BookingStatus.CANCELLED;
     return this.bookingRepository.save(booking);
   }
@@ -203,6 +281,33 @@ export class BookingService {
 
   async updateStatus(id: number, status: BookingStatus): Promise<Booking> {
     const booking = await this.findOne(id);
+
+    // Nếu status mới là CANCELLED và booking chưa bị hủy trước đó
+    // thì hoàn lại số lượng
+    if (
+      status === BookingStatus.CANCELLED &&
+      booking.status !== BookingStatus.CANCELLED
+    ) {
+      if (booking.serviceType === ServiceType.TOUR) {
+        await this.tourRepository.update(
+          { id: booking.serviceId },
+          {
+            bookedGuests: () => `booked_guests - ${booking.quantity}`,
+          },
+        );
+      } else if (
+        booking.serviceType === ServiceType.ACCOMMODATION &&
+        booking.roomTypeId
+      ) {
+        await this.roomTypeRepository.update(
+          { id: booking.roomTypeId },
+          {
+            bookedRooms: () => `booked_rooms - ${booking.quantity}`,
+          },
+        );
+      }
+    }
+
     booking.status = status;
     return this.bookingRepository.save(booking);
   }

@@ -60,4 +60,8 @@ export class CreateBookingDto {
   @IsEnum(PaymentMethod)
   @IsNotEmpty()
   paymentMethod: PaymentMethod;
+
+  @IsNumber()
+  @IsOptional()
+  roomTypeId?: number;
 }

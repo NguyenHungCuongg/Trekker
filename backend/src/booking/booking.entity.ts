@@ -30,6 +30,9 @@ export class Booking {
   @Column({ name: "service_id" })
   serviceId: number;
 
+  @Column({ name: "room_type_id", nullable: true })
+  roomTypeId: number;
+
   @Column({ name: "start_date", type: "date", nullable: true })
   startDate: Date;
 

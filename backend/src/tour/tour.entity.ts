@@ -42,6 +42,9 @@ export class Tour {
   @Column({ name: "max_guests", nullable: true })
   maxGuests: number;
 
+  @Column({ name: "booked_guests", default: 0 })
+  bookedGuests: number;
+
   @Column({ type: "text", nullable: true })
   image: string;
 
