@@ -116,6 +116,13 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 8,
   },
+  descriptionContent: {
+    color: "#3A3A3A",
+    fontSize: 15,
+    lineHeight: 22,
+    marginBottom: 20,
+    fontWeight: "400",
+  },
   description: {
     color: "#7D848D",
     fontSize: 14,

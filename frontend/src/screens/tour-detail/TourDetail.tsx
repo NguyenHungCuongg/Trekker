@@ -117,9 +117,10 @@ export default function TourDetail() {
         </View>
 
         {/* Description */}
-        <Text style={styles.sectionTitle}>
-          {tourDetail?.description} {"\n"}
-        </Text>
+        <Text style={styles.sectionTitle}>Mô tả</Text>
+        <Text style={styles.descriptionContent}>{tourDetail?.description}</Text>
+
+        <Text style={styles.sectionTitle}>Thông tin chi tiết</Text>
         <Text style={styles.description}>
           Số người tham gia tối đa: {tourDetail?.maxGuests} {"\n"}
           Thời gian: {tourDetail?.startDate} đến {tourDetail?.endDate} {"\n"}
