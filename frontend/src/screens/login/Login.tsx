@@ -11,7 +11,6 @@ import BackButton from "../../components/login-register/BackButton";
 import AuthField from "../../components/login-register/AuthField";
 import PasswordField from "../../components/login-register/PasswordField";
 import { styles } from "./loginStyles";
-import GoogleButton from "../../components/login-register/GoogleButton";
 
 export default function Login() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -75,14 +74,6 @@ export default function Login() {
               <TouchableOpacity onPress={() => navigation.navigate("Register")}>
                 <Text style={styles.link}> Đăng ký</Text>
               </TouchableOpacity>
-            </View>
-
-            <Text style={styles.alternateDivider}>Hoặc đăng nhập bằng</Text>
-
-            <View style={styles.socialRow}>
-              <GoogleButton />
-              <Ionicons name="logo-instagram" size={40} color="#C13584" />
-              <Ionicons name="logo-twitter" size={40} color="#03A9F4" />
             </View>
           </View>
         </View>

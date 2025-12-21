@@ -230,6 +230,7 @@ export default function Search() {
         accommodationParams.maxPrice = priceRange.max;
       }
       if (searchQuery.trim()) {
+        tourParams.name = searchQuery.trim();
         accommodationParams.name = searchQuery.trim();
       }
 
@@ -266,11 +267,43 @@ export default function Search() {
   };
 
   const handleRemoveFilter = (filterId: string) => {
+    const filterToRemove = activeFilters.find((f) => f.id === filterId);
+    if (!filterToRemove) return;
+
+    // Update currentFilterValues based on filter type
+    setCurrentFilterValues((prev) => {
+      const newValues = { ...prev };
+
+      if (filterToRemove.type === "location") {
+        newValues.locationId = "";
+        newValues.destinationId = ""; // Clear destination too
+        setDestinations([]);
+      } else if (filterToRemove.type === "destination") {
+        newValues.destinationId = "";
+      } else if (filterToRemove.type === "serviceType") {
+        newValues.serviceType = "all";
+      } else if (filterToRemove.type === "rating") {
+        newValues.minRating = 0;
+      } else if (filterToRemove.type === "price") {
+        newValues.priceRange = { min: 0, max: 999999999 };
+      }
+
+      return newValues;
+    });
+
     setActiveFilters((prev) => prev.filter((filter) => filter.id !== filterId));
   };
 
   const handleClearAllFilters = () => {
     setActiveFilters([]);
+    setCurrentFilterValues({
+      locationId: "",
+      destinationId: "",
+      serviceType: "all",
+      minRating: 0,
+      priceRange: { min: 0, max: 999999999 },
+    });
+    setDestinations([]);
   };
 
   const handleApplyFilters = (filterValues: FilterValues) => {

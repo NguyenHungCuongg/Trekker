@@ -1,7 +1,18 @@
-import { IsOptional, IsNumber, IsDateString, Min, Max } from "class-validator";
+import {
+  IsOptional,
+  IsNumber,
+  IsDateString,
+  Min,
+  Max,
+  IsString,
+} from "class-validator";
 import { Type } from "class-transformer";
 
 export class SearchTourDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
   @IsOptional()
   @IsNumber()
   @Type(() => Number)

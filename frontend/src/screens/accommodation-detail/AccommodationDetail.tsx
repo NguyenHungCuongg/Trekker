@@ -15,7 +15,7 @@ const defaultThumbnail = require("../../../assets/default-thumbnail.png");
 export default function AccommodationDetail() {
   const navigation = useNavigation();
   const [selectedRoomType, setSelectedRoomType] = useState<number | null>(null);
-  const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
+  const [numberOfRooms, setNumberOfRooms] = useState<number>(1);
   const [accommodation, setAccommodation] = useState<any>({
     id: null,
     destinationId: "",
@@ -211,26 +211,16 @@ export default function AccommodationDetail() {
           ))}
 
         <View style={styles.bookingSection}>
-          <Text style={styles.sectionTitle}>Số người</Text>
+          <Text style={styles.sectionTitle}>Số phòng</Text>
           <View style={styles.quantitySelector}>
             <TouchableOpacity
               style={styles.quantityButton}
-              onPress={() => setNumberOfPeople(Math.max(1, numberOfPeople - 1))}
+              onPress={() => setNumberOfRooms(Math.max(1, numberOfRooms - 1))}
             >
               <Text style={styles.quantityButtonText}>-</Text>
             </TouchableOpacity>
-            <Text style={styles.quantityText}>{numberOfPeople}</Text>
-            <TouchableOpacity
-              style={styles.quantityButton}
-              onPress={() =>
-                setNumberOfPeople(
-                  Math.min(
-                    selectedRoomType !== null ? accommodation.roomTypes[selectedRoomType].capacity : 10,
-                    numberOfPeople + 1
-                  )
-                )
-              }
-            >
+            <Text style={styles.quantityText}>{numberOfRooms}</Text>
+            <TouchableOpacity style={styles.quantityButton} onPress={() => setNumberOfRooms(numberOfRooms + 1)}>
               <Text style={styles.quantityButtonText}>+</Text>
             </TouchableOpacity>
           </View>
@@ -259,9 +249,10 @@ export default function AccommodationDetail() {
             navigation.navigate("BookingConfirmation", {
               serviceType: "accommodation",
               serviceId: accommodation.id,
+              roomTypeId: roomType.id,
               serviceName: `${accommodation.name} - ${roomType.name}`,
               servicePrice: roomType.discountPrice || roomType.price,
-              quantity: numberOfPeople,
+              quantity: numberOfRooms,
               startDate: checkInDate,
               endDate: checkOutDate,
               serviceImage: accommodation.image,

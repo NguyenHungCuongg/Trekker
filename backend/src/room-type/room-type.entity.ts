@@ -36,6 +36,9 @@ export class RoomType {
   @Column()
   quantity: number;
 
+  @Column({ name: "booked_rooms", default: 0 })
+  bookedRooms: number;
+
   @Column({ type: "text", nullable: true })
   image: string;
 

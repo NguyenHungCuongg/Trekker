@@ -55,12 +55,12 @@ export default function Review() {
       });
 
       // Transform backend data to ReviewItem format
-      const reviewItems: ReviewItem[] = services.map((service: any, index: number) => {
+      const reviewItems: ReviewItem[] = services.map((service: any) => {
         const key = `${service.serviceType}-${service.serviceId}`;
         const existingReview = reviewsMap.get(key);
 
         return {
-          id: existingReview?.id || index + 1,
+          id: existingReview?.id || Date.now() + Math.random(),
           serviceType: service.serviceType,
           serviceId: service.serviceId,
           serviceName: service.serviceName,
@@ -224,7 +224,11 @@ export default function Review() {
         ) : (
           <View style={styles.reviewList}>
             {filteredReviews.map((review) => (
-              <ReviewCard key={review.id} review={review} onReviewPress={handleReviewPress} />
+              <ReviewCard
+                key={`${review.serviceType}-${review.serviceId}`}
+                review={review}
+                onReviewPress={handleReviewPress}
+              />
             ))}
           </View>
         )}
