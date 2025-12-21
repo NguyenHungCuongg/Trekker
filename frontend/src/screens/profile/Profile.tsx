@@ -104,7 +104,7 @@ export default function Profile() {
         <MenuItem
           icon={<MaterialCommunityIcons name="chart-bar" size={20} color="#7D848D" />}
           label="Thống kê"
-          onPress={undefined}
+          onPress={() => navigation.navigate("Statistics")}
         />
         <Divider />
         <MenuItem
