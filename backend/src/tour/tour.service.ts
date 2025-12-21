@@ -34,6 +34,12 @@ export class TourService {
       .createQueryBuilder("tour")
       .leftJoinAndSelect("tour.location", "location")
       .leftJoinAndSelect("tour.destinations", "destinations");
+
+    if (searchDto.name) {
+      query.andWhere("LOWER(tour.name) LIKE LOWER(:name)", {
+        name: `%${searchDto.name}%`,
+      });
+    }
     if (searchDto.locationId) {
       query.andWhere("tour.locationId = :locationId", {
         locationId: searchDto.locationId,
