@@ -13,27 +13,90 @@ export class TourService {
   ) {}
 
   async findAll(): Promise<Tour[]> {
-    return this.tourRepository.find({
-      relations: ["location", "destinations"],
+    const result = await this.tourRepository
+      .createQueryBuilder("tour")
+      .leftJoinAndSelect("tour.location", "location")
+      .leftJoinAndSelect("tour.destinations", "destinations")
+      .leftJoin(
+        "reviews",
+        "review",
+        "review.service_type = 'tour' AND review.service_id = tour.id",
+      )
+      .select([
+        "tour",
+        "location",
+        "destinations",
+        "COALESCE(ROUND(AVG(review.rating)::numeric, 1), 0) as calculated_rating",
+      ])
+      .groupBy("tour.id")
+      .addGroupBy("location.id")
+      .addGroupBy("destinations.id")
+      .getRawAndEntities();
+
+    return result.entities.map((tour, index) => {
+      const calculatedRating =
+        parseFloat(result.raw[index].calculated_rating) || 0;
+      return {
+        ...tour,
+        rating: calculatedRating,
+      };
     });
   }
 
   async findOne(id: number): Promise<Tour> {
-    const tour = await this.tourRepository.findOne({
-      where: { id },
-      relations: ["location", "destinations"],
-    });
-    if (!tour) {
+    const result = await this.tourRepository
+      .createQueryBuilder("tour")
+      .leftJoinAndSelect("tour.location", "location")
+      .leftJoinAndSelect("tour.destinations", "destinations")
+      .leftJoin(
+        "reviews",
+        "review",
+        "review.service_type = 'tour' AND review.service_id = tour.id",
+      )
+      .select([
+        "tour",
+        "location",
+        "destinations",
+        "COALESCE(ROUND(AVG(review.rating)::numeric, 1), 0) as calculated_rating",
+      ])
+      .where("tour.id = :id", { id })
+      .groupBy("tour.id")
+      .addGroupBy("location.id")
+      .addGroupBy("destinations.id")
+      .getRawAndEntities();
+
+    if (!result.entities || result.entities.length === 0) {
       throw new NotFoundException(`Không tìm thấy tour với id ${id}`);
     }
-    return tour;
+
+    const tour = result.entities[0];
+    const calculatedRating = parseFloat(result.raw[0].calculated_rating) || 0;
+
+    return {
+      ...tour,
+      rating: calculatedRating,
+    };
   }
 
   async search(searchDto: SearchTourDto): Promise<Tour[]> {
     const query = this.tourRepository
       .createQueryBuilder("tour")
       .leftJoinAndSelect("tour.location", "location")
-      .leftJoinAndSelect("tour.destinations", "destinations");
+      .leftJoinAndSelect("tour.destinations", "destinations")
+      .leftJoin(
+        "reviews",
+        "review",
+        "review.service_type = 'tour' AND review.service_id = tour.id",
+      )
+      .select([
+        "tour",
+        "location",
+        "destinations",
+        "COALESCE(ROUND(AVG(review.rating)::numeric, 1), 0) as calculated_rating",
+      ])
+      .groupBy("tour.id")
+      .addGroupBy("location.id")
+      .addGroupBy("destinations.id");
 
     if (searchDto.name) {
       query.andWhere("LOWER(tour.name) LIKE LOWER(:name)", {
@@ -71,7 +134,7 @@ export class TourService {
       });
     }
     if (searchDto.minRating) {
-      query.andWhere("tour.rating >= :minRating", {
+      query.having("COALESCE(AVG(review.rating), 0) >= :minRating", {
         minRating: searchDto.minRating,
       });
     }
@@ -80,13 +143,49 @@ export class TourService {
         maxGuests: searchDto.maxGuests,
       });
     }
-    return query.getMany();
+
+    const result = await query.getRawAndEntities();
+
+    // Merge calculated rating into entities
+    return result.entities.map((tour, index) => {
+      const calculatedRating =
+        parseFloat(result.raw[index].calculated_rating) || 0;
+      return {
+        ...tour,
+        rating: calculatedRating,
+      };
+    });
   }
 
   async findByLocationId(locationId: number): Promise<Tour[]> {
-    return this.tourRepository.find({
-      where: { locationId },
-      relations: ["location", "destinations"],
+    const result = await this.tourRepository
+      .createQueryBuilder("tour")
+      .leftJoinAndSelect("tour.location", "location")
+      .leftJoinAndSelect("tour.destinations", "destinations")
+      .leftJoin(
+        "reviews",
+        "review",
+        "review.service_type = 'tour' AND review.service_id = tour.id",
+      )
+      .select([
+        "tour",
+        "location",
+        "destinations",
+        "COALESCE(ROUND(AVG(review.rating)::numeric, 1), 0) as calculated_rating",
+      ])
+      .where("tour.locationId = :locationId", { locationId })
+      .groupBy("tour.id")
+      .addGroupBy("location.id")
+      .addGroupBy("destinations.id")
+      .getRawAndEntities();
+
+    return result.entities.map((tour, index) => {
+      const calculatedRating =
+        parseFloat(result.raw[index].calculated_rating) || 0;
+      return {
+        ...tour,
+        rating: calculatedRating,
+      };
     });
   }
 
@@ -116,12 +215,14 @@ export class TourService {
         t.tour_id AS id,
         t.name AS name,
         t.price AS price,
-        t.rating AS rating,
+        COALESCE(ROUND(AVG(r.rating)::numeric, 1), 0) AS rating,
         l.name AS location,
         t.image AS image
       FROM tours t
       LEFT JOIN locations l ON t.location_id = l.location_id
-      ORDER BY t.rating DESC
+      LEFT JOIN reviews r ON r.service_type = 'tour' AND r.service_id = t.tour_id
+      GROUP BY t.tour_id, t.name, t.price, l.name, t.image
+      ORDER BY rating DESC, t.name ASC
     `;
 
     const hasLimit = limit && limit > 0;
