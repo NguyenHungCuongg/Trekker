@@ -15,27 +15,90 @@ export class AccommodationService {
   ) {}
 
   async findAll(): Promise<Accommodation[]> {
-    return this.accommodationRepository.find({
-      relations: ["destination", "roomTypes"],
+    const result = await this.accommodationRepository
+      .createQueryBuilder("accommodation")
+      .leftJoinAndSelect("accommodation.destination", "destination")
+      .leftJoinAndSelect("accommodation.roomTypes", "roomTypes")
+      .leftJoin(
+        "reviews",
+        "review",
+        "review.service_type = 'accommodation' AND review.service_id = accommodation.id",
+      )
+      .select([
+        "accommodation",
+        "destination",
+        "roomTypes",
+        "COALESCE(ROUND(AVG(review.rating)::numeric, 1), 0) as calculated_rating",
+      ])
+      .groupBy("accommodation.id")
+      .addGroupBy("destination.id")
+      .addGroupBy("roomTypes.id")
+      .getRawAndEntities();
+
+    return result.entities.map((accommodation, index) => {
+      const calculatedRating =
+        parseFloat(result.raw[index].calculated_rating) || 0;
+      return {
+        ...accommodation,
+        rating: calculatedRating,
+      };
     });
   }
 
   async findOne(id: number): Promise<Accommodation> {
-    const accommodation = await this.accommodationRepository.findOne({
-      where: { id },
-      relations: ["destination", "roomTypes"],
-    });
-    if (!accommodation) {
+    const result = await this.accommodationRepository
+      .createQueryBuilder("accommodation")
+      .leftJoinAndSelect("accommodation.destination", "destination")
+      .leftJoinAndSelect("accommodation.roomTypes", "roomTypes")
+      .leftJoin(
+        "reviews",
+        "review",
+        "review.service_type = 'accommodation' AND review.service_id = accommodation.id",
+      )
+      .select([
+        "accommodation",
+        "destination",
+        "roomTypes",
+        "COALESCE(ROUND(AVG(review.rating)::numeric, 1), 0) as calculated_rating",
+      ])
+      .where("accommodation.id = :id", { id })
+      .groupBy("accommodation.id")
+      .addGroupBy("destination.id")
+      .addGroupBy("roomTypes.id")
+      .getRawAndEntities();
+
+    if (!result.entities || result.entities.length === 0) {
       throw new NotFoundException(`Không tìm thấy accommodation với id ${id}`);
     }
-    return accommodation;
+
+    const accommodation = result.entities[0];
+    const calculatedRating = parseFloat(result.raw[0].calculated_rating) || 0;
+
+    return {
+      ...accommodation,
+      rating: calculatedRating,
+    };
   }
 
   async search(searchDto: SearchAccommodationDto): Promise<any[]> {
     const query = this.accommodationRepository
       .createQueryBuilder("accommodation")
       .leftJoinAndSelect("accommodation.destination", "destination")
-      .leftJoinAndSelect("accommodation.roomTypes", "roomTypes");
+      .leftJoinAndSelect("accommodation.roomTypes", "roomTypes")
+      .leftJoin(
+        "reviews",
+        "review",
+        "review.service_type = 'accommodation' AND review.service_id = accommodation.id",
+      )
+      .select([
+        "accommodation",
+        "destination",
+        "roomTypes",
+        "COALESCE(ROUND(AVG(review.rating)::numeric, 1), 0) as calculated_rating",
+      ])
+      .groupBy("accommodation.id")
+      .addGroupBy("destination.id")
+      .addGroupBy("roomTypes.id");
 
     if (searchDto.locationId) {
       query.andWhere("destination.locationId = :locationId", {
@@ -48,7 +111,7 @@ export class AccommodationService {
       });
     }
     if (searchDto.minRating) {
-      query.andWhere("accommodation.rating >= :minRating", {
+      query.having("COALESCE(AVG(review.rating), 0) >= :minRating", {
         minRating: searchDto.minRating,
       });
     }
@@ -58,25 +121,54 @@ export class AccommodationService {
       });
     }
 
-    const accommodations = await query.getMany();
+    const accommodations = await query.getRawAndEntities();
 
-    // Calculate minPrice from roomTypes for each accommodation
-    return accommodations.map((accommodation) => {
+    // Calculate minPrice from roomTypes and merge calculated rating
+    return accommodations.entities.map((accommodation, index) => {
       const minPrice = accommodation.roomTypes?.length
         ? Math.min(...accommodation.roomTypes.map((rt) => rt.price))
         : 0;
 
+      const calculatedRating =
+        parseFloat(accommodations.raw[index].calculated_rating) || 0;
+
       return {
         ...accommodation,
+        rating: calculatedRating,
         pricePerNight: minPrice.toString(),
       };
     });
   }
 
   async findByDestinationId(destinationId: number): Promise<Accommodation[]> {
-    return this.accommodationRepository.find({
-      where: { destinationId },
-      relations: ["destination", "roomTypes"],
+    const result = await this.accommodationRepository
+      .createQueryBuilder("accommodation")
+      .leftJoinAndSelect("accommodation.destination", "destination")
+      .leftJoinAndSelect("accommodation.roomTypes", "roomTypes")
+      .leftJoin(
+        "reviews",
+        "review",
+        "review.service_type = 'accommodation' AND review.service_id = accommodation.id",
+      )
+      .select([
+        "accommodation",
+        "destination",
+        "roomTypes",
+        "COALESCE(ROUND(AVG(review.rating)::numeric, 1), 0) as calculated_rating",
+      ])
+      .where("accommodation.destinationId = :destinationId", { destinationId })
+      .groupBy("accommodation.id")
+      .addGroupBy("destination.id")
+      .addGroupBy("roomTypes.id")
+      .getRawAndEntities();
+
+    return result.entities.map((accommodation, index) => {
+      const calculatedRating =
+        parseFloat(result.raw[index].calculated_rating) || 0;
+      return {
+        ...accommodation,
+        rating: calculatedRating,
+      };
     });
   }
 
@@ -115,12 +207,13 @@ export class AccommodationService {
         a.accommodation_id AS id,
         a.name AS name,
         min_price_info.min_price AS price_per_night,
-        a.rating AS rating,
+        COALESCE(ROUND(AVG(r.rating)::numeric, 1), 0) AS rating,
         d.name AS destination,
         a.image AS image
         FROM
         accommodations a
         LEFT JOIN destinations d ON d.destination_id = a.destination_id
+        LEFT JOIN reviews r ON r.service_type = 'accommodation' AND r.service_id = a.accommodation_id
         JOIN
           (SELECT
               accommodation_id,
@@ -133,7 +226,7 @@ export class AccommodationService {
         ON
         a.accommodation_id = min_price_info.accommodation_id
         GROUP BY a.accommodation_id, a.name, d.name, min_price_info.min_price
-        ORDER BY a.rating DESC
+        ORDER BY rating DESC, a.name ASC
       `;
 
     const hasLimit = limit && limit > 0;
