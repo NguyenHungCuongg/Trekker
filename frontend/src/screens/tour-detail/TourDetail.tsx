@@ -27,6 +27,7 @@ export default function TourDetail() {
     rating: 0,
     duration: 0,
     maxGuests: 0,
+    bookedGuests: 0,
     startDate: "",
     endDate: "",
     image: "",
@@ -81,6 +82,15 @@ export default function TourDetail() {
           </View>
         </View>
 
+        {(
+          <View style={styles.bookedBanner}>
+            <Text style={styles.bookedBannerEmoji}>🔥</Text>
+            <Text style={styles.bookedBannerText}>
+              Chỉ còn {tourDetail?.maxGuests - tourDetail?.bookedGuests} chỗ trống!
+            </Text>
+          </View>
+        )}
+
         {/* Meta section */}
         <View style={styles.meta}>
           <View style={styles.metaItem}>
@@ -104,16 +114,14 @@ export default function TourDetail() {
                 />
               </Svg>
               <Text style={styles.rating}>{tourDetail?.rating}</Text>
-              <Text style={styles.reviews}>0</Text>
             </View>
           ) : (
             <Text style={styles.rating}>Chưa có đánh giá</Text>
           )}
-
-          <View style={styles.metaItem}>
-            <Text style={styles.price}>{formatNumber(tourDetail?.price)}đ</Text>
-            <Text style={styles.priceUnit}> /Người</Text>
-          </View>
+        </View>
+        <View style={styles.priceRow}>
+          <Text style={styles.price}>{formatNumber(tourDetail?.price)}đ</Text>
+          <Text style={styles.priceUnit}> /Người</Text>
         </View>
 
         {/* Description */}

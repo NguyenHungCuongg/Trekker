@@ -54,6 +54,26 @@ export const styles = StyleSheet.create({
   header: {
     marginBottom: 16,
   },
+  bookedBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "#FFF4E5",
+    borderColor: "#FFB74D",
+    borderWidth: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    marginBottom: 16,
+  },
+  bookedBannerEmoji: {
+    fontSize: 18,
+  },
+  bookedBannerText: {
+    color: "#D35400",
+    fontSize: 15,
+    fontWeight: "700",
+  },
   title: {
     color: "#1B1E28",
     fontSize: 22,
@@ -71,6 +91,12 @@ export const styles = StyleSheet.create({
     flexWrap: "wrap",
     marginBottom: 20,
     rowGap: 10,
+  },
+  priceRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    marginBottom: 20,
   },
   metaItem: {
     flexDirection: "row",
