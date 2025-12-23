@@ -143,7 +143,7 @@ export class BookingService {
   }
 
   async create(createBookingDto: CreateBookingDto): Promise<Booking> {
-    if (createBookingDto.startDate >= createBookingDto.endDate) {
+    if (createBookingDto.startDate > createBookingDto.endDate) {
       throw new BadRequestException("Ngày kết thúc phải sau ngày bắt đầu");
     }
 

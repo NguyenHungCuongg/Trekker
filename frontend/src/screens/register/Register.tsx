@@ -154,14 +154,6 @@ export default function Register() {
                   <Text style={styles.signinLink}> Đăng nhập</Text>
                 </TouchableOpacity>
               </View>
-
-              <Text style={styles.divider}>Hoặc xác thực bằng</Text>
-
-              <View style={styles.socialRow}>
-                <Ionicons name="logo-facebook" size={40} color="#1877F2" />
-                <Ionicons name="logo-instagram" size={40} color="#C13584" />
-                <Ionicons name="logo-twitter" size={40} color="#03A9F4" />
-              </View>
             </View>
           </View>
         </ScrollView>
