@@ -322,6 +322,22 @@ export class BookingService {
       booking.payment.status = PaymentStatus.FAILED;
       await this.paymentRepository.save(booking.payment);
     }
+    if (booking.serviceType === ServiceType.TOUR) {
+      await this.tourRepository.update(
+        { id: booking.serviceId },
+        { bookedGuests: () => `booked_guests - ${booking.quantity}` },
+      );
+    } else if (
+      booking.serviceType === ServiceType.ACCOMMODATION &&
+      booking.roomTypeId
+    ) {
+      await this.roomTypeRepository.update(
+        { id: booking.roomTypeId },
+        {
+          bookedRooms: () => `booked_rooms - ${booking.quantity}`,
+        },
+      );
+    }
     return this.bookingRepository.save(booking);
   }
 }

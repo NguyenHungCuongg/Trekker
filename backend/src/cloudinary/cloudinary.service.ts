@@ -1,4 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from "@nestjs/common";
 import { UploadApiErrorResponse, UploadApiResponse, v2 } from "cloudinary";
 import toStream from "buffer-to-stream";
 
@@ -8,6 +12,10 @@ export class CloudinaryService {
     file: Express.Multer.File,
     folder: string = "trekker/profiles",
   ): Promise<UploadApiResponse | UploadApiErrorResponse> {
+    if (!file?.buffer) {
+      throw new BadRequestException("File upload bị thiếu hoặc rỗng");
+    }
+
     return new Promise((resolve, reject) => {
       const upload = v2.uploader.upload_stream(
         {
@@ -19,12 +27,28 @@ export class CloudinaryService {
           ],
         },
         (error, result) => {
-          if (error)
-            return reject(new Error("Xảy ra lỗi khi upload lên Cloudinary"));
+          if (error) {
+            console.error("Cloudinary upload error", error);
+            return reject(
+              new BadRequestException(
+                error.message ?? "Xảy ra lỗi khi upload lên Cloudinary",
+              ),
+            );
+          }
           if (result) return resolve(result);
-          else reject(new Error("Xảy ra lỗi khi upload lên Cloudinary"));
+          return reject(
+            new InternalServerErrorException(
+              "Không nhận được phản hồi từ Cloudinary",
+            ),
+          );
         },
       );
+
+      upload.on("error", (streamError) => {
+        console.error("Upload stream error", streamError);
+        reject(new BadRequestException("Không thể đọc dữ liệu file để upload"));
+      });
+
       toStream(file.buffer).pipe(upload);
     });
   }

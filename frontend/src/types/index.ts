@@ -51,5 +51,6 @@ export interface RoomType {
   amenities: string;
   description: string;
   quantity: number;
+  bookedRooms: number;
   image: string;
 }

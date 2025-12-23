@@ -193,6 +193,9 @@ export default function AccommodationDetail() {
               </View>
               <Text style={styles.roomTypeCapacity}>Sức chứa: {roomType.capacity} người</Text>
               <Text style={styles.roomTypeAmenities}>Tiện nghi: {roomType.amenities}</Text>
+              <Text style={styles.roomTypeAvailability}>
+                Còn lại: {roomType.quantity - roomType.bookedRooms}/{roomType.quantity} phòng
+              </Text>
               {selectedRoomType === index && (
                 <View style={styles.selectedIndicator}>
                   <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">

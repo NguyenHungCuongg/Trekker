@@ -198,6 +198,12 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 18,
   },
+  roomTypeAvailability: {
+    color: "#0F93C3",
+    fontSize: 14,
+    fontWeight: "600",
+    marginTop: 6,
+  },
   selectedIndicator: {
     position: "absolute",
     top: 12,
