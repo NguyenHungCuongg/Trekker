@@ -23,6 +23,7 @@ import { Roles } from "src/auth/decorators/roles.decorator";
 import { UserRole } from "src/common/enums";
 import { CloudinaryService } from "../cloudinary/cloudinary.service";
 import { FileInterceptor } from "@nestjs/platform-express/multer/interceptors/file.interceptor";
+import { ApiBearerAuth, ApiOperation, ApiResponse } from "@nestjs/swagger";
 
 @Controller("users")
 export class UserController {
@@ -34,12 +35,26 @@ export class UserController {
   //user endpoints
   @Get("profile")
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
+  @ApiOperation({ summary: "Lấy thông tin hồ sơ người dùng hiện tại" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về thông tin hồ sơ người dùng.",
+    type: User,
+  })
   async getProfile(@Request() req): Promise<User> {
     return this.userService.findOne(req.user.userId);
   }
 
   @Put("profile")
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
+  @ApiOperation({ summary: "Cập nhật thông tin hồ sơ người dùng hiện tại" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về thông tin hồ sơ người dùng đã được cập nhật.",
+    type: User,
+  })
   async updateProfile(
     @Request() req,
     @Body() updateUserDto: UpdateUserDto,
@@ -49,6 +64,12 @@ export class UserController {
 
   @Put("profile/upload-image")
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
+  @ApiOperation({ summary: "Tải lên ảnh đại diện cho người dùng hiện tại" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về thông báo và URL ảnh đại diện đã được tải lên.",
+  })
   @UseInterceptors(FileInterceptor("file"))
   async uploadProfileImage(
     @Request() req,
@@ -100,6 +121,12 @@ export class UserController {
 
   @Put("change-password")
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
+  @ApiOperation({ summary: "Đổi mật khẩu cho người dùng hiện tại" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về thông báo đổi mật khẩu thành công.",
+  })
   async changePassword(
     @Request() req,
     @Body() changePasswordDto: ChangePasswordDto,
@@ -111,6 +138,12 @@ export class UserController {
   // Admin endpoints
   @Get("admin")
   @UseGuards(RolesGuard)
+  @ApiOperation({ summary: "Lấy danh sách tất cả các người dùng (Admin)" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về danh sách tất cả các người dùng.",
+    type: [User],
+  })
   @Roles(UserRole.ADMIN)
   async findAllUsers(): Promise<User[]> {
     return this.userService.findAll();
@@ -118,6 +151,12 @@ export class UserController {
 
   @Get("admin/:id")
   @UseGuards(RolesGuard)
+  @ApiOperation({ summary: "Lấy chi tiết người dùng theo ID (Admin)" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về chi tiết người dùng.",
+    type: User,
+  })
   @Roles(UserRole.ADMIN)
   async findUserById(@Param("id", ParseIntPipe) id: number): Promise<User> {
     return this.userService.findOne(id);
@@ -125,6 +164,12 @@ export class UserController {
 
   @Put("admin/:id")
   @UseGuards(RolesGuard)
+  @ApiOperation({ summary: "Cập nhật thông tin người dùng (Admin)" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về người dùng đã được cập nhật.",
+    type: User,
+  })
   @Roles(UserRole.ADMIN)
   async updateUser(
     @Param("id", ParseIntPipe) id: number,
@@ -135,6 +180,12 @@ export class UserController {
 
   @Put("admin/:id/role")
   @UseGuards(RolesGuard)
+  @ApiOperation({ summary: "Cập nhật vai trò người dùng (Admin)" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về người dùng đã được cập nhật vai trò.",
+    type: User,
+  })
   @Roles(UserRole.ADMIN)
   async updateUserRole(
     @Param("id", ParseIntPipe) id: number,
@@ -145,6 +196,11 @@ export class UserController {
 
   @Delete("admin/:id")
   @UseGuards(RolesGuard)
+  @ApiOperation({ summary: "Xóa người dùng (Admin)" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về thông báo người dùng đã được xóa.",
+  })
   @Roles(UserRole.ADMIN)
   async deleteUser(
     @Param("id", ParseIntPipe) id: number,
@@ -154,6 +210,11 @@ export class UserController {
   }
 
   @Post("check-email")
+  @ApiOperation({ summary: "Kiểm tra sự tồn tại của email" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về kết quả kiểm tra sự tồn tại của email.",
+  })
   async checkEmail(@Body("email") email: string): Promise<{ exists: boolean }> {
     const exists = await this.userService.isEmailExists(email);
     return { exists };
