@@ -18,6 +18,7 @@ import { JwtAuthGuard } from "../auth/jwt.authguard";
 import { RolesGuard } from "../auth/guards/roles.guard";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { UserRole } from "../common/enums";
+import { ApiBearerAuth, ApiOperation, ApiResponse } from "@nestjs/swagger";
 
 @Controller("reviews")
 export class ReviewController {
@@ -25,6 +26,11 @@ export class ReviewController {
 
   // User endpoints
   @Get()
+  @ApiOperation({ summary: "Lấy tất cả đánh giá hoặc theo dịch vụ" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về danh sách đánh giá.",
+  })
   async findAll(@Request() req: any): Promise<Review[]> {
     const { serviceType, serviceId } = req.query;
     if (serviceType && serviceId) {
@@ -34,17 +40,34 @@ export class ReviewController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
+  @ApiOperation({ summary: "Lấy đánh giá của người dùng hiện tại" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về danh sách đánh giá của người dùng.",
+  })
   @Get("my-reviews")
   async findMyReviews(@Request() req): Promise<Review[]> {
     return this.reviewService.findAll(req.user.userId);
   }
 
+  @ApiOperation({ summary: "Lấy đánh giá theo ID" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về đánh giá theo ID.",
+  })
   @Get(":id")
   async findOne(@Param("id", ParseIntPipe) id: number): Promise<Review> {
     return this.reviewService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
+  @ApiOperation({ summary: "Tạo đánh giá mới" })
+  @ApiResponse({
+    status: 201,
+    description: "Đánh giá mới đã được tạo thành công.",
+  })
   @Post()
   async create(
     @Body() createReviewDto: CreateReviewDto,
@@ -55,6 +78,12 @@ export class ReviewController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
+  @ApiOperation({ summary: "Cập nhật đánh giá" })
+  @ApiResponse({
+    status: 200,
+    description: "Đánh giá đã được cập nhật thành công.",
+  })
   @Put(":id")
   async update(
     @Param("id", ParseIntPipe) id: number,
@@ -65,6 +94,12 @@ export class ReviewController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
+  @ApiOperation({ summary: "Xóa đánh giá" })
+  @ApiResponse({
+    status: 200,
+    description: "Đánh giá đã được xóa thành công.",
+  })
   @Delete(":id")
   async remove(
     @Param("id", ParseIntPipe) id: number,
@@ -77,6 +112,12 @@ export class ReviewController {
   // Admin endpoints
   @Get("admin")
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth("JWT-auth")
+  @ApiOperation({ summary: "Lấy tất cả đánh giá (Admin)" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về danh sách tất cả đánh giá.",
+  })
   @Roles(UserRole.ADMIN)
   async findAllReviews(): Promise<Review[]> {
     return this.reviewService.findAll();
@@ -84,6 +125,12 @@ export class ReviewController {
 
   @Get("admin/:id")
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth("JWT-auth")
+  @ApiOperation({ summary: "Lấy đánh giá theo ID (Admin)" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về đánh giá theo ID.",
+  })
   @Roles(UserRole.ADMIN)
   async findReviewById(@Param("id", ParseIntPipe) id: number): Promise<Review> {
     return this.reviewService.findOne(id);
@@ -91,6 +138,12 @@ export class ReviewController {
 
   @Delete("admin/:id")
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth("JWT-auth")
+  @ApiOperation({ summary: "Xóa đánh giá (Admin)" })
+  @ApiResponse({
+    status: 200,
+    description: "Đánh giá đã được xóa thành công.",
+  })
   @Roles(UserRole.ADMIN)
   async deleteReview(
     @Param("id", ParseIntPipe) id: number,

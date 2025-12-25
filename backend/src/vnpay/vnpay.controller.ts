@@ -15,6 +15,7 @@ import { VnpayService } from "./vnpay.service";
 import type { Request, Response } from "express";
 import { CreateBookingDto } from "src/booking/dto/create-booking.dto";
 import { JwtAuthGuard } from "src/auth/jwt.authguard";
+import { ApiBearerAuth, ApiOperation, ApiResponse } from "@nestjs/swagger";
 
 @Controller("vnpay")
 export class VnpayController {
@@ -24,6 +25,12 @@ export class VnpayController {
 
   @Post("create_payment_url")
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
+  @ApiOperation({ summary: "Tạo URL thanh toán VNPay" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về URL thanh toán VNPay.",
+  })
   async createPaymentUrl(
     @Body() createBookingDto: CreateBookingDto,
     @Req() req: Request,
@@ -52,6 +59,11 @@ export class VnpayController {
   }
 
   @Get("vnpay_return")
+  @ApiOperation({ summary: "Xử lý kết quả trả về từ VNPay" })
+  @ApiResponse({
+    status: 200,
+    description: "Trả về trang kết quả thanh toán.",
+  })
   async handleVnPayReturn(
     @Query() vnp_Params: Record<string, any>,
     @Res() res: Response,
