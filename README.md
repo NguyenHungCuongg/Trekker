@@ -11,7 +11,6 @@
 ---
 
 ## 🎨 UI/UX Design (Figma)
-🔗 **[Xem bản thiết kế trên Figma tại đây](https://www.figma.com/file/your-link-here)**
 
 ---
 
